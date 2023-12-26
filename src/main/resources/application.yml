@@ -1,0 +1,41 @@
+server:
+  port: 8090
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  # database ??
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/kjdatabase
+    username: root
+    password:
+
+    # spring data jpa ??
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+#      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+
+#### log
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace # ???? ????.
+
+#file:
+#  path: /Users/junghunmok/springupload/
+
+#s3
+cloud.aws.s3.bucket: mok-s3
+cloud.aws.stack.auto: false
+cloud.aws.region.static: ap-northeast-2
+cloud.aws.credentials.access-key: AKIATOH7ZGTVVAACDQPN
+cloud.aws.credentials.secret-key: 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
