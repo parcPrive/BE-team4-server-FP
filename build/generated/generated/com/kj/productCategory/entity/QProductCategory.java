@@ -2,7 +2,6 @@ package com.kj.productCategory.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.kj.product.entity.ProductCategory;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -25,11 +24,11 @@ public class QProductCategory extends EntityPathBase<ProductCategory> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Integer> mainCategoryID = createNumber("mainCategoryID", Integer.class);
+    public final NumberPath<Integer> mainCategoryId = createNumber("mainCategoryId", Integer.class);
 
     public final ListPath<com.kj.product.entity.Product, com.kj.product.entity.QProduct> products = this.<com.kj.product.entity.Product, com.kj.product.entity.QProduct>createList("products", com.kj.product.entity.Product.class, com.kj.product.entity.QProduct.class, PathInits.DIRECT2);
 
-    public final NumberPath<Integer> subCategoryID = createNumber("subCategoryID", Integer.class);
+    public final NumberPath<Integer> subCategoryId = createNumber("subCategoryId", Integer.class);
 
     public QProductCategory(String variable) {
         super(ProductCategory.class, forVariable(variable));
