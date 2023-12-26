@@ -1,8 +1,7 @@
-package com.kj.productLike.entity;
+package com.kj.product.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.kj.product.entity.ProductLike;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -17,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QProductLike extends EntityPathBase<ProductLike> {
 
-    private static final long serialVersionUID = -992187771L;
+    private static final long serialVersionUID = -27991780L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -25,7 +24,7 @@ public class QProductLike extends EntityPathBase<ProductLike> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final com.kj.product.entity.QProduct product;
+    public final QProduct product;
 
     public QProductLike(String variable) {
         this(ProductLike.class, forVariable(variable), INITS);
@@ -45,7 +44,7 @@ public class QProductLike extends EntityPathBase<ProductLike> {
 
     public QProductLike(Class<? extends ProductLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.product = inits.isInitialized("product") ? new com.kj.product.entity.QProduct(forProperty("product"), inits.get("product")) : null;
+        this.product = inits.isInitialized("product") ? new QProduct(forProperty("product"), inits.get("product")) : null;
     }
 
 }

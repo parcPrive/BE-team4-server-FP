@@ -1,8 +1,7 @@
-package com.kj.productImage.entity;
+package com.kj.product.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.kj.product.entity.ProductImage;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -16,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QProductImage extends EntityPathBase<ProductImage> {
 
-    private static final long serialVersionUID = -1799657609L;
+    private static final long serialVersionUID = -870406026L;
 
     public static final QProductImage productImage = new QProductImage("productImage");
 

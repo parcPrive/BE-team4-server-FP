@@ -1,17 +1,25 @@
 package com.kj.product.entity;
 
+import com.kj.productCategory.entity.ProductCategory;
 import com.kj.productQnA.entity.ProductQnA;
 import com.kj.productReview.entity.ProductReview;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PRODUCT_ID")
     private Long id;
 
     private String productName;
