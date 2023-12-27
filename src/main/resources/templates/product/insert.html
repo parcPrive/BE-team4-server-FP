@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/layout}">
+      layout:decorate="~{layout/layout}">
 <div layout:fragment="content" class="main">
     <div class="container">
         <div class="row justify-content-center">
@@ -10,14 +10,28 @@
                 <form action="" th:action="@{/product/insert}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <div class="mb-3">
+
                             <label for="file" class="form-label">상품사진 </label>
-                            <input class="img-thumbnail" type="file" id="file1" name="file1" >
-                            <input class="img-thumbnail" type="file" id="file2" name="file2" >
-                            <input class="img-thumbnail" type="file" id="file3" name="file3" >
-                            <input class="img-thumbnail" type="file" id="file4" name="file4" >
-                        </div>
-                        <div class="preview-box">
-                            <img src="/images/500.png" id="preview">
+                            <div>
+                                <img src="/images/hi.jpg" class="img-thumbnail" alt="..." type="file" id="preview1">
+                                <input class="img-thumbnail" type="file" id="file1" name="file1" >
+                            </div>
+                            <div>
+                                <img src="/images/hi.jpg" class="img-thumbnail" alt="..." type="file" id="preview2">
+                                <input class="img-thumbnail" type="file" id="file2" name="file2" >
+                            </div>
+                            <div>
+                                <img src="/images/hi.jpg" class="img-thumbnail" alt="..." type="file" id="preview3">
+                                <input class="img-thumbnail" type="file" id="file3" name="file3" >
+                            </div>
+                            <div>
+                                <img src="/images/hi.jpg" class="img-thumbnail" alt="..." type="file" id="preview4">
+                                <input class="img-thumbnail" type="file" id="file4" name="file4" >
+                            </div>
+                            <div>
+                                <img src="/images/hi.jpg" class="img-thumbnail" alt="..." type="file" id="preview5">
+                                <input class="img-thumbnail" type="file" id="file5" name="file5" >
+                            </div>
                         </div>
                     </div>
 
@@ -67,6 +81,7 @@
                         <label for="productDetailImage" class="form-label">상품설명</label>
                         <textarea type="text" class="form-control" id="content"
                                   placeholder="productDetailImage" name="productDetailImage"  rows="10"></textarea>
+                        <input type="text" th:value="${productMax}" id="productMax">
                     </div>
                     <div class="d-flex justify-content-center mt-5">
                         <button class="btn btn-primary" id="btnJoinConfirm">confirm</button>
@@ -75,6 +90,7 @@
             </div>
         </div>
     </div>
+
     <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
     <script>
         $("#file1").on("change", function (e) {
@@ -85,18 +101,73 @@
             }
             let fileReader = new FileReader();
             fileReader.onload=function(e) {
-                $("#preview").attr("src",e.target.result);
+                $("#preview1").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+        $("#file2").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview2").attr("src",e.target.result);
             }
             fileReader.readAsDataURL(file);
         });
 
+        $("#file3").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview3").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+
+        $("#file4").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview4").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+        $("#file5").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview5").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+
+
+
+
 <!--        ckediter-->
 
         let editor;
+        const productMax = $("#productMax").val()
+        console.log("프로덕트맥스값==>>" + productMax)
         ClassicEditor
             .create( document.querySelector( '#content' ),{
                 ckfinder:{
-                    uploadUrl: '/product/detailImage'
+                    uploadUrl: '/product/detailimage/' + productMax
                 }
              })
              .then( newEditor => {
@@ -107,6 +178,5 @@
                 console.error( error );
             });
     </script>
-
 </div>
 </html>
