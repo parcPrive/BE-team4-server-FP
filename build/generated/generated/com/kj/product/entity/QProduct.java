@@ -30,8 +30,6 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Integer> price = createNumber("price", Integer.class);
-
     public final ListPath<ProductCart, QProductCart> productCart = this.<ProductCart, QProductCart>createList("productCart", ProductCart.class, QProductCart.class, PathInits.DIRECT2);
 
     public final com.kj.productCategory.entity.QProductCategory productCategory;
@@ -45,6 +43,8 @@ public class QProduct extends EntityPathBase<Product> {
     public final StringPath productName = createString("productName");
 
     public final NumberPath<Integer> productNumber = createNumber("productNumber", Integer.class);
+
+    public final NumberPath<Integer> productPrice = createNumber("productPrice", Integer.class);
 
     public final ListPath<com.kj.productQnA.entity.ProductQnA, com.kj.productQnA.entity.QProductQnA> productQnA = this.<com.kj.productQnA.entity.ProductQnA, com.kj.productQnA.entity.QProductQnA>createList("productQnA", com.kj.productQnA.entity.ProductQnA.class, com.kj.productQnA.entity.QProductQnA.class, PathInits.DIRECT2);
 

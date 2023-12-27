@@ -26,7 +26,7 @@ public class Product {
 
     private int productNumber;
 
-    private int price;
+    private int productPrice;
 
     private String gender;
 
