@@ -30,8 +30,9 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type: trace # ???? ????.
 
-#file:
-#  path: /Users/junghunmok/springupload/
+file:
+  path: /Users/junghunmok/springupload/
+
 
 #s3
 cloud.aws.s3.bucket: mok-s3

@@ -1,27 +1,31 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th= "http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <div class="container" th:fragment="headerFragment">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-            <span class="fs-4">Simple header</span>
+            <img src="/images/alien.png" />
         </a>
-
-        <ul class="nav nav-pills">
-            <th:block sec:authorize="!isAuthenticated()">
-                <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
-                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list(pagePick=1)}" class="nav-link">board</a></li>
-                <li class="nav-item"><a href="#" th:href="@{/member/login}" class="nav-link">login</a></li>
-                <li class="nav-item"><a href="#" th:href="@{/join/insert}" class="nav-link">join</a></li>
-            </th:block>
-            <th:block sec:authorize="isAuthenticated()">
-                <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
-                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list(pagePick=1)}" class="nav-link">board</a></li>
-                <li class="nav-item"><a href="#" th:href="@{/member/logout}" class="nav-link">logout</a></li>
-                <li class="nav-item"><a href="#" th:href="@{/board/write}" class="nav-link">글쓰기</a></li>
-            </th:block>
-
-        </ul>
+        <div sec:authorize="!isAuthenticated()">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/join}" class="nav-link">join</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/list}" class="nav-link">login</a></li>
+            </ul>
+        </div>
+<!--        <div sec:authorize="isAuthenticated()">-->
+<!--            <ul class="nav nav-pills">-->
+<!--                <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>-->
+<!--                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>-->
+<!--                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/mypage(id=${#authentication.principal.loggedMember.userId})}" class="nav-link"-->
+<!--                                        th:text="${#authentication.principal.loggedMember.nickName}"-->
+<!--                >장성호</a></li>-->
+<!--                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/logout}" class="nav-link">logout</a></li>-->
+<!--            </ul>-->
+<!--        </div>-->
     </header>
 </div>
 </html>
