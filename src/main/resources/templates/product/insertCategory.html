@@ -1,8 +1,11 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/layout}">
-<div layout:fragment="content">
+      layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="main">
     <div class="container">
         <h2>카테고리등록</h2>
         <form method="post" action="" th:action="@{/product/insertcategory}">
@@ -30,9 +33,10 @@
             </div>
         </form>
     </div>
-</div>
 
+</div>
 </html>
+
 
 
 

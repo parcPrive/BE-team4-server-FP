@@ -1,0 +1,139 @@
+ul
+,ol {
+  margin: 0;
+  padding: 0;
+  padding-left: 0;
+  margin-left: 0;
+}
+li {
+  list-style: none;
+}
+
+.logo {
+  height:60px;
+}
+.profile {
+  width:150px;
+
+}
+#memberProfileImage {
+  width:150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 300px;
+  border: 5px solid #ccc;
+}
+.subscribeList li {
+  display: flex;
+  align-items: center;
+  margin:10px 0;
+}
+.subscribeList li .thumb {
+  width:60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 100px;
+  overflow: hidden;
+  margin-right: 20px;
+}
+.subscribeList li .btn {
+  margin-left: auto;
+}
+
+
+.story-box {
+  border: 1px solid #ccc;
+}
+.story-box .mypage-header {
+  padding:15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+.story-box .mypage-header img {
+  width:60px;
+  height:60px;
+  object-fit: cover;
+  border-radius: 100px;
+  border: 2px solid #ccc;
+  margin-right: 10px;
+}
+.story-box .main-image img {
+  max-width:100%;
+}
+.comment-box {
+  padding:15px;
+  display: flex;
+  flex-direction: column;
+}
+.comment-box .btn {
+  margin-left: auto;
+}
+
+#preview {
+  width:100%;
+}
+.story-list ul {
+  display: flex;
+  margin: 0;
+  margin-left: 0;
+  flex-wrap: wrap;
+  /*justify-content: space-between;*/
+  padding-left: 0;
+
+}
+.story-list li {
+  flex-basis: calc(33.33% - 20px);
+  border:1px solid #ccc;
+  list-style: none;
+  margin: 10px;
+}
+.story-list li img {
+  width:100%;
+  height: 200px;
+  object-fit: cover;
+}
+.story-list li .caption {
+  padding:15px;
+}
+.story-list li .caption {
+  padding:15px;
+}
+
+.mypage-story-list li {
+  position: relative;
+}
+.mypage-story-list li .overlay {
+  position: absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+.mypage-story-list li:hover .overlay {
+  opacity: 1;
+}
+
+.comment-list .btn-close {
+  margin-left: auto;
+}
+.comment-list li {
+  align-items: center;
+}
+.comment-list li .profile-image img {
+  width:30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 100px;
+}
+
+.story-box .main-image {
+  display: flex;
+  justify-content: center;
+}

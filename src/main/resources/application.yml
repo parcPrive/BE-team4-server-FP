@@ -30,6 +30,13 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type: trace # ???? ????.
 
-#file:
-#  path: /Users/junghunmok/springupload/
+file:
+  path: /Users/junghunmok/springupload/
 
+
+#s3
+cloud.aws.s3.bucket: mok-s3
+cloud.aws.stack.auto: false
+cloud.aws.region.static: ap-northeast-2
+cloud.aws.credentials.access-key: AKIATOH7ZGTVVAACDQPN
+cloud.aws.credentials.secret-key: 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
