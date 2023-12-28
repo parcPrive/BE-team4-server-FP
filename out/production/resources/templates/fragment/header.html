@@ -13,19 +13,19 @@
                 <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
                 <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>
                 <li class="nav-item"><a href="/board/list.html" th:href="@{/member/join}" class="nav-link">join</a></li>
-                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/list}" class="nav-link">login</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/login}" class="nav-link">login</a></li>
             </ul>
         </div>
-<!--        <div sec:authorize="isAuthenticated()">-->
-<!--            <ul class="nav nav-pills">-->
-<!--                <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>-->
-<!--                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>-->
-<!--                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/mypage(id=${#authentication.principal.loggedMember.userId})}" class="nav-link"-->
-<!--                                        th:text="${#authentication.principal.loggedMember.nickName}"-->
-<!--                >장성호</a></li>-->
-<!--                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/logout}" class="nav-link">logout</a></li>-->
-<!--            </ul>-->
-<!--        </div>-->
+        <div sec:authorize="isAuthenticated()">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/mypage(id=${#authentication.principal.loggedMember.id})}" class="nav-link"
+                                        th:text="${#authentication.principal.loggedMember.userName}"
+                ></a></li>
+                <li class="nav-item"><a href="" th:href="@{/member/logout}" class="nav-link">logout</a></li>
+            </ul>
+        </div>
     </header>
 </div>
 </html>
