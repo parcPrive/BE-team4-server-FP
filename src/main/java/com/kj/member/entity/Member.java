@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @Builder
 public class Member {
     @Id

@@ -35,13 +35,11 @@ public class MemberService {
 
 
     @Transactional
-    public MemberDto updateMember(MemberDto memberDto) {
+    public Member updateMember(MemberDto memberDto) {
         Optional<Member> member = memberRepository.findById(memberDto.getId());
         if(member.isPresent()){
-            Member updateMember = member.get();
 
 
-            return memberDto;
         }
         throw new RuntimeException("없음");
     }
