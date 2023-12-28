@@ -38,7 +38,7 @@ public class MemberService {
     public Member updateMember(MemberDto memberDto) {
         Optional<Member> member = memberRepository.findById(memberDto.getId());
         if(member.isPresent()){
-
+        return null;
 
         }
         throw new RuntimeException("없음");
