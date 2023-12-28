@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mt-5 mb-5">JOIN</h2>
+                <form action="" th:action="@{/member/join}" method="post">
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">userId</label>
+                        <input type="text" class="form-control" id="userId" placeholder="title" name="userId">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">password</label>
+                        <input type="password" class="form-control" id="password" placeholder="title" name="password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">userName</label>
+                        <input type="text" class="form-control" id="userName" placeholder="name" name="userName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickName" class="form-label">nickName</label>
+                        <input type="text" class="form-control" id="nickName" placeholder="nickName" name="nickName">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">email</label>
+                        <input type="text" class="form-control" id="email" placeholder="email"
+                               name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <div class="" >
+                            <label for="gender" class="form-label">남자</label>
+                            <input type="radio" name="gender" class="gender" id="gender" value="1" required/>
+                            <label for="gender" class="form-label">여자</label>
+                            <input type="radio" name="gender" class="gender" id="gender" value="2" required/>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postCode" class="form-label">우편번호</label>
+                        <input type="text" class="form-control" id="postCode" placeholder="post code" name="postCode" required/>
+                        <div>
+                            <button class="btn btn-primary mt-3" id="btnPostcode">우편번호 확인</button>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-5">
+                        <button class="btn btn-primary" id="btnJoinConfirm">confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

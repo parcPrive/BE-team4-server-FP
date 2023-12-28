@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <h2>MY PAGE</h2>
+        <table class="table">
+
+            <tbody>
+            <tr>
+                <th scope="row">USER ID</th>
+                <td th:text="${memberInfo.userId}">Mark</td>
+            </tr>
+            <tr>
+                <th scope="row">NICK NAME</th>
+                <td th:text="${memberInfo.nickName}">Mark</td>
+            </tr>
+            <tr>
+                <th scope="row">EMAIL</th>
+                <td th:text="${memberInfo.email}">Mark</td>
+            </tr>
+            <!--<tr>
+                <th scope="row">AGE</th>
+                <td th:text="${memberInfo.age}">Mark</td>
+            </tr>-->
+
+            </tbody>
+        </table>
+        <div class="mt-5 d-flex justify-content-center" >
+            <a th:href="@{/member/delete(id=${memberInfo.userId})}" class="btn btn-danger">회원 탈퇴</a>
+            <a th:href="@{/member/modify(id=${memberInfo.userId})}" class="btn btn-primary mx-1">회원 정보 수정</a>
+
+        </div>
+    </div>
+</div>

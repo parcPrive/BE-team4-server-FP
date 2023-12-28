@@ -7,17 +7,21 @@ spring:
       enabled: always
   # database ??
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kjdatabase
-    username: root
-    password:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: kimhk13
+    password: 1234
+    ##driver-class-name: com.mysql.cj.jdbc.Driver
+    ##url: jdbc:mysql://localhost:3306/kjdatabase
+    ##username: root
+    ##password:
 
     # spring data jpa ??
   jpa:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 #      ddl-auto: update
     properties:
       hibernate:
