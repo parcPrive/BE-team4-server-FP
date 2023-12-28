@@ -26,7 +26,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         if(result == null){
             return 1;
         }
-        return Integer.parseInt(String.valueOf(result));
+        return Integer.parseInt(String.valueOf(result)) + 1;
 
 
     }
