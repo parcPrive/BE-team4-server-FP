@@ -3,6 +3,7 @@ package com.kj.product.entity;
 import com.kj.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,11 @@ public class ProductSize {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
+
+    @Builder
+    public ProductSize(String productSize, int productCount, Product product) {
+        this.productSize = productSize;
+        this.productCount = productCount;
+        this.product = product;
+    }
 }
