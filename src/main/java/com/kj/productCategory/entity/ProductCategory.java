@@ -10,31 +10,29 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of = {"id", "mainCategoryId", "subCategoryId", "categoryName"})
+@ToString(of = {"id", "mainProductCategoryId", "mainProductCategoryName", "subProductCategoryName"})
 public class ProductCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PRODUCT_CATEGORY_ID")
+    @Column(name = "SUBPRODUCTCATEGORY_ID")
     private Long id;
 
-    @Column(name = "MAINCATEGORY_ID")
-    private int mainCategoryId;
-    @Column(name = "SUBCATEGORY_ID")
-    private int subCategoryId;
+    @Column(name = "MAINPRODUCTCATEGORY_ID")
+    private int mainProductCategoryId;
 
     @Column
-    private String categoryName;
+    private String mainProductCategoryName;
 
-    @OneToMany(mappedBy = "productCategory",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
-    private List<Product> products = new ArrayList<>();
+    @Column
+    private String subProductCategoryName;
+
 
     @Builder
-    public ProductCategory(ProductCategoryInputDto productCategoryInputDto){
-        this.mainCategoryId = productCategoryInputDto.mainCategoryId();;
-        this.subCategoryId = productCategoryInputDto.subCategoryId();
-        this.categoryName = productCategoryInputDto.categoryName();
+    public ProductCategory(ProductCategoryInputDto productCategoryInputDto, String mainProductCategoryName){
+        this.mainProductCategoryId = productCategoryInputDto.mainProductCategoryId();
+        this.subProductCategoryName = productCategoryInputDto.subProductCategoryName();
+        this.mainProductCategoryName = mainProductCategoryName;
     }
 }

@@ -48,6 +48,8 @@ dependencies {
 			"jakarta.persistence:jakarta.persistence-api",
 			"jakarta.annotation:jakarta.annotation-api",
 			"com.querydsl:querydsl-apt:5.0.0:jakarta")
+	// javax.xml.bind
+	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 	// s3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }

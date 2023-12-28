@@ -34,7 +34,9 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final com.kj.productCategory.entity.QProductCategory productCategory;
 
-    public final QProductDetailImage productDetailImage;
+    public final StringPath productDatailImage = createString("productDatailImage");
+
+    public final NumberPath<Long> productDetailImageBucket = createNumber("productDetailImageBucket", Long.class);
 
     public final QProductImage productImages;
 
@@ -42,7 +44,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath productName = createString("productName");
 
-    public final NumberPath<Integer> productNumber = createNumber("productNumber", Integer.class);
+    public final StringPath productNumber = createString("productNumber");
 
     public final NumberPath<Integer> productPrice = createNumber("productPrice", Integer.class);
 
@@ -50,9 +52,9 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final ListPath<com.kj.productReview.entity.ProductReview, com.kj.productReview.entity.QProductReview> productReview = this.<com.kj.productReview.entity.ProductReview, com.kj.productReview.entity.QProductReview>createList("productReview", com.kj.productReview.entity.ProductReview.class, com.kj.productReview.entity.QProductReview.class, PathInits.DIRECT2);
 
-    public final ListPath<ProductSize, QProductSize> productSize = this.<ProductSize, QProductSize>createList("productSize", ProductSize.class, QProductSize.class, PathInits.DIRECT2);
+    public final StringPath productSeanson = createString("productSeanson");
 
-    public final StringPath seanson = createString("seanson");
+    public final ListPath<ProductSize, QProductSize> productSize = this.<ProductSize, QProductSize>createList("productSize", ProductSize.class, QProductSize.class, PathInits.DIRECT2);
 
     public QProduct(String variable) {
         this(Product.class, forVariable(variable), INITS);
@@ -73,7 +75,6 @@ public class QProduct extends EntityPathBase<Product> {
     public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.productCategory = inits.isInitialized("productCategory") ? new com.kj.productCategory.entity.QProductCategory(forProperty("productCategory")) : null;
-        this.productDetailImage = inits.isInitialized("productDetailImage") ? new QProductDetailImage(forProperty("productDetailImage")) : null;
         this.productImages = inits.isInitialized("productImages") ? new QProductImage(forProperty("productImages")) : null;
     }
 

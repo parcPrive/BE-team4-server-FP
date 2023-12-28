@@ -11,7 +11,7 @@
         <form method="post" action="" th:action="@{/product/insertcategory}">
             <div class="mt-3">
                 <label for="mainCategoryId">메인카테고리id</label>
-                <select name="mainCategoryId">
+                <select name="mainProductCategoryId">
                     <option value="">메인카테고리선택</option>
                     <option value="100">상의</option>
                     <option value="200">바지</option>
@@ -20,12 +20,8 @@
                 </select>
             </div>
             <div class="mt-3">
-                <label for="subCategoryId">서브카테고리id</label>
-                <input type="text" class="form-control" name="subCategoryId">
-            </div>
-            <div class="mt-3">
-                <label for="categoryname">카테고리이름</label>
-                <input type="text" class="form-control" name="categoryName">
+                <label for="subcategoryname">카테고리이름</label>
+                <input type="text" class="form-control" name="subProductCategoryName">
             </div>
 
             <div class="mt-5">
