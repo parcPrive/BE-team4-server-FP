@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,21 +39,14 @@ public class ProductController {
     @PostMapping("/insert")
     public String InsertProductProcess(
             @ModelAttribute ProductInputDto productInputDto
-    ) {
+    ) throws IOException {
         log.info("insertProdudtProcess===>> {} ", productInputDto);
-        Map<String, MultipartFile> productImages = new HashMap<>();
-        productImages.put("file1", productInputDto.getFile1());
-        productImages.put("file2", productInputDto.getFile2());
-        productImages.put("file3", productInputDto.getFile3());
-        productImages.put("file4", productInputDto.getFile4());
-        productImages.put("file5", productInputDto.getFile5());
-        log.info("이미지= ===>>> {}", productInputDto.getFile1().getOriginalFilename());
-        productService.insertProductImage(productInputDto);
-
-
         productService.insertProduct(productInputDto);
         return "redirect:/product/insert";
     }
+
+
+
 
     @PostMapping("/detailimage/{no}")
     @ResponseBody
@@ -72,5 +64,10 @@ public class ProductController {
             data.put("uploaded", false);
             return data;
         }
+    }
+
+    @GetMapping("/findlist")
+    public String findListProduct(){
+        return "/product/findlist";
     }
 }

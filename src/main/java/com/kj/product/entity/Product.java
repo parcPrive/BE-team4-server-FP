@@ -42,19 +42,26 @@ public class Product {
 
     private String productDatailImage;
 
-    // 작성자 수정한자 생성일 수정일
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "PRODUCT_IMAGE_ID")
-    private ProductImage productImages;
+    // 작성자 수정한자 생성일 수정일
+    private String writer;
+    private LocalDateTime updateedAt;
+
+    // 상풍등록 할때 같이 등록해야하는것들
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ProductImage> productImages;
+
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ProductSize> productSize;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ProductTag> productTags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_CATEGORY_ID")
     private ProductCategory productCategory;
 
-    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<ProductSize> productSize;
-
+    // 상품 등록 이후
     @OneToMany(mappedBy = "product" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ProductCart> productCart = new ArrayList<>();
 
@@ -67,8 +74,10 @@ public class Product {
     @OneToMany(mappedBy = "product" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ProductQnA> productQnA = new ArrayList<>();
 
+
+
     @Builder
-    public Product(ProductInputDto productInputDto, ProductImage productImage,ProductCategory productCategory) {
+    public Product(ProductInputDto productInputDto,ProductCategory productCategory) {
         this.productName = productInputDto.getProductName();
         this.productNumber = productInputDto.getProductNumber();
         this.productPrice = productInputDto.getProductPrice();
@@ -76,8 +85,9 @@ public class Product {
         this.productSeanson = productInputDto.getProductSeason();
         this.productDetailImageBucket = productInputDto.getProductDetailImageBucket();
         this.productDatailImage = productInputDto.getProductDetailImage();
-        this.productImages = productImage;
         this.productCategory = productCategory;
-
+        this.clickCount = 0;
+        this.createdAt = LocalDateTime.now();
+        this.writer = productInputDto.getWriter();
     }
 }
