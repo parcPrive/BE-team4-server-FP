@@ -3,6 +3,8 @@ package com.kj.product.dto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductInputDto {
@@ -28,9 +30,11 @@ public class ProductInputDto {
     // 상품 이미지
     private MultipartFile file1;
     private MultipartFile file2;
-    private MultipartFile file3;
-    private MultipartFile file4;
-    private MultipartFile file5;
+//    private MultipartFile file3;
+//    private MultipartFile file4;
+//    private MultipartFile file5;
     private Long subProductCategoryId;
+    private List<String> productTag;
+    private String writer;
 
 }
