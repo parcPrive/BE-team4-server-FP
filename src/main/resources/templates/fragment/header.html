@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th= "http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<div class="container" th:fragment="headerFragment">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <img src="/images/alien.png" />
+        </a>
+        <div sec:authorize="!isAuthenticated()">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/join}" class="nav-link">join</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/login}" class="nav-link">login</a></li>
+            </ul>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>
+                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/mypage(id=${#authentication.principal.loggedMember.id})}" class="nav-link"
+                                        th:text="${#authentication.principal.loggedMember.userName}"
+                ></a></li>
+                <li class="nav-item"><a href="" th:href="@{/member/logout}" class="nav-link">logout</a></li>
+            </ul>
+        </div>
+    </header>
+</div>
+</html>
