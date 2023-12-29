@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/member")
+@RequestMapping("/member/join")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
