@@ -5,7 +5,7 @@
 <div layout:fragment="content" class="main">
     <div class="container">
         <h2>인덱스</h2>
-        <form action="" th:action="@{/member/modify}" method="post">
+        <form action="" th:action="@{/member/update}" method="post">
             <table class="table">
                 <tbody>
                 <tr>
@@ -16,9 +16,9 @@
 
                 </tr>
                 <tr>
-                    <th scope="row">NICK NAME</th>
+                    <th scope="row">USER NAME</th>
                     <td>
-                        <input class="form-control" th:type="text" name="nickName" th:value="${memberInfo.nickName}">
+                        <input class="form-control" th:type="text" name="userName" th:value="${memberInfo.userName}">
                     </td>
                 </tr>
                 <tr>

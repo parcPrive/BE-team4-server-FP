@@ -9,7 +9,7 @@
             <h1 class="h3 mb-3 fw-normal">로그인</h1>
             <div class="form-floating">
                 <!--<input type="hidden" id="adminNumber" name="adminNumber">--> <!--관리자-->
-                <input type="text" class="form-control" id="userID" placeholder="ID" name="userId" >
+                <input type="text" class="form-control" id="userID" placeholder="ID" name="userId" th:value="${memberDto.userId}" >
                 <label for="userID">ID</label>
             </div>
             <div class="form-floating">
@@ -22,8 +22,8 @@
             </div>
             <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
             <div class="d-flex justify-content-center w-100 py-2">
-                <a class="btn btn-primary form-label findid px-3" href="../member/findID">아이디 찾기</a>
-                <a class=" btn btn-primary form-label findpw px-3" href="../member/findPW">비밀번호 찾기</a>
+                <a class="btn btn-primary form-label findid px-3" th:href="@{/mail/findId}">아이디 찾기</a>
+                <a class=" btn btn-primary form-label findpw px-3" th:href="@{/mail/findPw}">비밀번호 찾기</a>
             </div>
 
             <div class="login_util">

@@ -2,10 +2,13 @@ package com.kj.member.service;
 
 import com.kj.member.dto.CustomUserDetails;
 import com.kj.member.dto.MemberDto;
+import com.kj.member.dto.UpdateMemberDto;
 import com.kj.member.entity.Member;
 import com.kj.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +19,16 @@ import java.util.Optional;
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public MemberDto join(MemberDto memberDto){
+    public MemberDto insertMember(MemberDto memberDto){
         Member member = MemberDto.toEntity(memberDto);
         memberRepository.save(member);
         return memberDto;
     }
 
 
-    public MemberDto findMemberInfo(Long id, CustomUserDetails customUserDetails) {
+    public MemberDto findByMemberId(Long id, CustomUserDetails customUserDetails) {
         if(id==customUserDetails.getLoggedMember().getId()){
             Member findId = memberRepository.findById(id).orElse(null);
             MemberDto memberDto = MemberDto.toDto(findId);
@@ -38,9 +42,24 @@ public class MemberService {
     public Member updateMember(MemberDto memberDto) {
         Optional<Member> member = memberRepository.findById(memberDto.getId());
         if(member.isPresent()){
-        return null;
-
+          return member.get().update(memberDto);
         }
         throw new RuntimeException("없음");
+    }
+
+
+    @Transactional
+    public boolean deleteMember(Long id,String password) {
+        Member member = memberRepository.findById(id).orElseThrow(() ->
+        new UsernameNotFoundException("아이디 존재하지 않습니다."));
+        log.info("=={}",member.getPassword());
+        log.info("=={}",password);
+        if (bCryptPasswordEncoder.matches(password, member.getPassword())){
+            memberRepository.delete(member);
+            return true;
+        }else {
+            return false;
+        }
+
     }
 }

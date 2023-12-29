@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
-@RequiredArgsConstructor
 public class MemberDto {
 
     private Long id;
@@ -45,6 +45,26 @@ public class MemberDto {
                 .id(memberDto.getId())
                 .userId(memberDto.getUserId())
                 .password(new BCryptPasswordEncoder().encode(memberDto.getPassword()))
+                .userName(memberDto.getUserName())
+                .nickName(memberDto.getNickName())
+                .gender(memberDto.getGender())
+                .address(memberDto.getAddress())
+                .addressDetail(memberDto.getAddressDetail())
+                .postCode(memberDto.getPostCode())
+                .email(memberDto.getEmail())
+                .mobile(memberDto.getMobile())
+                .phone(memberDto.getPhone())
+                .profile(memberDto.getProfile())
+                .registerDate(memberDto.getRegisterDate())
+                .levels(memberDto.getLevels())
+                .build();
+    }
+    public static Member toUpdateEntity(MemberDto memberDto){
+
+        return Member.builder()
+                .id(memberDto.getId())
+                .userId(memberDto.getUserId())
+                .password(memberDto.getPassword())
                 .userName(memberDto.getUserName())
                 .nickName(memberDto.getNickName())
                 .gender(memberDto.getGender())

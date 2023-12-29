@@ -1,5 +1,7 @@
 package com.kj.member.entity;
 
+import com.kj.member.dto.MemberDto;
+import com.kj.member.dto.UpdateMemberDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,6 +39,13 @@ public class Member {
     private String profile;
     private LocalDateTime registerDate;
     private int levels;
+
+
+    public Member update(MemberDto memberDto){
+        this.email = memberDto.getEmail();
+        this.userName = memberDto.getUserName();
+        return this;
+    }
 
 
 
