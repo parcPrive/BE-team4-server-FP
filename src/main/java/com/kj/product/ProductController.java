@@ -1,6 +1,8 @@
 package com.kj.product;
 
 import com.kj.product.dto.ProductInputDto;
+import com.kj.product.dto.ProductUpdateDto;
+import com.kj.product.entity.Product;
 import com.kj.productCategory.ProductCategoryService;
 import com.kj.productCategory.dto.ProductCategoryfindDto;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ import java.util.Map;
 public class ProductController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
-
+// ================상품 등록 관련========================
     @GetMapping("/insert")
     public String InsertProduct(
             Model model
@@ -45,9 +47,6 @@ public class ProductController {
         return "redirect:/product/insert";
     }
 
-
-
-
     @PostMapping("/detailimage/{no}")
     @ResponseBody
     public Map<String, Object> ckEditorDetailImage(
@@ -65,9 +64,36 @@ public class ProductController {
             return data;
         }
     }
+    // ================상품 업데이트 관련========================
+
+    @GetMapping("/update/{no}")
+    public String updateProduct(
+            Model model,
+            @PathVariable int no
+    ){
+        log.info("번호번호번호 ===>>>>> {}" , no);
+        ProductUpdateDto productUpdateDto = productService.findByProductId(no);
+        model.addAttribute("productUpdateDto", productUpdateDto);
+        model.addAttribute("list",productUpdateDto.getProductTags());
+//        return "product/findlist";
+        return "product/update";
+    }
+
+    @PostMapping("/update/{no}")
+    public String updateProductProcess(
+            @PathVariable int no,
+            @ModelAttribute ProductInputDto productInputDto
+    ){
+        log.info("no ===>>> {}", no);
+        log.info("productInputDto ===>>> {}", productInputDto);
+        return "redirect:/product/update" + no;
+    }
+
 
     @GetMapping("/findlist")
     public String findListProduct(){
         return "/product/findlist";
     }
+
+
 }

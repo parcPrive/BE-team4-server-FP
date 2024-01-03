@@ -5,10 +5,7 @@ import com.kj.productCategory.entity.ProductCategory;
 import com.kj.productQnA.entity.ProductQnA;
 import com.kj.productReview.entity.ProductReview;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +30,7 @@ public class Product {
 
     private String gender;
 
-    private String productSeanson;
+    private String productSeason;
 
     private int clickCount;
 
@@ -48,13 +46,13 @@ public class Product {
     private LocalDateTime updateedAt;
 
     // 상풍등록 할때 같이 등록해야하는것들
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private List<ProductImage> productImages;
 
-    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private List<ProductSize> productSize;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "product",  cascade = CascadeType.REMOVE)
     private List<ProductTag> productTags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -82,7 +80,7 @@ public class Product {
         this.productNumber = productInputDto.getProductNumber();
         this.productPrice = productInputDto.getProductPrice();
         this.gender = productInputDto.getGender();
-        this.productSeanson = productInputDto.getProductSeason();
+        this.productSeason = productInputDto.getProductSeason();
         this.productDetailImageBucket = productInputDto.getProductDetailImageBucket();
         this.productDatailImage = productInputDto.getProductDetailImage();
         this.productCategory = productCategory;

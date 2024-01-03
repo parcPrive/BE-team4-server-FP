@@ -1,15 +1,13 @@
 package com.kj.product.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.context.annotation.EnableMBeanExport;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@ToString(of = {"id", "imageName", "thubmnail", "bucketName"})
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
