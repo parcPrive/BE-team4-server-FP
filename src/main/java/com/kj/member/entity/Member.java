@@ -1,16 +1,16 @@
 package com.kj.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kj.member.dto.MemberDto;
 import com.kj.member.dto.UpdateMemberDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
@@ -36,7 +36,8 @@ public class Member {
     private String email;
     private String mobile;
     private String phone;
-    private String profile;
+    private String profileImageUrl;
+
     private LocalDateTime registerDate;
     private int levels;
 
@@ -48,8 +49,13 @@ public class Member {
     }
 
 
+    public void updatePassword(String password) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.password = bCryptPasswordEncoder.encode(password);
+    }
 
-
-
-
+    public Member updateProfile(String profileImageUrl){
+        this.profileImageUrl = profileImageUrl;
+        return this;
+    }
 }

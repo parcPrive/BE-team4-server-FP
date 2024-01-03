@@ -1,4 +1,4 @@
-package com.kj.mail;
+package com.kj.mail.repository;
 
 import com.kj.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

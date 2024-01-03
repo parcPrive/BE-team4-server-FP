@@ -3,6 +3,7 @@ package com.kj.member.dto;
 import com.kj.member.entity.Member;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -31,10 +32,9 @@ public class MemberDto {
 
     private String postCode;
     private String email;
-
+    private String profileImageUrl;
     private String mobile;
     private String phone;
-    private String profile;
     private LocalDateTime registerDate;
 
     private int levels;
@@ -54,7 +54,7 @@ public class MemberDto {
                 .email(memberDto.getEmail())
                 .mobile(memberDto.getMobile())
                 .phone(memberDto.getPhone())
-                .profile(memberDto.getProfile())
+                .profileImageUrl(memberDto.profileImageUrl)
                 .registerDate(memberDto.getRegisterDate())
                 .levels(memberDto.getLevels())
                 .build();
@@ -74,7 +74,6 @@ public class MemberDto {
                 .email(memberDto.getEmail())
                 .mobile(memberDto.getMobile())
                 .phone(memberDto.getPhone())
-                .profile(memberDto.getProfile())
                 .registerDate(memberDto.getRegisterDate())
                 .levels(memberDto.getLevels())
                 .build();
@@ -93,7 +92,7 @@ public class MemberDto {
         memberDto.setEmail(member.getEmail());
         memberDto.setMobile(member.getMobile());
         memberDto.setPhone(member.getPhone());
-        memberDto.setProfile(member.getProfile());
+        memberDto.setProfileImageUrl(member.getProfileImageUrl());
         memberDto.setRegisterDate(member.getRegisterDate());
         memberDto.setLevels(member.getLevels());
         return memberDto;
