@@ -1,9 +1,13 @@
 package com.kj.product.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
+import lombok.*;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(of = {"id", "productTag"})
+@Getter
 public class ProductTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -35,3 +35,4 @@ public class MailController {
         return "/member/insert";
     }
 }
+

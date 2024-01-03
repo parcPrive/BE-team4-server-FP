@@ -2,10 +2,7 @@ package com.kj.product.entity;
 
 import com.kj.product.entity.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(of = {"id", "productSize", "productCount"})
 public class ProductSize {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +28,12 @@ public class ProductSize {
         this.productSize = productSize;
         this.productCount = productCount;
         this.product = product;
+    }
+
+    public ProductSize(ProductSize productSize){
+        this.id = productSize.getId();
+        this.productSize = productSize.getProductSize();
+        this.productCount = productSize.productCount;
+        this.product = productSize.getProduct();
     }
 }

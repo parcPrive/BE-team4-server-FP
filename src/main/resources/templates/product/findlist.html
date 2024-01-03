@@ -8,9 +8,12 @@
             <h2>MY STORY</h2>
             <!-- 내가 구독하고 있는 사람들이 올려논 story 를 여기다가 뿌릴 예정 -->
             <!-- 구독자 정보를 알아야 하고 그 사람이 올린 story subscribe -->
+            <th:block th:each="product : ${productUpdateDto}">
             <div class="story-list-box">
+                <span th:text="${product.productTags[0]}"></span>
                 <ul class="feed-list">
                     <li>
+                        <span th:text="${productUpdateDto.id}"></span>
                         <div class="story-box mt-5">
                             <div class="mypage-header">
                                 <img src="/images/alien.png" alt="">
@@ -31,6 +34,7 @@
                     <button class="btn btn-outline-primary mt-5 btn-more">더보기</button>
                 </div>
             </div>
+            </th:block>
 
         </div>
     </div>

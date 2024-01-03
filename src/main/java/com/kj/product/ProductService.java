@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.kj.config.S3Config;
 import com.kj.product.dto.ProductInputDto;
+import com.kj.product.dto.ProductUpdateDto;
 import com.kj.product.entity.Product;
 import com.kj.product.entity.ProductImage;
 import com.kj.product.entity.ProductSize;
@@ -15,6 +16,7 @@ import com.kj.product.repository.ProductTagRepository;
 import com.kj.productCategory.Repository.ProductCategoryRepository;
 import com.kj.productCategory.entity.ProductCategory;
 import com.kj.productCategory.entity.QProductCategory;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -161,5 +160,20 @@ public class ProductService {
         log.info("s3yurl ===>> {}" , s3Url);
         localFile.delete();
         return s3Url;
+    }
+
+    @Transactional
+    public ProductUpdateDto findByProductId(int no) {
+        Product findProduct = productRepository.findByProductId(no);
+        ProductUpdateDto result = new ProductUpdateDto(findProduct);
+            log.info("productUpdateDto -=======>>>>> {}", result);
+
+        return result;
+    }
+
+    public void updateProduct(int no){
+        Product findProduct = productRepository.findByProductId(no);
+
+
     }
 }
