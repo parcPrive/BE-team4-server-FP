@@ -1,14 +1,16 @@
-package com.kj.mail;
+package com.kj.mail.service;
 
 import com.kj.mail.dto.MailDto;
+import com.kj.mail.repository.MailRepository;
 import com.kj.member.entity.Member;
-import com.kj.member.repository.MemberRepository;
+import com.kj.utils.RandomNumPassword;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final MailRepository mailRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final RandomNumPassword randomNumPassword;
 
     public Member findId(MailDto mailDto){
         Optional<Member> member = mailRepository.findByEmail(mailDto.getEmail()); //이메일 ID 확인
@@ -31,11 +34,14 @@ public class MailService {
             return null;
         }
     }
+    @Transactional
     public Member findPw(MailDto mailDto,String userId){
         Optional<Member> member = mailRepository.findByEmail(mailDto.getEmail());
         if(member.isPresent()){
             if(member.get().getUserName().equals(mailDto.getUserName()) && member.get().getUserId().equals(userId)){
-                sendPasswordMail(mailDto);
+                String newPassword = randomNumPassword.createPassWord();
+                member.get().updatePassword(newPassword);
+                sendPasswordMail(mailDto,newPassword);
                 return member.get();
             }else {
                 return null;
@@ -61,14 +67,14 @@ public class MailService {
         return message;
     }
 
-    public MimeMessage sendPasswordMail(MailDto mailDto){
+    public MimeMessage sendPasswordMail(MailDto mailDto,String newPassword){
         MimeMessage message = javaMailSender.createMimeMessage();
 
         try {
             message.setFrom("kimhg1103@naver.com");  // 보내는 사람
             message.setRecipients(MimeMessage.RecipientType.TO,mailDto.getEmail());  // 받는 사람
             message.setSubject("요청하신 임시 비밀번호입니다.");
-            message.setText("안녕하세요"+mailDto.getUserName(),"UTF-8","html");
+            message.setText("안녕하세요"+mailDto.getUserName()+newPassword,"UTF-8","html");
             javaMailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException(e);

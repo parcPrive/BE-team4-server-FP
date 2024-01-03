@@ -2,6 +2,7 @@ package com.kj.member;
 
 import com.kj.member.dto.CustomUserDetails;
 import com.kj.member.dto.MemberDto;
+import com.kj.member.dto.MemberProfileDto;
 import com.kj.member.dto.UpdateMemberDto;
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
@@ -12,13 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/member/join")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
@@ -38,12 +40,16 @@ public class MemberController {
     @PostMapping("/insert")
     public String joinProcess(MemberDto memberDto){
         memberService.insertMember(memberDto);
-        return "redirect:/";
+        return "/member/login";
     }
 
-    @GetMapping("/mypage")
-    public String mypage(@RequestParam Long id, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    @GetMapping("/mypage/{id}")
+    public String mypage(@PathVariable Long id, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        log.info("=={}",id);
+
         MemberDto memberInfo = memberService.findByMemberId(id,customUserDetails);
+        log.info("=={}",memberInfo.getUserId());
+        log.info("=={}",memberInfo.getProfileImageUrl());
         model.addAttribute("memberInfo",memberInfo);
         return "/member/mypage";
     }
