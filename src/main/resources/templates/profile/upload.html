@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container justify-content-center d-flex">
+        <div class="col-4">
+            <h2>STORY UPLOAD</h2>
+            <form method="post" action="/image/upload"  enctype="multipart/form-data">
+                <div class="mb-3">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">STORY UPLOAD</label>
+                        <input class="form-control" type="file" id="file" name="file" >
+                    </div>
+                    <div class="preview-box">
+                        <img src="/images/500.png" id="preview">
+                    </div>
+                </div>
+                <div class="mt-5 d-grid">
+                    <button class="btn btn-primary">UPLOAD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        $("#file").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+    </script>
+</div>

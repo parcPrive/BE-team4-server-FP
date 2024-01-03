@@ -1,6 +1,7 @@
 package com.kj.mail;
 
 import com.kj.mail.dto.MailDto;
+import com.kj.mail.service.MailService;
 import com.kj.member.dto.MemberDto;
 import com.kj.member.entity.Member;
 import lombok.RequiredArgsConstructor;
