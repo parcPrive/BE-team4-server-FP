@@ -6,8 +6,10 @@ import com.kj.member.dto.MemberProfileDto;
 import com.kj.member.dto.UpdateMemberDto;
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +28,7 @@ import java.util.Optional;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
+    private int paginationSize=5;
     @GetMapping("/login")
     public String login(Model model){
         model.addAttribute("memberDto",new MemberDto());
@@ -91,5 +95,29 @@ public class MemberController {
             //model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다.");
             return "/member/join";
         }
+    }
+
+    /*@GetMapping("/list")
+    public String MemberList(Model model){
+        List<MemberDto> memberList = memberService.findListMember();
+        model.addAttribute("memberList",memberList);
+        return "memberList/list";
+    }*/
+
+    @GetMapping("/list")
+    public String list02(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
+        Page<Member> pagination = memberService.getAllPageBoard(page);
+        log.info("pageBoardList.getTotalPages()==={}",pagination.getTotalPages());
+        log.info(pagination.toString());
+        List<Member> memberList = pagination.getContent();
+        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
+        int end =  start + paginationSize;
+
+        log.info("start==={},end==={}",start,end);
+        model.addAttribute("start",start);
+        model.addAttribute("end",end);
+        model.addAttribute("pagination",pagination);
+        model.addAttribute("memberList",memberList);
+        return "memberList/list";
     }
 }

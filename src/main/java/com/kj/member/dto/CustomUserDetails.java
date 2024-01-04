@@ -22,7 +22,10 @@ public class CustomUserDetails implements UserDetails {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return null;
+                if (loggedMember.getRole()==null){ // 롤값이 널이면 널을 던진다.
+                    return null;
+                }
+                return loggedMember.getRole().getValue();
             }
         });
         return collection;

@@ -1,6 +1,7 @@
 package com.kj.member.dto;
 
 import com.kj.member.entity.Member;
+import com.kj.utils.Role;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +37,7 @@ public class MemberDto {
     private String mobile;
     private String phone;
     private LocalDateTime registerDate;
-
+    private String role;
     private int levels;
 
     public static Member toEntity(MemberDto memberDto){
@@ -57,6 +58,7 @@ public class MemberDto {
                 .profileImageUrl(memberDto.profileImageUrl)
                 .registerDate(memberDto.getRegisterDate())
                 .levels(memberDto.getLevels())
+                .role(Role.ADMIN)
                 .build();
     }
     public static Member toUpdateEntity(MemberDto memberDto){
