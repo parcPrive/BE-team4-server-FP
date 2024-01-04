@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.kj.product.entity.QProduct.*;
 import static com.kj.product.entity.QProductImage.productImage;
@@ -39,8 +40,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public Product findByProductId(int no) {
-
+    public Optional<Product> findByProductId(int no) {
         Product result = queryFactory.selectFrom(product)
                 .leftJoin(productImage)
                 .on(product.id.eq(productImage.product.id)).fetchJoin()
@@ -104,6 +104,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
 //
 //                )));
 
-        return result;
+        return Optional.ofNullable(result);
     }
 }

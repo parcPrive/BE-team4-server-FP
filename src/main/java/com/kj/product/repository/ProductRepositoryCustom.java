@@ -5,10 +5,11 @@ import com.kj.product.dto.ProductUpdateDto;
 import com.kj.product.entity.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepositoryCustom {
     int findByMaxProductId();
 
-    Product findByProductId(int no);
+    Optional<Product> findByProductId(int no);
 
 }

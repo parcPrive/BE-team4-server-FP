@@ -15,7 +15,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SecurityConfig{
     private final CustomUserDetailService customUserDetailService;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests((auth)->auth

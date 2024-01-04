@@ -6,10 +6,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <th:block th:each="product1 : ${list}">
-                    <span th:text="${product1.id}"></span>
-                </th:block>
-
                 <th:block th:each="product : ${productUpdateDto}">
                     <h2 class="mt-5 mb-5">WRITE</h2>
                         <form action="" th:action="@{/product/update/{idx}(idx=${product.id})}" method="post" enctype="multipart/form-data">
@@ -18,7 +14,7 @@
                             <label for="file" class="form-label">상품사진 </label>
                             <div>
                                 <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview1" th:src="@{${product.productImages[0].imageName}}">
-                                <input class="img-thumbnail" type="file" id="file1" name="file1" value="" th:value="${product.productImages[0].imageName}">
+                                <input class="img-thumbnail" type="file" id="file1" name="file1" value="" th:value="@{${product.productImages[0].imageName}}">
                             </div>
                             <div>
                                 <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview2" th:src="@{${product.productImages[1].imageName}}">
@@ -86,8 +82,8 @@
                     <div class="mb-3">
                         <label for="productTag" class="form-label">태그</label>
                         <div id="productTagAdd">
-                            <th:block th:each="item, stat : ${product.productTags}">
-                            <input type="text" class="form-control" id="productTag1" placeholder="태그" name="productTag" th:id="'productTag' + ${stat.count}" th:value="${item}">
+                            <th:block th:each="product, stat : ${product.productTags}">
+                            <input type="text" class="form-control" id="productTag1" placeholder="태그" name="productTag" th:id="'productTag' + ${stat.count}" th:value="${product.productTag}">
                             </th:block>
                         </div>
                         <div>
