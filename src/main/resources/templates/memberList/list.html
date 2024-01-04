@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <h2>회원리스트</h2>
+        <ul>
+            <th:block th:each="item:${memberList}">
+                <li>
+                    <a href="" th:href="@{/admin/mypage/{id}(id=${item.id})}"  th:text="${item.userId}">제목이 들어가겠죠....</a>
+
+                </li>
+            </th:block>
+        </ul>
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-5">
+            <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
+                <a class="page-link" th:href="@{/member/list(page=${pagination.number - 1})}">Previous</a>
+            </li>
+            <!-- 13 -->
+            <!--1,2,3,4,5 /> 6,7,8,9,10 / 11,12,131,14,15-->
+            <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+                <li class="page-item"
+                    th:classappend="${item==pagination.number?'active':''}"
+
+                    th:if="${item >= start and
+                                 item < end }">
+                    <a class="page-link" href="#" th:href="@{/member/list(page=${item})}" th:text="${item + 1}">1</a>
+                </li>
+            </th:block>
+            <!--                <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+            <!--                <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+            <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
+                <a class="page-link" href="#" th:href="@{/member/list(page=${pagination.number+1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

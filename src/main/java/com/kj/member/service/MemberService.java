@@ -5,9 +5,14 @@ import com.kj.member.dto.MemberDto;
 import com.kj.member.dto.UpdateMemberDto;
 import com.kj.member.entity.Member;
 import com.kj.member.repository.MemberRepository;
+import com.kj.utils.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,8 +50,21 @@ public class MemberService {
             Member findId = memberRepository.findById(id).orElse(null);
             MemberDto memberDto = MemberDto.toDto(findId);
             return memberDto;
+        }else {
+            Member findId = memberRepository.findById(id).orElse(null);
+            MemberDto memberDto = MemberDto.toDto(findId);
+            return memberDto;
         }
-            throw new RuntimeException("없는 사람입니다");
+            /*throw new RuntimeException("없는 사람입니다");*/
+    }
+
+    public MemberDto findByAdminMemberId(Long id) {
+
+            Member findId = memberRepository.findById(id).orElse(null);
+            MemberDto memberDto = MemberDto.toDto(findId);
+            return memberDto;
+
+
     }
 
 
@@ -99,5 +119,21 @@ public class MemberService {
         } else {
             throw new UsernameNotFoundException("서버 오류입니다.");
         }
+    }
+
+    public List<MemberDto> findListMember() {
+        List<Member> memberList = memberRepository.findAll();
+        List<MemberDto> memberDtoList = new ArrayList<>();
+        for (int i=0;i<memberList.size();i++){
+            memberDtoList.add(MemberDto.toDto(memberList.get(i)));
+        }
+        return memberDtoList;
+    }
+
+    public Page<Member> getAllPageBoard(int page) {
+        Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"registerDate"));
+        Page<Member> memberList = memberRepository.findAll(pageable);
+        return memberList;
+
     }
 }

@@ -18,11 +18,13 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests((auth)->auth
-                        .requestMatchers("/","/member/join","/member/login","/css/**","/js/**","/images/**","/mail/**","/product/**")
-
+                        .requestMatchers("/","/member/insert","/member/login","/css/**","/js/**","/images/**","/mail/**","/product/**")
                         .permitAll()
+                                .requestMatchers("/member/update","/member/mypage").permitAll()
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest()
-                        .authenticated())
+                        .authenticated()
+                        )
                 .formLogin((form)->form
                         .loginPage("/member/login")   // get
                         .usernameParameter("userId")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kj.member.dto.MemberDto;
 import com.kj.member.dto.UpdateMemberDto;
 
+import com.kj.utils.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,8 @@ public class Member {
     private String phone;
     private String profileImageUrl;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private LocalDateTime registerDate;
     private int levels;
 
