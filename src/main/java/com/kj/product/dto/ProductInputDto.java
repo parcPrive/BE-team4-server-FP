@@ -28,11 +28,7 @@ public class ProductInputDto {
     private Long productDetailImageBucket;
     private String productDetailImage;
     // 상품 이미지
-    private MultipartFile file1;
-    private MultipartFile file2;
-//    private MultipartFile file3;
-//    private MultipartFile file4;
-//    private MultipartFile file5;
+    private List<MultipartFile> file;
     private Long subProductCategoryId;
     private List<String> productTag;
     private String writer;

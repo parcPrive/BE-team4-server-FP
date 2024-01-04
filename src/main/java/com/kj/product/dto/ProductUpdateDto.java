@@ -28,7 +28,7 @@ public class ProductUpdateDto {
     // ckediter에서 들어오니까
     private Long productDetailImageBucket;
     private String productDetailImage;
-    private ProductCategory productCategory;
+    private ProductCategoryUpdateDto productCategory;
     // 사이즈와 수량
     private List<ProductSize> productSize;
     // 상품 이미지
@@ -54,7 +54,7 @@ public class ProductUpdateDto {
         this.updateedAt = product.getUpdateedAt();
         this.productDetailImageBucket = product.getProductDetailImageBucket();
         this.productDetailImage = product.getProductDatailImage();
-        this.productCategory = product.getProductCategory();
+        this.productCategory = new ProductCategoryUpdateDto(product.getProductCategory());
         this.productSize = product.getProductSize();
         this.productImages = product.getProductImages();
         this.productTags = product.getProductTags();

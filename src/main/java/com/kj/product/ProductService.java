@@ -66,21 +66,11 @@ public class ProductService {
     public void insertProductImage(ProductInputDto productInputDto,Product product) throws IOException {
         String localLocation = myLocalFolder + UUID.randomUUID() + "/";
         File folder = new File(localLocation);
-        MultipartFile[] productImage = {productInputDto.getFile1(), productInputDto.getFile2()};
-        String file1 = productImage[0].getOriginalFilename();
-        String file2 = productImage[1].getOriginalFilename();
-//        String file3 = productInputDto.getFile3().getOriginalFilename();
-//        String file4 = productInputDto.getFile4().getOriginalFilename();
-//        String file5 = productInputDto.getFile5().getOriginalFilename();
-
-        String fileName1 = UUID.randomUUID() + file1.substring(file1.indexOf("."));
-        String fileName2 = UUID.randomUUID() + file2.substring(file2.indexOf("."));
-//        String fileName3 = UUID.randomUUID() + file3.substring(file2.indexOf("."));
-//        String fileName4 = UUID.randomUUID() + file4.substring(file2.indexOf("."));
-//        String fileName5 = UUID.randomUUID() + file5.substring(file2.indexOf("."));
-        String[] files = {fileName1, fileName2};
-        log.info("이미지들!!====>>> 1 ===> {} 2 ====>> {}" , fileName1,fileName2);
-
+        List<String> productImages = new ArrayList<>();
+        for(MultipartFile productImage : productInputDto.getFile()){
+            String productImageFileName = productImage.getOriginalFilename();
+            productImages.add(UUID.randomUUID() + productImageFileName.substring(productImageFileName.indexOf(".")));
+        }
         if(!folder.exists()){
             folder.mkdir();
             log.info("폴더생성");
@@ -88,22 +78,24 @@ public class ProductService {
             log.info("폴더실패");
         }
         String bucketName = String.valueOf(UUID.randomUUID());
-        String[] productImageUrl = new String[2];
-        for(int i = 0; i < files.length; i++){
-            String localPath = localLocation + files[i];
+        List<String> productImageUrl = new ArrayList<>();
+        for(int i = 0; i < productImages.size(); i++){
+            String localPath = localLocation + productImages.get(i);
             File localFile = new File(localPath);
-            productImage[i].transferTo(localFile);
-            s3Config.amazonS3Client().putObject(new PutObjectRequest(bucket + "/productimage/" + bucketName, files[i], localFile).withCannedAcl(CannedAccessControlList.PublicRead));
-            String s3Url = s3Config.amazonS3Client().getUrl(bucket + "/productimage/" + bucketName, files[i]).toString();
+            productInputDto.getFile().get(i).transferTo(localFile);
+            s3Config.amazonS3Client().putObject(new PutObjectRequest(bucket + "/productimage/" + bucketName, productImages.get(i), localFile).withCannedAcl(CannedAccessControlList.PublicRead));
+            String s3Url = s3Config.amazonS3Client().getUrl(bucket + "/productimage/" + bucketName, productImages.get(i)).toString();
             log.info("s3User ===>>> {}", s3Url);
-            productImageUrl[i] = s3Url;
+            productImageUrl.add(s3Url);
         }
         // product 데이터 받아오기 저장된
+        List<ProductImage> insertProductImages = new ArrayList<>();
+        for(int i = 0; i < productImageUrl.size(); i++){
+            if(i == 0)  insertProductImages.add(new ProductImage(productImageUrl.get(i), 1, bucketName, product));
+            else insertProductImages.add(new ProductImage(productImageUrl.get(i), 0, bucketName, product));
+        }
 
-        ProductImage insertProductImage1 = new ProductImage(productImageUrl[0], 1, bucketName, product);
-        ProductImage insertProductImage2 = new ProductImage(productImageUrl[1], 0, bucketName, product);
-
-        productImageRepository.saveAll(Arrays.asList(insertProductImage1,insertProductImage2));
+        productImageRepository.saveAll(insertProductImages);
         // 로컬 폴더에있는 이미지 삭제후 폴더까지 삭제
         while(folder.exists()){
             File[] folerList = folder.listFiles();
@@ -154,9 +146,9 @@ public class ProductService {
         String localPath = localLocation + uuidFileName;
         File localFile = new File(localPath);
         productDetailImage.transferTo(localFile);
-
-        s3Config.amazonS3Client().putObject(new PutObjectRequest(bucket + "/productdetailimage/" + no ,uuidFileName,localFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        String s3Url = s3Config.amazonS3Client().getUrl(bucket + "/productdetailimage/" + no, uuidFileName).toString();
+        String bucketName = bucket + "/productdetailimage/" + no;
+        s3Config.amazonS3Client().putObject(new PutObjectRequest(bucketName, uuidFileName,localFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        String s3Url = s3Config.amazonS3Client().getUrl(bucketName, uuidFileName).toString();
         log.info("s3yurl ===>> {}" , s3Url);
         localFile.delete();
         return s3Url;
@@ -164,16 +156,64 @@ public class ProductService {
 
     @Transactional
     public ProductUpdateDto findByProductId(int no) {
-        Product findProduct = productRepository.findByProductId(no);
+        Product findProduct = productRepository.findByProductId(no).orElseThrow( () -> new RuntimeException("asd"));
         ProductUpdateDto result = new ProductUpdateDto(findProduct);
             log.info("productUpdateDto -=======>>>>> {}", result);
 
         return result;
     }
 
-    public void updateProduct(int no){
-        Product findProduct = productRepository.findByProductId(no);
+    @Transactional
+    public void updateProduct(int no, ProductInputDto productInputDto){
+        Product findProduct = productRepository.findByProductId(no).orElseThrow(() -> new RuntimeException("asd"));
+        log.info("findproduct ===>>>{}", findProduct);
+        updateImageCheck(findProduct,productInputDto);
 
 
+    }
+
+    @Transactional
+    public void updateImageCheck(Product findproduct, ProductInputDto productInputDto){
+        List<ProductImage> prevImageList = findproduct.getProductImages();
+        List<String> updateProductImageList = new ArrayList<>();
+        for(MultipartFile updateProductImage : productInputDto.getFile()){
+            if(updateProductImage == null){
+//                updateProductImageList.add();
+            }
+            updateProductImageList.add(updateProductImage.getOriginalFilename());
+        }
+        for(int i = 0; i < updateProductImageList.size(); i++){
+            if(updateProductImageList.get(i).isEmpty()) { // 이미지 변경 안했을 경우 기존값을 넣어준다.
+                log.info("뭘까용??? ==>> {}", updateProductImageList.get(i));
+                updateProductImageList.set(i, prevImageList.get(i).getImageName());
+                log.info("뭘까용??? ==>> {}", updateProductImageList.get(i));
+            }else{
+                S3UpdateProductImageDelete(prevImageList, i);
+            }
+        }
+    }
+
+    public void S3UpdateProductImageDelete(List<ProductImage> prevImageList, int i){
+        try{
+            String prevImage = prevImageList.get(i).getImageName();
+            //                bucket + "/productimage/" + bucketName
+            String bucketName = bucket + "/productimage/" + prevImageList.get(i).getBucketName();
+            String[] S3imageName = prevImage.split(prevImageList.get(i).getBucketName()+"/");
+            log.info("previmage ===>>> {}", prevImage);
+            log.info("bucketname ===>>{}", bucketName);
+            log.info("sub ====>>>{}", S3imageName[0]);
+            log.info("sub ====>>>{}", S3imageName[1]);
+
+            boolean isObjectExist = s3Config.amazonS3Client().doesObjectExist(bucketName, S3imageName[1]);
+            if(isObjectExist){
+                s3Config.amazonS3Client().deleteObject(bucketName,S3imageName[1]);
+                log.info("삭제성공!!!!");
+            }else{
+                log.info("삭제실패!!!!");
+            }
+
+        }catch (Exception e){
+
+        }
     }
 }

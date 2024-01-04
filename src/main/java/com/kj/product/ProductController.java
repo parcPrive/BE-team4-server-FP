@@ -44,7 +44,7 @@ public class ProductController {
     ) throws IOException {
         log.info("insertProdudtProcess===>> {} ", productInputDto);
         productService.insertProduct(productInputDto);
-        return "redirect:/product/insert";
+        return "/product/insert";
     }
 
     @PostMapping("/detailimage/{no}")
@@ -74,8 +74,6 @@ public class ProductController {
         log.info("번호번호번호 ===>>>>> {}" , no);
         ProductUpdateDto productUpdateDto = productService.findByProductId(no);
         model.addAttribute("productUpdateDto", productUpdateDto);
-        model.addAttribute("list",productUpdateDto.getProductTags());
-//        return "product/findlist";
         return "product/update";
     }
 
@@ -86,7 +84,8 @@ public class ProductController {
     ){
         log.info("no ===>>> {}", no);
         log.info("productInputDto ===>>> {}", productInputDto);
-        return "redirect:/product/update" + no;
+        productService.updateProduct(no,productInputDto);
+        return "redirect:/product/update/" + no;
     }
 
 
