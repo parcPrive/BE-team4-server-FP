@@ -1,6 +1,7 @@
 package com.kj.product.entity;
 
 import com.kj.product.dto.ProductInputDto;
+import com.kj.product.dto.ProductUpdateInputDto;
 import com.kj.productCategory.entity.ProductCategory;
 import com.kj.productQnA.entity.ProductQnA;
 import com.kj.productReview.entity.ProductReview;
@@ -36,7 +37,7 @@ public class Product {
 
     private LocalDateTime createdAt;
 
-    private Long productDetailImageBucket;
+    private String productDetailImageBucket;
 
     private String productDatailImage;
 
@@ -87,5 +88,23 @@ public class Product {
         this.clickCount = 0;
         this.createdAt = LocalDateTime.now();
         this.writer = productInputDto.getWriter();
+    }
+
+    public void setProduct(ProductUpdateInputDto productUpdateInputDto, ProductCategory productCategory){
+        this.productName = productUpdateInputDto.getProductName();
+        this.productNumber = productUpdateInputDto.getProductNumber();
+        this.productPrice = productUpdateInputDto.getProductPrice();
+        this.gender = productUpdateInputDto.getGender();
+        this.productSeason = productUpdateInputDto.getProductSeason();
+        this.productDetailImageBucket = productUpdateInputDto.getProductDetailImageBucket();
+        this.productDatailImage = productUpdateInputDto.getProductDetailImage();
+        this.productCategory = productCategory;
+        this.updateedAt = LocalDateTime.now();
+        this.writer = productUpdateInputDto.getWriter();
+
+    }
+
+    public void setProductLike(List<ProductLike> productLike) {
+        this.productLike = productLike;
     }
 }

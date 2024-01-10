@@ -1,13 +1,11 @@
 package com.kj.product.dto;
 
-import lombok.*;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductInputDto {
+public class ProductUpdateInputDto {
     private String productName;
     private String productNumber;
     private int productPrice;
@@ -32,4 +30,5 @@ public class ProductInputDto {
     private Long subProductCategoryId;
     private List<String> productTag;
     private String writer;
+    private String newBucketName;
 }

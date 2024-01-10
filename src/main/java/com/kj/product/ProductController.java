@@ -2,6 +2,7 @@ package com.kj.product;
 
 import com.kj.product.dto.ProductInputDto;
 import com.kj.product.dto.ProductUpdateDto;
+import com.kj.product.dto.ProductUpdateInputDto;
 import com.kj.product.entity.Product;
 import com.kj.productCategory.ProductCategoryService;
 import com.kj.productCategory.dto.ProductCategoryfindDto;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Controller
@@ -31,9 +33,10 @@ public class ProductController {
             Model model
     ) {
         int result = productService.findByMaxProductId();
+        String bucketName = String.valueOf(UUID.randomUUID());
         List<ProductCategoryfindDto> productCategories =productCategoryService.findAllProductCategory();
         log.info("result ===>> {}", result);
-        model.addAttribute("productMax", result);
+        model.addAttribute("bucketName", bucketName);
         model.addAttribute("productCategory",productCategories);
         return "/product/insert";
     }
@@ -47,15 +50,15 @@ public class ProductController {
         return "/product/insert";
     }
 
-    @PostMapping("/detailimage/{no}")
+    @PostMapping("/detailimage/{bucketName}")
     @ResponseBody
     public Map<String, Object> ckEditorDetailImage(
             @RequestParam("upload") MultipartFile productDetailImage,
-            @PathVariable int no
+            @PathVariable String bucketName
     ) {
         Map<String, Object> data = new HashMap<>();
         try{
-            String s3Url = productService.S3UploadProductDetailImage(productDetailImage, no);
+            String s3Url = productService.S3UploadProductDetailImage(productDetailImage, bucketName);
             data.put("uploaded", true);
             data.put("url", s3Url);
             return data;
@@ -72,19 +75,21 @@ public class ProductController {
             @PathVariable int no
     ){
         log.info("번호번호번호 ===>>>>> {}" , no);
+        String bucketName = String.valueOf(UUID.randomUUID());
         ProductUpdateDto productUpdateDto = productService.findByProductId(no);
         model.addAttribute("productUpdateDto", productUpdateDto);
+        model.addAttribute("newBucketName", bucketName);
         return "product/update";
     }
 
     @PostMapping("/update/{no}")
     public String updateProductProcess(
             @PathVariable int no,
-            @ModelAttribute ProductInputDto productInputDto
-    ){
+            @ModelAttribute ProductUpdateInputDto productUpdateInputDto
+            ) throws IOException {
         log.info("no ===>>> {}", no);
-        log.info("productInputDto ===>>> {}", productInputDto);
-        productService.updateProduct(no,productInputDto);
+        log.info("productInputDto ===>>> {}", productUpdateInputDto);
+        productService.updateProduct(no,productUpdateInputDto);
         return "redirect:/product/update/" + no;
     }
 

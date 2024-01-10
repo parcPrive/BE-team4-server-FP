@@ -14,11 +14,11 @@
                             <label for="file" class="form-label">상품사진 </label>
                             <div>
                                 <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview1" th:src="@{${product.productImages[0].imageName}}">
-                                <input class="img-thumbnail" type="file" id="file1" name="file1" value="" th:value="@{${product.productImages[0].imageName}}">
+                                <input class="img-thumbnail" type="file" id="file1" name="file" value="" th:value="@{${product.productImages[0].imageName}}">
                             </div>
                             <div>
                                 <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview2" th:src="@{${product.productImages[1].imageName}}">
-                                <input class="img-thumbnail" type="file" id="file2" name="file2" value="" th:value="${product.productImages[1].imageName}">
+                                <input class="img-thumbnail" type="file" id="file2" name="file" value="" th:value="${product.productImages[1].imageName}">
                             </div>
                             <!--                            <div>-->
                             <!--                                <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview3">-->
@@ -131,7 +131,10 @@
                         <label for="productDetailImage" class="form-label">상품설명</label>
                         <textarea type="text" class="form-control" id="content"
                                   placeholder="productDetailImage" name="productDetailImage"  rows="10" th:text="${product.productDetailImage}" ></textarea>
-                        <input type="text" th:value="${product.productDetailImageBucket}" id="productMax" name="productDetailImageBucket">
+                        <label for="productDetailImage" class="form-label">기존 버킷이름</label>
+                        <input type="text" th:value="${product.productDetailImageBucket}" id="bucketName" name="productDetailImageBucket">
+                        <label for="productDetailImage" class="form-label">만약 변경했다면 저장될 버킷이름</label>
+                        <input type="text" th:value="${newBucketName}" id="newBucketName" name="newBucketName">
                     </div>
                     <label  class="form-label">수정한사람</label>
                     <input type="text" th:value="${product.writer}" name="writer">
@@ -229,12 +232,12 @@
 <!--        ckediter-->
 
         let editor;
-        const productMax = $("#productMax").val()
-        console.log("프로덕트맥스값==>>" + productMax)
+        const bucketName = $("#newBucketName").val()
+        console.log(bucketName)
         ClassicEditor
             .create( document.querySelector( '#content' ),{
                 ckfinder:{
-                    uploadUrl: '/product/detailimage/' + productMax
+                    uploadUrl: '/product/detailimage/' + bucketName
                 }
              })
              .then( newEditor => {
