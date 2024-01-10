@@ -47,16 +47,37 @@
                             <button class="btn btn-primary mt-3" id="btnPostcode">우편번호 확인</button>
                         </div>
                     </div>
-                    <!--<div>
                     <div class="mb-3">
-                        <label for="profile" class="form-label">프로필</label>
-                        <input type="file" class="form-control" id="profile" placeholder="png,jpg"
-                               name="profile" accept=".jpg,.png,.gif,.jpeg" />
+                        <label for="address" class="form-label">주소</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="address" required />
                     </div>
-                        <div class="preview">
-                            <img src = "${pageContext.request.contextPath}" class = "profile-photo">
+                    <div class="mb-3">
+                        <label for="addressDetail" class="form-label">상세 주소</label>
+                        <input type="text" class="form-control" id="addressDetail" placeholder="address Detail" name="addressDetail" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobile" class="form-label">통신사</label>
+                        <select id="mobile" class="form-control" name="mobile" >
+                            <option id="mobile" value="untitled" selected>통신사 선택</option>
+                            <option id="mobile" value="LG">LGU+</option>
+                            <option id="mobile" value="SKT">SKT</option>
+                            <option id="mobile" value="KT" >KT</option>
+                            <option id="mobile" value="alLG" >알뜰폰 LG</option>
+                            <option id="mobile" value="alSKT" >알뜰폰 SKT</option>
+                            <option id="mobile" value="alKT" >알뜰폰 KT</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tel" class="form-label">전화 번호</label>
+                        <div class="d-flex flex-row mb-3 gap-1" id="tel">
+                            <input type="text" maxlength="3" class="form-control tel01" id="phone" placeholder="phone" name="phone" required/>
+                            <!--<h2>-</h2>-->
+                           <!-- <input type="text" maxlength="4" class="form-control tel01" id="tel02" name="tel02" required/>
+                            <h2>-</h2>
+                            <input type="text" maxlength="4" class="form-control tel01" id="tel03" name="tel03" required/>-->
                         </div>
-                    </div>-->
+                    </div>
+
                     <div class="d-flex justify-content-center mt-5">
                         <button class="btn btn-primary" id="btnJoinConfirm">confirm</button>
                     </div>
@@ -84,6 +105,39 @@
          }
          reader.readAsDataURL(file);
      }); */
+
+        // 우편주소
+      function postcode() {
+        new daum.Postcode({
+          oncomplete: function (data) {
+
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            const roadAddr = data.roadAddress; // 도로명 주소 변수
+            const extraRoadAddr = ""; // 참고 항목 변수
+
+
+            document.querySelector("#postCode").value = data.zonecode;
+            document.querySelector("#address").value = roadAddr;
+
+          },
+        }).open();
+      }
+
+      $("#btnPostcode").on("click", function () {
+        postcode();
+        return false;
+      });
+      $("#postCode").on("click",function(){
+    	  $("#postCode").removeClass("is-invalid")
+          $("#postCode").addClass("is-valid")
+    	  $("#invalid-feedbackPost").hide();
+    	  postcode();
+          return false;
+      })
+       $("#address").on("click",function(){
+    	  postcode();
+          return false;
+      })
 
     </script>
 </div>

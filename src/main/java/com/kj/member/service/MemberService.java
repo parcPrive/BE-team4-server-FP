@@ -1,11 +1,12 @@
 package com.kj.member.service;
 
+import com.kj.jwt.JwtUtil;
 import com.kj.member.dto.CustomUserDetails;
 import com.kj.member.dto.MemberDto;
-import com.kj.member.dto.UpdateMemberDto;
 import com.kj.member.entity.Member;
 import com.kj.member.repository.MemberRepository;
-import com.kj.utils.Role;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,8 +37,64 @@ import java.util.UUID;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtUtil jwtUtil;
+
+
+
     @Value("${file.path}")
     private String uploadFolder;
+
+   /* @Transactional
+    public TokenDto signin(String userId, String password){
+        UsernamePasswordAuthenticationToken authenticationToken = new
+                UsernamePasswordAuthenticationToken(userId,password);
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
+
+        return tokenDto;
+    }*/
+    @Transactional
+    public void login(String userId, String password, HttpServletResponse response,String check){
+        //아이디 체크
+        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
+        if (optionalMember.isEmpty()){
+            log.warn("회원이 존재하지 않음");
+            throw new IllegalArgumentException("회원이 존재하지 않음");
+        }
+        Member member = optionalMember.get();
+        // PW 체크하고
+        if (!bCryptPasswordEncoder.matches(password,member.getPassword())){
+            log.warn("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        /*토큰을 쿠키로 발급 및 응답에 추가*/
+        //성공시 토큰 생성
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER,
+                jwtUtil.createToken(member.getUserId(), member.getRole()));
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+        cookie.setPath("/");
+        cookie.setDomain("localhost");
+        cookie.setSecure(false);
+
+        if(check!=null){
+            Cookie cookieID = new Cookie("cookieID",userId);
+            cookieID.setMaxAge(1 * 24 * 60 * 60); // 1일 동안 유효
+            cookieID.setPath("/");
+            cookieID.setDomain("localhost");
+            cookieID.setSecure(false);
+            response.addCookie(cookieID);
+        }else {
+            Cookie cookieID = new Cookie("cookieID",userId);
+            cookieID.setMaxAge(0); // 1일 동안 유효
+            cookieID.setPath("/");
+            response.addCookie(cookieID);
+        }
+
+        response.addCookie(cookie);
+
+    }
 
     public MemberDto insertMember(MemberDto memberDto){
         Member member = MemberDto.toEntity(memberDto);
@@ -136,4 +194,7 @@ public class MemberService {
         return memberList;
 
     }
+
+
+
 }

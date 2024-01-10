@@ -5,7 +5,13 @@
 <div layout:fragment="content" class="main">
     <div class="container">
         <h2>인덱스</h2>
-        <form action="" th:action="@{/member/update}" method="post">
+        <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--admin 권한을 가지고 있을 때-->
+            <form action="" th:action="@{/admin/update}" method="post">
+        </th:block>
+        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+            <form action="" th:action="@{/member/update}" method="post">
+        </th:block>
+
             <table class="table">
                 <tbody>
                 <tr>
