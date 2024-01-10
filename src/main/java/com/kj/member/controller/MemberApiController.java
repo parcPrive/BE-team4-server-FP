@@ -1,4 +1,4 @@
-package com.kj.member;
+package com.kj.member.controller;
 
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;

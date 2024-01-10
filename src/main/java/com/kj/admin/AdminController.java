@@ -40,13 +40,12 @@ public class AdminController {
         model.addAttribute("memberInfo",memberInfo);
         return "/member/update";
     }
-    @PostMapping("/update")
+    @PostMapping("/admin/update")
     public String updateProcess(@ModelAttribute MemberDto memberDto, Model model,
                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         Member member = memberService.updateMember(memberDto);
         MemberDto memberInfo = MemberDto.toDto(member);
-        customUserDetails.getLoggedMember().update(memberDto);
         model.addAttribute("memberInfo",memberInfo);
         return "/member/mypage";
     }

@@ -1,26 +1,19 @@
-package com.kj.member;
+package com.kj.member.controller;
 
-import com.kj.member.dto.CustomUserDetails;
-import com.kj.member.dto.MemberDto;
-import com.kj.member.dto.MemberProfileDto;
-import com.kj.member.dto.UpdateMemberDto;
+import com.kj.member.dto.*;
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
-import lombok.Getter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/member")
@@ -30,11 +23,40 @@ public class MemberController {
     private final MemberService memberService;
     private int paginationSize=5;
     @GetMapping("/login")
-    public String login(Model model){
-        model.addAttribute("memberDto",new MemberDto());
+    public String login(Model model, @CookieValue(value = "cookieID", required = false)Cookie cookie){
+        model.addAttribute("loginDto",new LoginDto());
+         if (cookie!=null){
+            String userId = cookie.getValue();
+            model.addAttribute("userId",userId);
+            log.info("==={}",userId);
+        }
         return "/member/login";
     }
+    /*@PostMapping("/login")
+    public TokenDto signIn(@RequestBody LoginDto loginDto) {
+        String userId = loginDto.getUserId();
+        String password = loginDto.getPassword();
+        TokenDto tokenDto = memberService.signin(userId, password);
+        log.info("request userid = {}, password = {}", userId, password);
+        log.info("jwtToken accessToken = {}, refreshToken = {}", tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+        return tokenDto;
+    }*/
+    @PostMapping("/login")
+    public String login(LoginDto loginDto, HttpServletResponse response, Model model) {
+        String userId = loginDto.getUserId();
+        String password = loginDto.getPassword();
+        String check = loginDto.getCheck();
+        log.info("check= {}", check);
+        log.info("request userid = {}, password = {}", userId, password);
+        memberService.login(userId, password,response,check);
 
+        //log.info("jwtToken accessToken = {}, refreshToken = {}", tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+        return "redirect:/";
+    }
+    @PostMapping("/test")
+    public String test() {
+        return "success";
+    }
 
     @GetMapping("/insert")
     public String join(){
@@ -70,6 +92,7 @@ public class MemberController {
 
         Member member = memberService.updateMember(memberDto);
         MemberDto memberInfo = MemberDto.toDto(member);
+        //계정 이름 변환
         customUserDetails.getLoggedMember().update(memberDto);
         model.addAttribute("memberInfo",memberInfo);
         return "/member/mypage";

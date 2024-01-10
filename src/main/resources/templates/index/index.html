@@ -5,5 +5,8 @@
 <div layout:fragment="content" class="main">
     <div class="container">
         <h2>인덱스</h2>
+        <div sec:authorize="!isAuthenticated()">
+                <h2>로그인 안됨</h2>
+        </div>
     </div>
 </div>
