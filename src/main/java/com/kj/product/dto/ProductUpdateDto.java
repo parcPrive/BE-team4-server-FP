@@ -26,7 +26,7 @@ public class ProductUpdateDto {
     private LocalDateTime createdAt;
     private LocalDateTime updateedAt;
     // ckediter에서 들어오니까
-    private Long productDetailImageBucket;
+    private String productDetailImageBucket;
     private String productDetailImage;
     private ProductCategoryUpdateDto productCategory;
     // 사이즈와 수량

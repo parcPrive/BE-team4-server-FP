@@ -126,7 +126,7 @@
                         <label for="productDetailImage" class="form-label">상품설명</label>
                         <textarea type="text" class="form-control" id="content"
                                   placeholder="productDetailImage" name="productDetailImage"  rows="10"></textarea>
-                        <input type="text" th:value="${productMax}" id="productMax" name="productDetailImageBucket">
+                        <input type="text" th:value="${bucketName}" id="bucketName" name="productDetailImageBucket">
                     </div>
                     <input type="text" th:value="작성자" name="writer">
                     <div class="d-flex justify-content-center mt-5">
@@ -220,12 +220,11 @@
 <!--        ckediter-->
 
         let editor;
-        const productMax = $("#productMax").val()
-        console.log("프로덕트맥스값==>>" + productMax)
+        const bucketName = $("#bucketName").val()
         ClassicEditor
             .create( document.querySelector( '#content' ),{
                 ckfinder:{
-                    uploadUrl: '/product/detailimage/' + productMax
+                    uploadUrl: '/product/detailimage/' + bucketName
                 }
              })
              .then( newEditor => {

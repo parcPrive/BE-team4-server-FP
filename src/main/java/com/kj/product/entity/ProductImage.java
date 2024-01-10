@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.EnableMBeanExport;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -19,7 +21,9 @@ public class ProductImage {
 
     private String bucketName;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+//    private List<image> images;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
@@ -33,3 +37,4 @@ public class ProductImage {
     }
 
 }
+
