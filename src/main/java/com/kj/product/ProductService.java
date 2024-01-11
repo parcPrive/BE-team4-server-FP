@@ -3,6 +3,7 @@ package com.kj.product;
 import com.amazonaws.services.s3.model.*;
 import com.kj.config.S3Config;
 import com.kj.product.dto.ProductInputDto;
+import com.kj.product.dto.ProductListDto;
 import com.kj.product.dto.ProductUpdateDto;
 import com.kj.product.dto.ProductUpdateInputDto;
 import com.kj.product.entity.Product;
@@ -15,9 +16,15 @@ import com.kj.product.repository.ProductSizeRepository;
 import com.kj.product.repository.ProductTagRepository;
 import com.kj.productCategory.Repository.ProductCategoryRepository;
 import com.kj.productCategory.entity.ProductCategory;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -139,17 +146,20 @@ public class ProductService {
         Product findProduct = productRepository.findByProductId(no).orElseThrow(() -> new RuntimeException("asd"));
         ProductCategory findProductCategory = productCategoryRepository.findById(productUpdateInputDto.getSubProductCategoryId()).orElseThrow(() -> new RuntimeException("카테고리가 없습니다."));
         List<String> updateImageList = updateImageCheck(findProduct, productUpdateInputDto); // 업데이트 한 이미지와 기존 이미지가 있다.
-
         int checkProductDetailImageFolder = updateCkeditorS3FolderCheck(productUpdateInputDto.getNewBucketName()); // ck에디터에 새로운 폴더의 생성 여부 판단 있으면 1이상 없으면 0
         if(checkProductDetailImageFolder != 0){
             productUpdateInputDto.setProductDetailImageBucket(productUpdateInputDto.getNewBucketName());
             productUpdateInputDto.setProductDetailImage(productUpdateInputDto.getProductDetailImage());
-            deletePrevProductDetailImageFolder(findProduct.getProductDetailImageBucket());
+
         }else{
             productUpdateInputDto.setProductDetailImage(productUpdateInputDto.getProductDetailImage()); //디테일이미지의 사진은 그대로 지만 글을 바꿨을때
         }
-        productImageRepository.deleteProductImagebyProductId(no);
         findProduct.setProduct(productUpdateInputDto, findProductCategory); // product entity의 바뀐내용들
+        productImageRepository.deleteProductImagebyProductId(no);
+        for(String bbb : updateImageList){
+            log.info("진짜 진짜진짜 ===>>> {}", bbb);
+        }
+
         insertProductUpdateImage(updateImageList, findProduct);
         productSizeRepository.deleteProductSizeByProductId(findProduct.getId());
         insertProductUpdateSize(productUpdateInputDto, findProduct);
@@ -200,9 +210,13 @@ public class ProductService {
     @Transactional
     private void insertProductUpdateImage(List<String> updateImageList, Product findProduct) {
         List<ProductImage> insertProductUpdateImages = new ArrayList<>();
+        log.info("여기가 0이라고???? ===>>> {}",updateImageList.size());
         for(int i = 0; i < updateImageList.size(); i++){
-            if(i == 0)  insertProductUpdateImages.add(new ProductImage(insertProductUpdateImages.get(i).getImageName(), 1, findProduct.getProductImages().get(i).getBucketName(), findProduct));
-            else insertProductUpdateImages.add(new ProductImage(insertProductUpdateImages.get(i).getImageName(), 0, findProduct.getProductImages().get(i).getBucketName(), findProduct));
+            log.info("이미지들 ===>>> {}", updateImageList.get(i));
+        }
+        for(int i = 0; i < updateImageList.size(); i++){
+            if(i == 0)  insertProductUpdateImages.add(new ProductImage(updateImageList.get(i), 1, findProduct.getProductImages().get(i).getBucketName(), findProduct));
+            else insertProductUpdateImages.add(new ProductImage(updateImageList.get(i), 0, findProduct.getProductImages().get(i).getBucketName(), findProduct));
         }
         productImageRepository.saveAll(insertProductUpdateImages);
     }
@@ -238,17 +252,19 @@ public class ProductService {
 
         S3UpdateProductImageDelete(deleteProductIamgeList, bucketName); // 수정된 이미지가 있을 경우 원본 이미지를 삭제하는 로직이다.
         List<String> updateProductImageUrl = S3UpdateProductImageInsert(updateProductFiles, bucketName); // 수정된 이미지 파일들을 s3에 저장하고 이미지 url을 반환한다.
-        int index = 0;
-        for(String updateProductImage : updateProductImageList){
-            if(updateProductImage.isEmpty()){
-                updateProductImage = updateProductImageUrl.get(index);
+
+        for(int i = 0; i < updateProductImageList.size(); i++){
+            if(updateProductImageList.get(i).isEmpty()){
+                updateProductImageList.set(i, updateProductImageUrl.get(i));
             }
-            index++;
-            log.info("업데이트 이미지들=== ===>>> {}", updateProductImage);
+        }
+        for(String update : updateProductImageList){
+            log.info("없데이트 사진 제발 나외라 =====>>>{}", update);
         }
         return updateProductImageList;
     }
 
+    @Transactional
     private List<String> S3UpdateProductImageInsert(List<MultipartFile> updateProductFiles, String bucketName) throws IOException {
         String localLocation = myLocalFolder + UUID.randomUUID() + "/";
         File folder = new File(localLocation);
@@ -280,12 +296,18 @@ public class ProductService {
         }
         return updateProductImageUrl;
     }
-    private void deletePrevProductDetailImageFolder(String productDetailImageBucket) {
-        String S3BucketName = bucket + "/productdetailimage/";
-        String S3FolderName = productDetailImageBucket;
-        boolean isS3Folder = s3Config.amazonS3Client().doesObjectExist(S3BucketName, S3FolderName);
-
-    }
+//    private void deletePrevProductDetailImageFolder(String productDetailImageBucket) {
+//        try{
+//            String S3BucketName = bucket + "/productdetailimage";
+//            String S3FolderName = "16aec1d0-9c5a-4ace-ae38-1d92793dac73";
+//            boolean isS3Folder = s3Config.amazonS3Client().doesObjectExist(S3BucketName, S3FolderName);
+//            log.info("============");
+//            log.info("{}",isS3Folder);
+//            log.info("============");
+//        }catch (AmazonS3Exception e){
+//            log.info("amazonexception ===>>> {}", e);
+//        }
+//    }
     public void S3UpdateProductImageDelete(Map<Long, String> deleteProductIamgeMap, String bucketName){
         try{
             deleteProductIamgeMap.forEach((imageId, imageName) ->{
@@ -311,5 +333,42 @@ public class ProductService {
             log.info("{} ", e);
         }
     }
+// =================================productListPage==============================================
+@Transactional
+public PageImpl<ProductListDto> findListProductPage(int page) {
+    Pageable pageable = PageRequest.of(page - 1, 12);
+    PageImpl<ProductListDto> findListProducts = productRepository.findListProducPage(pageable);
+    log.info("asdasdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdsaadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdas");
+    for(ProductListDto product : findListProducts){
+        log.info("aaa ==== >>>> {}", product);
+    }
+    log.info("asdasdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdsaadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdas");
+
+    return findListProducts;
+
 }
-// =====================================================================================
+
+    public void insertTest(ProductInputDto productInputDto) {
+        Optional<ProductCategory> findProductCategory = productCategoryRepository.findById(productInputDto.getSubProductCategoryId());
+        if(findProductCategory.isPresent()) {
+            for(int i = 0; i < 100; i++){
+                productInputDto.setProductName("반팔" + i);
+                productInputDto.setProductPrice(123 + i);
+                productInputDto.setProductDetailImage("<p>123<img src=\"https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg\" width=\"150\" height=\"150\"></p>");
+                productInputDto.setProductDetailImageBucket("123");
+                Product insertProduct = new Product(productInputDto, findProductCategory.get());
+                Product result = productRepository.save(insertProduct);
+                insertProductSize(productInputDto,result);
+
+                List<ProductImage> insertProductImages = new ArrayList<>();
+                insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 1, "asdasd", result));
+                insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 0, "asdasd", result));
+
+                productImageRepository.saveAll(insertProductImages);
+
+                insertProductTag(productInputDto.getProductTag(),result);
+
+            }
+        }
+    }
+}

@@ -14,9 +14,10 @@ public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(length = 500)
     private String imageName;
 
+    @Column(length = 500)
     private int thubmnail;
 
     private String bucketName;
