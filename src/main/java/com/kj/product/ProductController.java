@@ -1,6 +1,7 @@
 package com.kj.product;
 
 import com.kj.product.dto.ProductInputDto;
+import com.kj.product.dto.ProductListDto;
 import com.kj.product.dto.ProductUpdateDto;
 import com.kj.product.dto.ProductUpdateInputDto;
 import com.kj.product.entity.Product;
@@ -8,6 +9,7 @@ import com.kj.productCategory.ProductCategoryService;
 import com.kj.productCategory.dto.ProductCategoryfindDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -94,9 +96,49 @@ public class ProductController {
     }
 
 
-    @GetMapping("/findlist")
-    public String findListProduct(){
-        return "/product/findlist";
+    @GetMapping("/list/{page}")
+    public String findListProduct(
+            @PathVariable int page,
+            Model model
+    ){
+        log.info("page ==>>> {}", page);
+        PageImpl<ProductListDto> productList =  productService.findListProductPage(page);
+        int productListPage = productList.getTotalPages();
+        List<ProductListDto> products = productList.getContent();
+//        for(ProductListDto pp : products){
+//            log.info("??? ===>>> {}", products);
+//        }
+        log.info("hasnext ===>> {}", productList.hasNext());
+        log.info("hasprevious ===>> {}", productList.hasPrevious());
+        log.info("isFirst ===>> {}", productList.isFirst());
+        log.info("isLast ===>> {}", productList.isLast());
+//        productList.getTotalPages()
+
+        model.addAttribute("products", productList);
+        model.addAttribute("productListPage", productListPage);
+        return "/product/list";
+    }
+
+    @GetMapping("/datainsert")
+    public String dataInsert(
+            Model model
+    ){
+        int result = productService.findByMaxProductId();
+        String bucketName = String.valueOf(UUID.randomUUID());
+        List<ProductCategoryfindDto> productCategories =productCategoryService.findAllProductCategory();
+        log.info("result ===>> {}", result);
+        model.addAttribute("bucketName", bucketName);
+        model.addAttribute("productCategory",productCategories);
+        return "/product/test";
+    }
+
+    @PostMapping("/datainsert")
+    public String dataInsert(
+            @ModelAttribute ProductInputDto productInputDto
+    ) throws IOException {
+        log.info("insertProdudtProcess===>> {} ", productInputDto);
+        productService.insertTest(productInputDto);
+        return "/product/insert";
     }
 
 

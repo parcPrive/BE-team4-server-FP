@@ -2,13 +2,19 @@ package com.kj.product.repository;
 
 import com.kj.product.dto.*;
 import com.kj.product.entity.*;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Path;
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,5 +111,30 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
 //                )));
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public PageImpl<ProductListDto> findListProducPage(Pageable pageable) {
+            QueryResults<Long> productIds = queryFactory
+                    .select(product.id)
+                    .from(product)
+                    .orderBy(product.id.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetchResults();
+
+        List<Product> findListProducts = queryFactory
+                    .selectFrom(product)
+                    .join(product.productImages, productImage)
+                    .fetchJoin()
+                    .where(product.id.in(productIds.getResults()))
+                    .orderBy(product.id.desc())
+                    .fetch();
+        List<ProductListDto> productListDtos = new ArrayList<>();
+        for(Product result : findListProducts){
+            productListDtos.add(new ProductListDto(result));
+            }
+            PageImpl<ProductListDto> pageList = new PageImpl<>(productListDtos, pageable, productIds.getTotal());
+            return pageList;
     }
 }

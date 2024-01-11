@@ -7,16 +7,18 @@ import com.kj.productQnA.entity.ProductQnA;
 import com.kj.productReview.entity.ProductReview;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,13 +49,15 @@ public class Product {
     private LocalDateTime updateedAt;
 
     // 상풍등록 할때 같이 등록해야하는것들
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
-    private List<ProductImage> productImages;
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<ProductImage> productImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
-    private List<ProductSize> productSize;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<ProductSize> productSize =  new ArrayList<>();
 
-    @OneToMany(mappedBy = "product",  cascade = CascadeType.REMOVE)
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "product",  cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<ProductTag> productTags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -102,6 +106,16 @@ public class Product {
         this.updateedAt = LocalDateTime.now();
         this.writer = productUpdateInputDto.getWriter();
 
+    }
+
+    public void testProduct(String productName, String productNumber, int productPrice, String gender, String productSeason, String productDetailImageBucket, String productDatailImage){
+        this.productName =productName;
+        this.productNumber = productNumber;
+        this.productPrice = productPrice;
+        this.gender = gender;
+        this.productSeason = productSeason;
+        this.productDetailImageBucket = productDetailImageBucket;
+        this.productDatailImage = productDatailImage;
     }
 
     public void setProductLike(List<ProductLike> productLike) {
