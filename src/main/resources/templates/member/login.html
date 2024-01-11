@@ -8,13 +8,15 @@
         <form action="../member/login" th:action="@{/member/login}" th:object="${loginDto}" method="post">
             <h1 class="h3 mb-3 fw-normal">로그인</h1>
             <div class="form-floating">
-                <!--<input type="hidden" id="adminNumber" name="adminNumber">--> <!--관리자-->
                 <input type="text" class="form-control" id="userID" placeholder="ID" name="userId" th:value="${userId}"><!--th:value="${memberDto.userId}" >-->
                 <label for="userID">ID</label>
             </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="userPW" placeholder="Password" name="password">
-                <label for="userPW">Password</label>
+            <div class="form-floating ">
+                <div class="input-group">
+                    <input type="password" class="form-control loginPw" placeholder="password" id="password" aria-label="password" aria-describedby="button-addon2" name="password">
+                    <button class="btn btn-outline-secondary btnEyes" type="button" id="btnEyes"><i class="bi bi-eye-fill"></i></button>
+                </div>
+
             </div>
             <div class="form-check text-start my-3">
                 <th:block th:if="${userId!=null}">
@@ -48,7 +50,22 @@
 
             <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>
         </form>
+            <script>
+                //이미지 미리보기
+                $(".btnEyes").on("click",function(){
+                    $('#password').toggleClass('active');
 
+                    if( $('#password').hasClass('active') == true ){
+                        $('#password').attr("type","text")
+                        $(this).find('i').attr("class","bi bi-eye-slash")
+                    }
+                    else{
+                        $('#password').attr("type","password")
+                        $(this).find('i').attr("class","bi bi-eye-fill")
+                    }
+
+                });
+            </script>
         </div>
 
     </div>

@@ -37,4 +37,44 @@
             </li>
         </ul>
     </nav>
-</div>
+
+    <div class="container mt-5">
+        <form action="" th:action="@{/member/search}" method="get">
+            <div class="row">
+                <div class="col-4" th:with="category=${param.category}">
+                    <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                        <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                        <option value="userId"   th:selected="${#strings.equals(category,'subject')  ? true : false}">아이디</option>
+                        <option value="userName" th:selected="${#strings.equals(category,'content')? true : false}">이름</option>
+                        <option value="nickName" th:selected="${#strings.equals(category,'content')? true : false}">이름</option>
+                        <option value="level"    th:selected="${#strings.equals(category,'writer')   ? true : false}">등급</option>
+                    </select>
+                </div>
+                <div class="col-6 keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                </div>
+                <div class="col-2"><button class="btn btn-primary">검색</button></div>
+            </div>
+        </form>
+        <script>
+            //등급으로 확인하자
+            $(".btnSearch").on("change",function(){
+                if($(".btnSearch").val()=="level"){
+                    $(".keyword").attr("type","hidden");
+                    $(".keywordLevel").html(`<select class=" btnLevel" name="keyword">
+                              <option value="0">일반</option>
+                              <option value="2">실버</option>
+                              <option value="3">골드</option>
+                              <option value="4">플레티넘</option>
+                              <option value="5">다이아</option>
+                              <option value="1">관리자</option>
+                              </select> `)
+                }else{
+                    $(".keywordLevel").html(`<input class="keyword" type="text" name="keyword">`)
+                }
+            })
+        </script>
+
+            </div>
+        </div>

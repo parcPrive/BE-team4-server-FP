@@ -2,6 +2,7 @@ package com.kj.member.service;
 
 import com.kj.jwt.JwtUtil;
 import com.kj.member.dto.CustomUserDetails;
+import com.kj.member.dto.JoinDto;
 import com.kj.member.dto.MemberDto;
 import com.kj.member.entity.Member;
 import com.kj.member.repository.MemberRepository;
@@ -73,14 +74,14 @@ public class MemberService {
         //성공시 토큰 생성
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER,
                 jwtUtil.createToken(member.getUserId(), member.getRole()));
-        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+        cookie.setMaxAge(60*60); // 1시간 동안 유효
         cookie.setPath("/");
         cookie.setDomain("localhost");
         cookie.setSecure(false);
 
         if(check!=null){
             Cookie cookieID = new Cookie("cookieID",userId);
-            cookieID.setMaxAge(1 * 24 * 60 * 60); // 1일 동안 유효
+            cookieID.setMaxAge(30* 60); // 30분만 유효
             cookieID.setPath("/");
             cookieID.setDomain("localhost");
             cookieID.setSecure(false);
@@ -96,10 +97,10 @@ public class MemberService {
 
     }
 
-    public MemberDto insertMember(MemberDto memberDto){
-        Member member = MemberDto.toEntity(memberDto);
+    public JoinDto insertMember(JoinDto joinDto){
+        Member member = JoinDto.toEntity(joinDto);
         memberRepository.save(member);
-        return memberDto;
+        return joinDto;
     }
 
 
@@ -117,12 +118,9 @@ public class MemberService {
     }
 
     public MemberDto findByAdminMemberId(Long id) {
-
             Member findId = memberRepository.findById(id).orElse(null);
             MemberDto memberDto = MemberDto.toDto(findId);
             return memberDto;
-
-
     }
 
 
@@ -188,13 +186,42 @@ public class MemberService {
         return memberDtoList;
     }
 
-    public Page<Member> getAllPageBoard(int page) {
+    public Page<Member> findAllPageMember(int page) {
         Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"registerDate"));
         Page<Member> memberList = memberRepository.findAll(pageable);
         return memberList;
 
     }
+    public Page<Member> findAllSearchPageMember(String category, String keyword,int page) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "registerDate"));
+        if (category.equals("userId")) {
+            Page<Member> memberList = memberRepository.findByUserId(keyword, pageable);
+            return memberList;
+        } else if(category.equals("userName")) {
+            Page<Member> memberList = memberRepository.findByUserName(keyword, pageable);
+            return memberList;
+        }else if(category.equals("nickName")) {
+            Page<Member> memberList = memberRepository.findByNickName(keyword, pageable);
+            return memberList;
+        } else if(category.equals("level")) {
+            Page<Member> memberList = memberRepository.findByLevels(keyword, pageable);
+            return memberList;
+        } /*else {
+            log.info("전체검색");
+            Page<Member> memberList = memberRepository.findByAllCategory(keyword, pageable);
+            return memberList;
+        }*/
+        return null;
+        }
 
 
 
+    public boolean findByNickName(String nickName) {
+        Optional<Member> findMember = memberRepository.findByNickName(nickName);
+        if (findMember.isPresent()){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

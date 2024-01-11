@@ -5,15 +5,19 @@ import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/member")
@@ -32,15 +36,6 @@ public class MemberController {
         }
         return "/member/login";
     }
-    /*@PostMapping("/login")
-    public TokenDto signIn(@RequestBody LoginDto loginDto) {
-        String userId = loginDto.getUserId();
-        String password = loginDto.getPassword();
-        TokenDto tokenDto = memberService.signin(userId, password);
-        log.info("request userid = {}, password = {}", userId, password);
-        log.info("jwtToken accessToken = {}, refreshToken = {}", tokenDto.getAccessToken(), tokenDto.getRefreshToken());
-        return tokenDto;
-    }*/
     @PostMapping("/login")
     public String login(LoginDto loginDto, HttpServletResponse response, Model model) {
         String userId = loginDto.getUserId();
@@ -49,23 +44,24 @@ public class MemberController {
         log.info("check= {}", check);
         log.info("request userid = {}, password = {}", userId, password);
         memberService.login(userId, password,response,check);
-
         //log.info("jwtToken accessToken = {}, refreshToken = {}", tokenDto.getAccessToken(), tokenDto.getRefreshToken());
         return "redirect:/";
     }
-    @PostMapping("/test")
-    public String test() {
-        return "success";
-    }
 
     @GetMapping("/insert")
-    public String join(){
+    public String join(Model model){
+        model.addAttribute("joinDto",new JoinDto());
         return "/member/insert";
     }
 
     @PostMapping("/insert")
-    public String joinProcess(MemberDto memberDto){
-        memberService.insertMember(memberDto);
+    public String joinProcess(@Valid @ModelAttribute JoinDto joinDto,
+                              BindingResult bindingResult , Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("joinDto",joinDto);
+            return "member/insert";
+        }
+        memberService.insertMember(joinDto);
         return "/member/login";
     }
 
@@ -128,8 +124,8 @@ public class MemberController {
     }*/
 
     @GetMapping("/list")
-    public String list02(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
-        Page<Member> pagination = memberService.getAllPageBoard(page);
+    public String listMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
+        Page<Member> pagination = memberService.findAllPageMember(page);
         log.info("pageBoardList.getTotalPages()==={}",pagination.getTotalPages());
         log.info(pagination.toString());
         List<Member> memberList = pagination.getContent();
@@ -142,5 +138,33 @@ public class MemberController {
         model.addAttribute("pagination",pagination);
         model.addAttribute("memberList",memberList);
         return "memberList/list";
+    }
+    @GetMapping("/search")
+    public String searchList(Model model,
+                             @RequestParam String category,
+                             @RequestParam String keyword,
+                             @RequestParam(value = "page", required = true,defaultValue = "0")int page){
+        Page<Member> pagination = memberService.findAllSearchPageMember(category,keyword,page);
+        List<Member> memberList = pagination.getContent();
+        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
+        int end =  start + paginationSize;
+
+        log.info("start==={},end==={}",start,end);
+        model.addAttribute("start",start);
+        model.addAttribute("end",end);
+        model.addAttribute("pagination",pagination);
+        model.addAttribute("memberList",memberList);
+        return "memberList/list";
+    }
+
+
+    @ResponseBody
+    @GetMapping("/nickNameCheck")
+    public Map<String,Boolean> nickNameCheck(String nickName){
+        Map<String,Boolean> resultMap = new HashMap<>();
+        boolean nickNameCheck = memberService.findByNickName(nickName);
+        log.info("==={}",nickNameCheck);
+        resultMap.put("nickNameCheck",nickNameCheck);
+        return resultMap;
     }
 }

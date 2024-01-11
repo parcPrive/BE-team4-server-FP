@@ -28,7 +28,7 @@ public class MailService {
             if(!member.get().getUserName().equals(mailDto.getUserName())){ //입력한 이름과 DB의 이름이 일치한지 확인
                 return null;
             }
-            sendMail(mailDto,member.get().getUserId()); //메일을 userID를 포함하여 보내는 메서드
+            sendIDMail(mailDto,member.get().getUserId()); //메일을 userID를 포함하여 보내는 메서드
             return member.get(); //반환한다 엔티티로
         } else {
             return null;
@@ -52,7 +52,7 @@ public class MailService {
         }
     }
 
-    public MimeMessage sendMail(MailDto mailDto,String userId){ //메일 관련 메서드
+    public MimeMessage sendIDMail(MailDto mailDto,String userId){ //메일 관련 메서드
         MimeMessage message = javaMailSender.createMimeMessage();
 
         try {
@@ -82,5 +82,26 @@ public class MailService {
         return message;
     }
 
+    public MimeMessage sendNumMail(String mail){ //메일 관련 메서드
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        try {
+            message.setFrom("kimhg1103@naver.com");  // 보내는 사람
+            message.setRecipients(MimeMessage.RecipientType.TO,mail);  // 받는 사람
+            message.setSubject("요청하신 인증번호입니다.");
+            message.setText("안녕하세요"+randomNumPassword.createRandomNum(),"UTF-8","html");
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return message;
+    }
+
+    public Integer sendAuthEmail(String mail) {
+        MimeMessage message = sendNumMail(mail);
+        //db 비밀번호를 생성된 비밀번호르르안호화 해서 넣어둔다.
+        javaMailSender.send(message);
+        return randomNumPassword.createRandomNum();
+    }
 
 }
