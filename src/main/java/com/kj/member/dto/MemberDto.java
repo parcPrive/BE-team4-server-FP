@@ -17,20 +17,13 @@ import java.time.LocalDateTime;
 public class MemberDto {
 
     private Long id;
-
     private String userId;
-
     private String password;
-
     private String userName;
-
     private String nickName;
     private int gender;
-
     private String address;
-
     private String addressDetail;
-
     private String postCode;
     private String email;
     private String profileImageUrl;
@@ -53,7 +46,7 @@ public class MemberDto {
                 .addressDetail(memberDto.getAddressDetail())
                 .postCode(memberDto.getPostCode())
                 .email(memberDto.getEmail())
-                .mobile(memberDto.getMobile())
+                //.mobile(memberDto.getMobile())
                 .phone(memberDto.getPhone())
                 .profileImageUrl(memberDto.profileImageUrl)
                 .registerDate(memberDto.getRegisterDate())
@@ -74,7 +67,7 @@ public class MemberDto {
                 .addressDetail(memberDto.getAddressDetail())
                 .postCode(memberDto.getPostCode())
                 .email(memberDto.getEmail())
-                .mobile(memberDto.getMobile())
+                //.mobile(memberDto.getMobile())
                 .phone(memberDto.getPhone())
                 .registerDate(memberDto.getRegisterDate())
                 .levels(memberDto.getLevels())
@@ -92,7 +85,7 @@ public class MemberDto {
         memberDto.setAddressDetail(member.getAddressDetail());
         memberDto.setPostCode(member.getPostCode());
         memberDto.setEmail(member.getEmail());
-        memberDto.setMobile(member.getMobile());
+        //memberDto.setMobile(member.getMobile());
         memberDto.setPhone(member.getPhone());
         memberDto.setProfileImageUrl(member.getProfileImageUrl());
         memberDto.setRegisterDate(member.getRegisterDate());

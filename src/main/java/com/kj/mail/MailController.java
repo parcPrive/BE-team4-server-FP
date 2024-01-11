@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/mail")
@@ -33,6 +36,14 @@ public class MailController {
     public String findPw(@ModelAttribute MailDto mailDto, @RequestParam String userId, Model model){
         mailService.findPw(mailDto,userId);
         return "/member/insert";
+    }
+    @PostMapping("/confirm")
+    @ResponseBody
+    public Map<String,Object> confirm(String mail) {
+        Map<String, Object> resultMap = new HashMap<>();
+        int randonNum = mailService.sendAuthEmail(mail);
+        resultMap.put("confirmNumber", randonNum);
+        return resultMap;
     }
 }
 

@@ -36,7 +36,8 @@ public class SecurityConfig{
         httpSecurity.
                 authorizeHttpRequests((auth) -> auth
 
-                        .requestMatchers("/", "/member/insert","/member/logout", "/member/login", "/css/**", "/js/**", "/images/**", "/mail/**", "/product/**")
+                        .requestMatchers("/", "/member/insert","/member/logout", "/member/nickNameCheck",
+                                "/member/login", "/css/**", "/js/**", "/images/**", "/mail/**", "/product/**")
                         .permitAll()
                         .requestMatchers("/member/update", "/member/mypage").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

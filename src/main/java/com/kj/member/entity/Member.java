@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kj.member.dto.MemberDto;
 import com.kj.member.dto.UpdateMemberDto;
 
+import com.kj.utils.Mobile;
 import com.kj.utils.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,8 @@ public class Member {
     private String addressDetail;
     private String postCode;
     private String email;
-    private String mobile;
+    @Enumerated(EnumType.STRING)
+    private Mobile mobile;
     private String phone;
     private String profileImageUrl;
 

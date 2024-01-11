@@ -16,6 +16,9 @@ li {
   width:150px;
 
 }
+.loginPw{
+    height:58px !important;
+}
 #memberProfileImage {
   width:150px;
   height: 150px;
