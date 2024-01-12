@@ -1,9 +1,6 @@
 package com.kj.product;
 
-import com.kj.product.dto.ProductInputDto;
-import com.kj.product.dto.ProductListDto;
-import com.kj.product.dto.ProductUpdateDto;
-import com.kj.product.dto.ProductUpdateInputDto;
+import com.kj.product.dto.*;
 import com.kj.product.entity.Product;
 import com.kj.productCategory.ProductCategoryService;
 import com.kj.productCategory.dto.ProductCategoryfindDto;
@@ -99,25 +96,34 @@ public class ProductController {
     @GetMapping("/list/{page}")
     public String findListProduct(
             @PathVariable int page,
+            @ModelAttribute ProductSearchCondotion productSearchCondotion,
             Model model
     ){
         log.info("page ==>>> {}", page);
-        PageImpl<ProductListDto> productList =  productService.findListProductPage(page);
+        log.info("productSeach ==>> {}", productSearchCondotion);
+        PageImpl<ProductListDto> productList =  productService.findListProductPage(page, productSearchCondotion);
         int productListPage = productList.getTotalPages();
         List<ProductListDto> products = productList.getContent();
-//        for(ProductListDto pp : products){
-//            log.info("??? ===>>> {}", products);
-//        }
-        log.info("hasnext ===>> {}", productList.hasNext());
-        log.info("hasprevious ===>> {}", productList.hasPrevious());
-        log.info("isFirst ===>> {}", productList.isFirst());
-        log.info("isLast ===>> {}", productList.isLast());
-//        productList.getTotalPages()
+
 
         model.addAttribute("products", productList);
         model.addAttribute("productListPage", productListPage);
         return "/product/list";
     }
+
+
+    @GetMapping("/view/{productId}")
+    public String productView(
+            @PathVariable int productId,
+            Model model
+    ){
+        log.info("prprprprprpr =====>>> {}", productId);
+        ProductFindOneDto productFindOneDto = productService.findOneByProductId(productId);
+        model.addAttribute("findOneProduct", productFindOneDto);
+        return "/product/view";
+
+    }
+
 
     @GetMapping("/datainsert")
     public String dataInsert(

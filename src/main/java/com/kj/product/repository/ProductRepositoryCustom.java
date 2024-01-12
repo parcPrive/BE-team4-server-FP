@@ -1,7 +1,9 @@
 package com.kj.product.repository;
 
 
+import com.kj.product.dto.ProductFindOneDto;
 import com.kj.product.dto.ProductListDto;
+import com.kj.product.dto.ProductSearchCondotion;
 import com.kj.product.entity.Product;
 import com.querydsl.core.Tuple;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,8 @@ public interface ProductRepositoryCustom {
 
     Optional<Product> findByProductId(int no);
 
-    PageImpl<ProductListDto> findListProducPage(Pageable pageable);
+    PageImpl<ProductListDto> findListProducPage(Pageable pageable, ProductSearchCondotion productSearchCondotion);
+
+    ProductFindOneDto findByProductId1(int productId);
 
 }
