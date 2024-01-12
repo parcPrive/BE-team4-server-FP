@@ -68,8 +68,6 @@ public class Product {
     @OneToMany(mappedBy = "product" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ProductCart> productCart = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<ProductLike> productLike = new ArrayList<>();
 
     @OneToMany(mappedBy = "product" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ProductReview> productReview = new ArrayList<>();
@@ -118,7 +116,4 @@ public class Product {
         this.productDatailImage = productDatailImage;
     }
 
-    public void setProductLike(List<ProductLike> productLike) {
-        this.productLike = productLike;
-    }
 }

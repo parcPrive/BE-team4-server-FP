@@ -2,10 +2,7 @@ package com.kj.product;
 
 import com.amazonaws.services.s3.model.*;
 import com.kj.config.S3Config;
-import com.kj.product.dto.ProductInputDto;
-import com.kj.product.dto.ProductListDto;
-import com.kj.product.dto.ProductUpdateDto;
-import com.kj.product.dto.ProductUpdateInputDto;
+import com.kj.product.dto.*;
 import com.kj.product.entity.Product;
 import com.kj.product.entity.ProductImage;
 import com.kj.product.entity.ProductSize;
@@ -335,15 +332,9 @@ public class ProductService {
     }
 // =================================productListPage==============================================
 @Transactional
-public PageImpl<ProductListDto> findListProductPage(int page) {
+public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondotion productSearchCondotion) {
     Pageable pageable = PageRequest.of(page - 1, 12);
-    PageImpl<ProductListDto> findListProducts = productRepository.findListProducPage(pageable);
-    log.info("asdasdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdsaadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdas");
-    for(ProductListDto product : findListProducts){
-        log.info("aaa ==== >>>> {}", product);
-    }
-    log.info("asdasdasdasdasdasdasdasdasdasdasdasdasdasdsadasdasdsaadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdas");
-
+    PageImpl<ProductListDto> findListProducts = productRepository.findListProducPage(pageable, productSearchCondotion);
     return findListProducts;
 
 }
@@ -370,5 +361,12 @@ public PageImpl<ProductListDto> findListProductPage(int page) {
 
             }
         }
+    }
+
+    @Transactional
+    public ProductFindOneDto findOneByProductId(int productId) {
+        ProductFindOneDto findOneProduct = productRepository.findByProductId1(productId);
+        log.info("파인트원 프로덕트 ====>>> {}", findOneProduct);
+        return findOneProduct;
     }
 }
