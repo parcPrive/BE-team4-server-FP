@@ -1,5 +1,6 @@
 package com.kj.member.controller;
 
+import com.kj.log.dto.LogDto;
 import com.kj.member.dto.*;
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
@@ -37,13 +38,13 @@ public class MemberController {
         return "/member/login";
     }
     @PostMapping("/login")
-    public String login(LoginDto loginDto, HttpServletResponse response, Model model) {
+    public String login(LoginDto loginDto, LogDto logDto, HttpServletResponse response, Model model) {
         String userId = loginDto.getUserId();
         String password = loginDto.getPassword();
         String check = loginDto.getCheck();
         log.info("check= {}", check);
         log.info("request userid = {}, password = {}", userId, password);
-        memberService.login(userId, password,response,check);
+        memberService.login(userId, password,response,check,logDto);
         //log.info("jwtToken accessToken = {}, refreshToken = {}", tokenDto.getAccessToken(), tokenDto.getRefreshToken());
         return "redirect:/";
     }
@@ -116,46 +117,8 @@ public class MemberController {
         }
     }
 
-    /*@GetMapping("/list")
-    public String MemberList(Model model){
-        List<MemberDto> memberList = memberService.findListMember();
-        model.addAttribute("memberList",memberList);
-        return "memberList/list";
-    }*/
 
-    @GetMapping("/list")
-    public String listMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
-        Page<Member> pagination = memberService.findAllPageMember(page);
-        log.info("pageBoardList.getTotalPages()==={}",pagination.getTotalPages());
-        log.info(pagination.toString());
-        List<Member> memberList = pagination.getContent();
-        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
-        int end =  start + paginationSize;
 
-        log.info("start==={},end==={}",start,end);
-        model.addAttribute("start",start);
-        model.addAttribute("end",end);
-        model.addAttribute("pagination",pagination);
-        model.addAttribute("memberList",memberList);
-        return "memberList/list";
-    }
-    @GetMapping("/search")
-    public String searchList(Model model,
-                             @RequestParam String category,
-                             @RequestParam String keyword,
-                             @RequestParam(value = "page", required = true,defaultValue = "0")int page){
-        Page<Member> pagination = memberService.findAllSearchPageMember(category,keyword,page);
-        List<Member> memberList = pagination.getContent();
-        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
-        int end =  start + paginationSize;
-
-        log.info("start==={},end==={}",start,end);
-        model.addAttribute("start",start);
-        model.addAttribute("end",end);
-        model.addAttribute("pagination",pagination);
-        model.addAttribute("memberList",memberList);
-        return "memberList/list";
-    }
 
 
     @ResponseBody

@@ -24,7 +24,7 @@
                 <li class="nav-item"><a href="/board/list.html" th:href="@{/member/mypage/{id}(id=${#authentication.principal.loggedMember.id})}" class="nav-link"
                                         th:text="${#authentication.principal.loggedMember.userName}"
                 ></a></li>
-                <li class="nav-item"><a href="" th:href="@{/member/list}" class="nav-link">회원리스트</a></li>
+                <li class="nav-item"><a href="" th:href="@{/memberList/list}" class="nav-link">회원리스트</a></li>
                 <li class="nav-item"><a href="" th:href="@{/member/logout}" class="nav-link">logout</a></li>
             </ul>
         </div>
