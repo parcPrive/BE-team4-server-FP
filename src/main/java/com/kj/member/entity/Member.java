@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @DynamicUpdate
 @Builder
+@Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -44,12 +45,18 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDateTime registerDate;
-    private int levels;
+    private String levels;
 
 
     public Member update(MemberDto memberDto){
         this.email = memberDto.getEmail();
         this.userName = memberDto.getUserName();
+        return this;
+    }
+
+    public Member updateLevel(String levels){
+
+        this.levels = levels;
         return this;
     }
 

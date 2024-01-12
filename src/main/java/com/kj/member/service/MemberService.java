@@ -1,6 +1,9 @@
 package com.kj.member.service;
 
 import com.kj.jwt.JwtUtil;
+import com.kj.log.dto.LogDto;
+import com.kj.log.entity.Log;
+import com.kj.log.repository.LogRepository;
 import com.kj.member.dto.CustomUserDetails;
 import com.kj.member.dto.JoinDto;
 import com.kj.member.dto.MemberDto;
@@ -37,27 +40,16 @@ import java.util.UUID;
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final LogRepository logRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtUtil jwtUtil;
 
-
-
     @Value("${file.path}")
     private String uploadFolder;
 
-   /* @Transactional
-    public TokenDto signin(String userId, String password){
-        UsernamePasswordAuthenticationToken authenticationToken = new
-                UsernamePasswordAuthenticationToken(userId,password);
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
-
-        return tokenDto;
-    }*/
     @Transactional
-    public void login(String userId, String password, HttpServletResponse response,String check){
+    public void login(String userId, String password, HttpServletResponse response, String check , LogDto logDto){
         //아이디 체크
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         if (optionalMember.isEmpty()){
@@ -65,6 +57,9 @@ public class MemberService {
             throw new IllegalArgumentException("회원이 존재하지 않음");
         }
         Member member = optionalMember.get();
+        Log logMember = LogDto.toEntity(logDto,member);
+        logRepository.save(logMember);
+
         // PW 체크하고
         if (!bCryptPasswordEncoder.matches(password,member.getPassword())){
             log.warn("비밀번호가 일치하지 않습니다.");
@@ -186,33 +181,7 @@ public class MemberService {
         return memberDtoList;
     }
 
-    public Page<Member> findAllPageMember(int page) {
-        Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"registerDate"));
-        Page<Member> memberList = memberRepository.findAll(pageable);
-        return memberList;
 
-    }
-    public Page<Member> findAllSearchPageMember(String category, String keyword,int page) {
-        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "registerDate"));
-        if (category.equals("userId")) {
-            Page<Member> memberList = memberRepository.findByUserId(keyword, pageable);
-            return memberList;
-        } else if(category.equals("userName")) {
-            Page<Member> memberList = memberRepository.findByUserName(keyword, pageable);
-            return memberList;
-        }else if(category.equals("nickName")) {
-            Page<Member> memberList = memberRepository.findByNickName(keyword, pageable);
-            return memberList;
-        } else if(category.equals("level")) {
-            Page<Member> memberList = memberRepository.findByLevels(keyword, pageable);
-            return memberList;
-        } /*else {
-            log.info("전체검색");
-            Page<Member> memberList = memberRepository.findByAllCategory(keyword, pageable);
-            return memberList;
-        }*/
-        return null;
-        }
 
 
 

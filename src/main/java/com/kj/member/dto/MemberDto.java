@@ -31,7 +31,7 @@ public class MemberDto {
     private String phone;
     private LocalDateTime registerDate;
     private String role;
-    private int levels;
+    private String levels;
 
     public static Member toEntity(MemberDto memberDto){
 
