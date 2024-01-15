@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<link rel="stylesheet" href="./goods__list.css" />
+<div layout:fragment="content" class="main">
+    <title>장바구니</title>
+    <style>
+        /* 간단한 스타일링 예시 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+    </head>
+    <body>
+
+    <h2>장바구니</h2>
+    <form th:action="@{/product/order}" method="post">
+        <input th:value="mok119" name="userId">
+
+    <table>
+        <thead>
+        <tr>
+            <th><input type="checkbox" name="xxx" value="yyy"></th>
+            <th>상품정보</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>합계</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 장바구니 아이템 예시 -->
+        <block th:each="productCart,stat : ${productCartList}">
+        <tr th:id="|deleteProduct${stat.count}|">
+            <td><input type="checkbox" th:id="|productCartId${stat.count}|" name="productCartId" th:value="${productCart.productCartId}"></td>
+            <td name="productPriceCount">
+                <img th:src="@{${productCart.productImage}}">
+                <span th:text="${productCart.productName}"></span>
+                <span th:text="${productCart.productSize.productSize}"></span>
+            </td>
+            <td th:text="${productCart.productPrice}"}>$50.00</td>
+            <td th:text="${productCart.productCount}">2</td>
+            <td th:text="${productCart.productPrice} * ${productCart.productCount}" th:id="|productPrice${stat.count}|">$100.00</td>
+            <td><button id="aaa" th:text="${stat.count}" th:onclick="|removeItem(${stat.count})|">삭제</button></td>
+        </tr>
+        </block>
+        </tbody>
+    </table>
+
+    <div class="total">
+        총금액: <span id="productTotalPrice"></span>원
+    </div>
+
+    <button onclick="checkout()">주문하기</button>
+    </form>
+    <script>
+        // 아이템 삭제 함수 예시
+        function removeItem(itemId) {
+            const deleteProductPrice = parseInt($("#productPrice" + itemId).text());
+            let prevProductTotalPrice = $("#productTotalPrice").text();
+            const result = (parseInt(prevProductTotalPrice) - deleteProductPrice);
+            const productCartId = $("#productCartId" + itemId).val();
+
+            $.ajax({
+                url:"/product/deletecart",
+                method:"POST",
+                data:{
+                    "productCartId": productCartId
+                },
+                success: function(data){
+                    if(data == "success"){
+                     console.log("성공적")
+                     alert('아이템을 삭제했습니다.');
+                     $("#deleteProduct" + itemId).remove();
+                     $("#productTotalPrice").text(result);
+                    }
+                }
+                })
+
+        }
+
+        // 주문하기 함수 예시
+        function checkout() {
+
+            alert('주문이 완료되었습니다.');
+        }
+        const productCount = $("td[name=productPriceCount]").length;
+        let productTotalPrice = 0;
+        for(let i = 1; i <= productCount; i++){
+            productTotalPrice += parseInt($("#productPrice" + i).text());
+        }
+        $("#productTotalPrice").text(productTotalPrice);
+        console.log("총합===>>> " + productTotalPrice)
+        console.log("길이는 ===>>> " + productCount);
+    </script>
+
+    </body>
+
+</div>
+</html>
+<!--<body>-->
+<!--<section class="cart">-->
+<!--    <div class="cart__information">-->
+<!--        <ul>-->
+<!--            <li>장바구니 상품은 최대 30일간 저장됩니다.</li>-->
+<!--            <li>가격, 옵션 등 정보가 변경된 경우 주문이 불가할 수 있습니다.</li>-->
+<!--            <li>오늘출발 상품은 판매자 설정 시점에 따라 오늘출발 여부가 변경될 수 있으니 주문 시 꼭 다시 확인해 주시기 바랍니다.</li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <table class="cart__list">-->
+<!--        <form>-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <td><input type="checkbox"></td>-->
+<!--                <td colspan="2">상품정보</td>-->
+<!--                <td>옵션</td>-->
+<!--                <td>상품금액</td>-->
+<!--                <td>배송비</td>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr class="cart__list__detail">-->
+<!--                <td><input type="checkbox"></td>-->
+<!--                <td><img src="image/keyboard.jpg" alt="magic keyboard"></td>-->
+<!--                <td><a href="#">애플 공식 브랜드스토어</a><span class="cart__list__smartstore"> 스마트스토어</span>-->
+<!--                    <p>Apple 매직 키보드 - 한국어(MK2A3KH/A)</p>-->
+<!--                    <sapn class="price">116,62원</sapn><span-->
+<!--                            style="text-decoration: line-through; color: lightgray;">119,000</span>-->
+<!--                </td>-->
+<!--                <td class="cart__list__option">-->
+<!--                    <p>모델명 : 키보드 - 한국어 MK2A3KH/A / 1개</p>-->
+<!--                    <button class="cart__list__optionbtn">주문조건 추가/변경</button>-->
+<!--                </td>-->
+<!--                <td><span class="price">116,620원</span><br>-->
+<!--                    <button class="cart__list__orderbtn">주문하기</button>-->
+<!--                </td>-->
+<!--                <td>무료</td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--            <tfoot>-->
+<!--            <tr>-->
+<!--                <td colspan="3"><input type="checkbox"> <button class="cart__list__optionbtn">선택상품 삭제</button>-->
+<!--                    <button class="cart__list__optionbtn">선택상품 찜</button>-->
+<!--                </td>-->
+<!--                <td></td>-->
+<!--                <td></td>-->
+<!--                <td></td>-->
+<!--            </tr>-->
+<!--            </tfoot>-->
+<!--        </form>-->
+<!--    </table>-->
+<!--    <div class="cart__mainbtns">-->
+<!--        <button class="cart__bigorderbtn left">쇼핑 계속하기</button>-->
+<!--        <button class="cart__bigorderbtn right">주문하기</button>-->
+<!--    </div>-->
+<!--</section>-->
+<!--</body>-->

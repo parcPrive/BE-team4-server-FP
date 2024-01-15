@@ -1,9 +1,7 @@
 package com.kj.productReview.entity;
 
-import com.kj.product.entity.Product;
+import com.kj.products.product.entity.Product;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 public class ProductReview {
