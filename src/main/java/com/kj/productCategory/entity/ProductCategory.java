@@ -1,12 +1,8 @@
 package com.kj.productCategory.entity;
 
-import com.kj.product.entity.Product;
 import com.kj.productCategory.dto.ProductCategoryInputDto;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
