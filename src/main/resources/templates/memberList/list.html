@@ -4,10 +4,11 @@
       layout:decorate="~{/layout/layout}">
 <div layout:fragment="content" class="main">
     <div class="container">
+        <h2 th:text="${xx}"></h2>
         <table class="table">
             <thead class="table-dark">
             <tr>
-                <th scope="col">#</th>
+                <th scope="col">회원 현황</th>
                 <th scope="col">신규 회원</th>
                 <th scope="col">오늘 방문회원</th>
                 <th scope="col">총 회원</th>
@@ -15,8 +16,8 @@
             </thead>
             <tbody>
             <tr>
-                <th scope="row">1</th>
-                <td th:text="신규회원"></td>
+                <td >#</td>
+                <td th:text="${registerDateList.size()}"></td>
                 <td th:text="${logList.size()}"></td>
                 <td th:text="${memberList.size()}"></td>
             </tr>

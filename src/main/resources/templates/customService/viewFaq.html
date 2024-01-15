@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <h2>FAQ VIEW</h2>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th scope="row">구분</th>
+                <td th:text="${faqBoardInfo.faqCategory.bigFaqCategory.getValue()}">Mark</td>
+            </tr>
+            <tr>
+                <th scope="row">제목</th>
+                <td th:text="${faqBoardInfo.faqTitle}">Mark</td>
+            </tr>
+            <tr>
+                <th scope="row">내용</th>
+                <td th:text="${faqBoardInfo.faqContent}">Mark</td>
+            </tr>
+            <tr>
+                <th scope="row">등록 날짜</th>
+                <td th:text="${#temporals.format(faqBoardInfo.faqDate,'yyyy-MM-dd HH:mm')}">Mark</td>
+            </tr>
+
+            </tbody>
+        </table>
+        <div class="mt-5 d-flex justify-content-center" >
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+                <a th:href="@{/cs/deleteFaq/{id}(id=${faqBoardInfo.id})}" class="btn btn-danger">글 삭제</a>
+                <a th:href="@{/cs/updateFaq/{id}(id=${faqBoardInfo.id})}" class="btn btn-primary mx-1">글 수정</a>
+            </th:block>
+            <a th:href="@{/cs/faq}" class="btn btn-primary">목록</a>
+        </div>
+    </div>
+
+</div>

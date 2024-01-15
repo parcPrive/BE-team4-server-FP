@@ -12,9 +12,7 @@ import java.util.List;
 
 @Repository
 public interface LogRepository extends JpaRepository<Log,Long> {
-
     List<Log> findByLoginDateBetween(LocalDateTime startDatetime,LocalDateTime endDatetime);
     //Long logCount();
-
 
 }

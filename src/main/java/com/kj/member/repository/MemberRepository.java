@@ -1,5 +1,6 @@
 package com.kj.member.repository;
 
+import com.kj.log.entity.Log;
 import com.kj.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     @Query("select b from Member b where b.levels < '5'")
     Page<Member> findByAll(Pageable pageable);
+    List<Member> findByRegisterDateBetween(LocalDateTime startDatetime, LocalDateTime endDatetime);
     @Query("select b from Member b where b.levels = '5'")
     Page<Member> findByBlack(Pageable pageable);
 
