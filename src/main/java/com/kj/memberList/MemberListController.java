@@ -3,6 +3,7 @@ package com.kj.memberList;
 import com.kj.log.LogService;
 import com.kj.log.entity.Log;
 import com.kj.member.entity.Member;
+import com.kj.utils.BigFaqCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/memberList")
@@ -31,18 +31,19 @@ public class MemberListController {
     public String listMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
         Page<Member> pagination = memberListService.findAllPageMember(page);
         List<Log> logList = logService.findByLog();
-        log.info("pageBoardList.getTotalPages()==={}",pagination.getTotalPages());
-        log.info(pagination.toString());
+        List<Member> registerDateList = memberListService.findByRegisterDate();
         List<Member> memberList = pagination.getContent();
         int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
         int end =  start + paginationSize;
+        String xx = BigFaqCategory.FAQ001.getValue();
 
-        log.info("start==={},end==={}",start,end);
         model.addAttribute("start",start);
         model.addAttribute("end",end);
         model.addAttribute("pagination",pagination);
         model.addAttribute("memberList",memberList);
         model.addAttribute("logList",logList);
+        model.addAttribute("registerDateList",registerDateList);
+        model.addAttribute("xx",xx);
         return "memberList/list";
     }
     @GetMapping("/search")

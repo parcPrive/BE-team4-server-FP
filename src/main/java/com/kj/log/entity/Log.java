@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    /*@Column(name = "log_id")*/
     Long id;
     LocalDateTime loginDate;
     LocalDateTime blackDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member_id;
-
 
 }
