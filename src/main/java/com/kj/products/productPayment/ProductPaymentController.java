@@ -21,7 +21,7 @@ public class ProductPaymentController {
 
         paymentGetTokenDto.key();
 
-//        String aaa = paymentFeignClient.getToken(paymentGetTokenDto);
+        String aaa = paymentFeignClient.getToken(paymentGetTokenDto);
         return "ads";
     }
 }
