@@ -1,4 +1,4 @@
-package com.kj.log.entity;
+package com.kj.deleteMember.entity;
 
 import com.kj.member.entity.Member;
 import jakarta.persistence.*;
@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -16,16 +14,11 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "LogMember")
-public class Log {
+public class DeleteMember {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    /*@Column(name = "log_id")*/
-    Long id;
-    LocalDateTime loginDate;
-    LocalDateTime blackDate;
+    private Long id;
+    private LocalDateTime deleteDate;
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Member member_id;
-
+    private Member member;
 }

@@ -131,7 +131,7 @@
             // 검색 후 카테고리가 level이면 selcet를 유지
             if($(".btnSearch").val()=="level"){
             $(".keyword").attr("type","hidden");
-            $(".keywordLevel").html(`<select class="form-select btnLevel" name="keyword">
+            $(".keywordLevel").html(`<select class="form-select" name="keyword">
                               <option value="0">일반</option>
                               <option value="1">실버</option>
                               <option value="2">골드</option>
@@ -145,7 +145,7 @@
 
                 if($(".btnSearch").val()=="level"){
                     $(".keyword").attr("type","hidden");
-                    $(".keywordLevel").html(`<select class="form-select btnLevel" name="keyword">
+                    $(".keywordLevel").html(`<select class="form-select " name="keyword">
                               <option value="0">일반</option>
                               <option value="1">실버</option>
                               <option value="2">골드</option>
@@ -251,6 +251,7 @@
                     })
                     return false;
                 })
+
             //체크박스 전체 선택 및 해체 기능
                 $("#checkAll").on("change",function(){
                     if($("#checkAll").is(":checked")){

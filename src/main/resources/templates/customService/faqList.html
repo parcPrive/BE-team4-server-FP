@@ -6,12 +6,12 @@
     <div class="container">
         <h2>자주 묻는 질문(FAQ)</h2>
         <nav class="nav mb-3">
-            <a class="nav-link active" aria-current="page" href="#">회원정보</a>
-            <a class="nav-link" href="#">상품확인</a>
-            <a class="nav-link" href="#">주문/결제</a>
-            <a class="nav-link " href="#" >배송</a>
-            <a class="nav-link " href="#" >교환/취소(반품)</a>
-            <a class="nav-link " href="#" >서비스</a>
+            <a class="nav-link active" aria-current="page" th:href="@{/cs/faq/{code}(code='001')}">회원정보</a>
+            <a class="nav-link" href="#" th:href="@{/cs/faq/{code}(code='002')}">상품확인</a>
+            <a class="nav-link" href="#" th:href="@{/cs/faq/{code}(code='003')}">주문/결제</a>
+            <a class="nav-link " href="#" th:href="@{/cs/faq/{code}(code='004')}" >배송</a>
+            <a class="nav-link " href="#" th:href="@{/cs/faq/{code}(code='005')}" >교환/취소(반품)</a>
+            <a class="nav-link " href="#" th:href="@{/cs/faq/{code}(code='006')}" >서비스</a>
         </nav>
         <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
             <a th:href="@{/cs/insertFaqCategory}" class="btn btn-primary">카테고리 등록</a>
@@ -54,8 +54,6 @@
                 <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
                     <a class="page-link" th:href="@{/cs/faq(page=${pagination.number - 1})}">Previous</a>
                 </li>
-                <!-- 13 -->
-                <!--1,2,3,4,5 /> 6,7,8,9,10 / 11,12,131,14,15-->
                 <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
                     <li class="page-item"
                         th:classappend="${item==pagination.number?'active':''}"
@@ -77,4 +75,31 @@
             </th:block>
         </div>
     </div>
+    <script th:inline="javascript">
+        //삭제 기능
+               $(".btnDelete").on("click",function(){
+                   const $parent = $(this).parent().parent();
+                   console.log($parent);
+                   const loggedId = $(this).data("no");
+                   console.log(loggedId);
+                   $.ajax({
+                       url:"/cs/deleteFaq/"+loggedId,
+                       data:{id:$(this).data("no")},
+                       success:function(data){
+                            location.reload();
+                       },
+                       fail:function(){
+                       }
+                   });
+                   return false;
+               });
+                //체크박스 전체 선택 및 해체 기능
+                $("#checkAll").on("change",function(){
+                    if($("#checkAll").is(":checked")){
+                     $(".check").prop("checked",true);
+                    }else{
+                     $(".check").prop("checked",false);
+                    }
+                })
+    </script>
 </div>

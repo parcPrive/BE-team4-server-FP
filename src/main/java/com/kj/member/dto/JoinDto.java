@@ -57,6 +57,7 @@ public class JoinDto {
                 .email(joinDto.getEmail())
                 .mobile(Mobile.valueOf(joinDto.getMobile()))
                 .phone(joinDto.getPhone())
+                .levels("0")
                 .registerDate(LocalDateTime.now())
                 .role(Role.USER)
                 .build();

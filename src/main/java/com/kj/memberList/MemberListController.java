@@ -54,6 +54,8 @@ public class MemberListController {
                              @RequestParam(value = "page", required = true,defaultValue = "0")int page){
         black=".";
         Page<Member> pagination = memberListService.findAllSearchPageMember(category,keyword,page,black);
+        List<Member> registerDateList = memberListService.findByRegisterDate();
+        List<Log> logList = logService.findByLog();
         List<Member> memberList = pagination.getContent();
         int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
         int end =  start + paginationSize;
@@ -62,6 +64,8 @@ public class MemberListController {
         model.addAttribute("end",end);
         model.addAttribute("pagination",pagination);
         model.addAttribute("memberList",memberList);
+        model.addAttribute("registerDateList",registerDateList);
+        model.addAttribute("logList",logList);
         return "memberList/list";
     }
     @GetMapping("/searchBlack")

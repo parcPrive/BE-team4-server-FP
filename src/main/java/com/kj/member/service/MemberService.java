@@ -133,8 +133,6 @@ public class MemberService {
     public boolean deleteMember(Long id,String password) {
         Member member = memberRepository.findById(id).orElseThrow(() ->
         new UsernameNotFoundException("아이디 존재하지 않습니다."));
-        log.info("=={}",member.getPassword());
-        log.info("=={}",password);
         if (bCryptPasswordEncoder.matches(password, member.getPassword())){
             memberRepository.delete(member);
             return true;

@@ -1,6 +1,8 @@
+/*
 package com.kj.product.entity;
 
-import com.kj.product.entity.Product;
+
+import com.kj.products.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,3 +27,4 @@ public class ProductCart {
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 }
+*/

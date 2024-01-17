@@ -17,4 +17,8 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory,Long> {
 
 
     Optional<FaqCategory> findBySmallFaqCategoryAndBigFaqCategory(SmallFaqCategory small, BigFaqCategory big);
+
+    Optional<FaqCategory> findByBigFaqCategory(BigFaqCategory bigFaqCategory);
+
+    List<FaqCategory> findAllByOrderByBigFaqCategoryAsc();
 }

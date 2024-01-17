@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +34,7 @@ public class FaqBoard {
     @ManyToOne
     @JoinColumn(name = "faqCategoryId")
     private FaqCategory faqCategory;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;
 
     public FaqBoard update(FaqBoardDto faqBoardDto, FaqCategory faqCategory){
