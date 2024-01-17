@@ -22,7 +22,6 @@ public class ProductPaymentController {
         paymentGetTokenDto.key();
         log.info("페이먼트디티오 ==>>>{}",paymentGetTokenDto);
         String aaa = paymentFeignClient.getToken(paymentGetTokenDto);
-        log.info("여기에는?? ===>> {}", aaa);
         return "ads";
     }
 }
