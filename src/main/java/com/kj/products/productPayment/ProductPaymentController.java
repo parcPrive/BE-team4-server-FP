@@ -20,7 +20,7 @@ public class ProductPaymentController {
     public String ProductPaymentGetToken(){
 
         paymentGetTokenDto.key();
-        log.info("페이먼트디티오 ==>>>{}",paymentGetTokenDto);
+
         String aaa = paymentFeignClient.getToken(paymentGetTokenDto);
         return "ads";
     }
