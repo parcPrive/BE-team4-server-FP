@@ -19,7 +19,6 @@ public class ProductPaymentController {
     @ResponseBody
     public String ProductPaymentGetToken(){
 
-        log.info("페이먼트디티오 ==>>>{}");
         paymentGetTokenDto.key();
         log.info("페이먼트디티오 ==>>>{}",paymentGetTokenDto);
         String aaa = paymentFeignClient.getToken(paymentGetTokenDto);
