@@ -191,4 +191,16 @@ public class MemberService {
             return false;
         }
     }
+
+    // 현목 주문에 필요한 회원 기본 배송지 데이터 필요 findByuserId or findByuserNickName
+    public void findAddressByUserNickName(String userNickName){
+        Optional<Member> findMember = memberRepository.findByNickName(userNickName);
+        if(findMember.isPresent()){
+            log.info("주소 ==>>> {}",findMember.get().getAddress());
+            log.info("디테일 주소 ==>>> {}",findMember.get().getAddressDetail());
+            log.info("전화번호 ==>>> {}",findMember.get().getPhone());
+        }
+
+
+    }
 }
