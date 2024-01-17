@@ -1,11 +1,10 @@
-package com.kj.log.entity;
+package com.kj.notice.entity;
 
 import com.kj.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -14,18 +13,17 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "LogMember")
-public class Log {
+@Slf4j
+public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    /*@Column(name = "log_id")*/
-    Long id;
-    LocalDateTime loginDate;
-    LocalDateTime blackDate;
+    private Long id;
+    private String noticeTitle;
+    private String noticeContent;
+    private String noticeCategory;
+    private LocalDateTime noticeDate;
+    private int noticeView;
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Member member_id;
-
+    private Member writer;
 }

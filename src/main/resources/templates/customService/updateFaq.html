@@ -40,15 +40,24 @@
                     <div class="mb-3">
                         <label for="content" class="form-label">CONTENT</label>
                         <textarea type="text" class="form-control" id="content"
-                                  placeholder="content" name="faqContent" th:text="${faqBoardInfo.faqContent}" rows="10"></textarea>
+                                  placeholder="content" name="faqContent" th:utext="${faqBoardInfo.faqContent}" rows="10"></textarea>
 
                     </div>
                     <div class="d-flex justify-content-center mt-5">
                         <button class="btn btn-primary" id="btnJoinConfirm">저장</button>
-                        <a class="btn btn-danger" id="btnJoinCancel">취소</a>
+                        <a href="javascript:history.back();" class="btn btn-secondary">취소</a>
                     </div>
                 </form>
                 <script>
+                    ClassicEditor
+                        .create( document.querySelector( "#content" ),{
+                            ckfinder:{
+                                uploadUrl:"/cs/upload"
+                            }
+                        } )
+                        .catch( error => {
+                            console.error( error );
+                        } );
                     if($(".bigFaqCategory").val() == "FAQ001"){
                             $(".FaqCategory").html(`<select class="form-select btnLevel" name="smallFaqCategory">
                                       <option value="FAQ00101">가입/인증</option>

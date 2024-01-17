@@ -103,12 +103,9 @@ public class MemberController {
 
     @PostMapping("/delete")
     public String deleteProcess(@RequestParam String password, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
-
-       boolean result = memberService.deleteMember(customUserDetails.getLoggedMember().getId(), password);
-       log.info("=={}",customUserDetails.getLoggedMember().getId());
-       log.info("=={}",customUserDetails.getPassword());
+        log.info("=={}",customUserDetails.getLoggedMember().getId());
         log.info("=={}",password);
-
+       boolean result = memberService.deleteMember(customUserDetails.getLoggedMember().getId(), password);
        if (result) {
             return "redirect:/member/logout";
         } else {

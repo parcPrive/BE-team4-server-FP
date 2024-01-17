@@ -32,6 +32,11 @@ public class FaqBoardService {
         Page<FaqBoard> faqBoardList = faqBoardRepository.findByAll(pageable);
         return faqBoardList;
     }
+    public Page<FaqBoard> findByPageFaq(int page, String keyword) {
+        Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"faq_Date"));
+        Page<FaqBoard> faqBoardList = faqBoardRepository.findByCategory(pageable,keyword);
+        return faqBoardList;
+    }
 
     public FaqBoard findById(Long id) {
        Optional<FaqBoard> faqBoard = faqBoardRepository.findById(id);

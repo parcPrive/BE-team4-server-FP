@@ -4,7 +4,7 @@
       layout:decorate="~{/layout/layout}">
 <div layout:fragment="content" class="main">
     <div class="container">
-        <h2>카테고리 등록</h2>
+        <h2>카테고리 등록 및 리스트</h2>
         <form action="" th:action="@{/cs/insertFaqCategory}" method="post">
             <div class="row">
                 <div class="col">
@@ -32,6 +32,24 @@
             <div class="d-flex justify-content-center mt-5">
                 <button class="btn btn-primary" id="btnCategory">저장</button>
             </div>
+            <table class="table">
+                <thead class="table-dark">
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">대분류</th>
+                    <th scope="col">소분류</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="item,status:${faqCategoryList}">
+                    <tr>
+                        <td th:text="${status.index+1}"></td>
+                        <td th:text="${item.bigFaqCategory.getValue()}" ></td>
+                        <td th:text="${item.smallFaqCategory.getValue()}" ></td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
         </form>
         <script>
 

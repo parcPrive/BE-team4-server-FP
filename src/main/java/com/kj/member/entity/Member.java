@@ -1,9 +1,13 @@
 package com.kj.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.kj.deleteMember.entity.DeleteMember;
+import com.kj.faq.entity.FaqBoard;
+import com.kj.log.entity.Log;
 import com.kj.member.dto.MemberDto;
 import com.kj.member.dto.UpdateMemberDto;
 
+import com.kj.notice.entity.Notice;
 import com.kj.utils.Mobile;
 import com.kj.utils.Role;
 import jakarta.persistence.*;
@@ -16,6 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,11 +47,20 @@ public class Member {
     private Mobile mobile;
     private String phone;
     private String profileImageUrl;
-
     @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDateTime registerDate;
     private String levels;
+
+
+    @OneToMany(mappedBy = "member_id", cascade = CascadeType .REMOVE)
+    List<Log> logList = new ArrayList<>();
+    @OneToMany(mappedBy = "writer", cascade = CascadeType .REMOVE)
+    List<FaqBoard> faqBoardList = new ArrayList<>();
+    @OneToMany(mappedBy = "writer", cascade = CascadeType .REMOVE)
+    List<Notice> noticeList = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType .REMOVE)
+    List<DeleteMember> deleteMemberList = new ArrayList<>();
 
 
     public Member update(MemberDto memberDto){
