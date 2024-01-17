@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class ProductCartOrderDto {
     private String userId;
-    private List<String> productCartId;
+    private List<Long> productCartId;
 }

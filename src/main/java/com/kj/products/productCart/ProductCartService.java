@@ -8,6 +8,8 @@ import com.kj.products.productCart.repository.ProductCartRepository;
 import com.kj.products.product.repository.ProductSizeRepository;
 import com.kj.products.productCart.dto.ProductCartInsertDto;
 import com.kj.products.productCart.entity.ProductCart;
+import com.kj.products.productOder.dto.ProductCartOrderDto;
+import com.kj.products.productOder.dto.ProductOrderInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,5 +61,9 @@ public class ProductCartService {
         log.info("=================================delete=================================");
         productCartRepository.deleteById(productCartId);
         log.info("=================================delete=================================");
+    }
+
+    public List<ProductOrderInfoDto> findByUserNickInProductCartId(ProductCartOrderDto productCartOrderDto) {
+        return productCartRepository.findByUserNickInProductCartId(productCartOrderDto);
     }
 }

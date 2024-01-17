@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<link rel="stylesheet" href="./goods__list.css" />
+<div layout:fragment="content" class="main">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 20px;
+        }
+
+        .delivery-info {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #4CAF50;
+        }
+
+        .address {
+            margin-top: 10px;
+        }
+
+        .note {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+
+    </style>
+    </head>
+    <body>
+
+    <div class="delivery-info">
+        <h2>배송지 정보</h2>
+
+        <div class="address">
+            <strong>배송지:</strong> <span th:text="${productOrderInfo[0].userName}"></span>
+            <button onclick="changeAddress()">배송지 변경</button>
+        </div>
+
+        <h3>이름 / 연락처</h3>
+        <p><strong>이름:</strong> <span th:id="userName" th:text="${productOrderInfo[0].userName}"></span> </p>
+        <p><strong>연락처:</strong><span th:id="userPhoneNum" th:text="${productOrderInfo[0].userPhoneNum}"></span> </p>
+
+        <h3>주소</h3>
+        <p th:text="|(${productOrderInfo[0].userPostCode}) ${productOrderInfo[0].userAddress} ${productOrderInfo[0].userDetailAddress}|"></p>
+
+        <div class="note">
+            <h3>배송 요청사항</h3>
+            <select class="order__select" name="dlv_selectbox" id="dlv_selectbox" onchange="showEtc(this.value);">
+                <option value="">
+                    배송 시 요청사항을 선택해주세요
+                </option>
+                <option value="부재 시 경비실에 맡겨주세요">
+                    부재 시 경비실에 맡겨주세요
+                </option>
+                <option value="부재 시 택배함에 넣어주세요">
+                    부재 시 택배함에 넣어주세요
+                </option>
+                <option value="부재 시 집 앞에 놔주세요">
+                    부재 시 집 앞에 놔주세요
+                </option>
+                <option value="배송 전 연락 바랍니다">
+                    배송 전 연락 바랍니다
+                </option>
+                <option value="파손의 위험이 있는 상품입니다. 배송 시 주의해 주세요." selected="selected">
+                    파손의 위험이 있는 상품입니다. 배송 시 주의해 주세요.
+                </option>
+                <option value="etc">
+                    직접 입력
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+
+            <th>상품정보</th>
+            <th>수량</th>
+            <th>주문금액</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <block th:each="productOrder,stat : ${productOrderInfo}">
+            <tr>
+                <td name="productPriceCount">
+                    <img th:src="@{${productOrder.productImage}}">
+                    <span th:id="|productName${stat.count}|" th:text="${productOrder.productName}">상품이름</span>
+                    <span th:text="${productOrder.productSize.productSize}">사이즈</span>
+                </td>
+                <td th:id="|productCount${stat.count}|" th:text="${productOrder.productCount}">상품수량</td>
+                <td class="productPrice" th:id="|productPrice${stat.count}|" th:text="${productOrder.productPrice}">상품 가격</td>
+            </tr>
+        </block>
+        </tbody>
+    </table>
+
+    <div class="total">
+        총금액: <span id="productTotalPrice"></span>원
+    </div>
+    <button onclick="requestPay()">결제하기</button>
+
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script th:inline="javascript">
+        const tagCount = $(".productPrice").length;
+        console.log("태그갯수 ===>>> " + tagCount)
+        let productTotalPrice = 0;
+        for(let i = 1; i <= tagCount; i++){
+            productTotalPrice += parseInt($("#productPrice" + i).text());
+        }
+        $("#productTotalPrice").text(productTotalPrice)
+
+
+        let productTotalName = $("#productName1").text() + $("#productCount1").text() + "개";
+        console.log("이름 ===>> " + productTotalName)
+        let productCount = 0;
+        if(tagCount > 1){
+            for(let i = 2; i <= tagCount; i++){
+                productCount += parseInt($("#productCount" + i).text());
+            }
+           productTotalName = productTotalName + " 외 " + productCount +"개";
+        }
+
+        var IMP = window.IMP;
+      IMP.init("imp44914623");
+
+      function requestPay() {
+        IMP.request_pay(
+          {
+            pg: "html5_inicis",
+            pay_method: "card",
+            name: productTotalName,
+            // amount: productTotalPrice,
+              amount: 100,
+            buyer_email: "Iamport@chai.finance",
+            buyer_name: $("#userName").text(),
+            buyer_tel: $("#userPhoneNum").text(),
+            buyer_addr: [[${productOrderInfo[0].userAddress} + ${productOrderInfo[0].userDetailAddress}]],
+            buyer_postcode: [[${productOrderInfo[0].userPostCode}]],
+          },
+          function (rsp) {
+            if(rsp.success){
+                const impUid = rsp.imp_uid;
+                const userPostCode = rsp.buyer_postcode;
+                const userAddress = rsp.buyer_addr;
+                const userPhoneNum = rsp.buyer_tel;
+                const paymentStatus = rsp.status;
+                const productAmount = rsp.paid_amount;
+                console.log(impUid)
+                console.log(rsp)
+
+
+            }
+          }
+        );
+      }
+    </script>
+
+    </body>
+
+
+</div>
+</html>
+

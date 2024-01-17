@@ -7,6 +7,7 @@ import com.kj.products.productCart.ProductCartService;
 import com.kj.products.productCart.dto.ProductCartInsertDto;
 import com.kj.products.productCart.dto.ProductCartListDto;
 import com.kj.products.productOder.dto.ProductCartOrderDto;
+import com.kj.products.productOder.dto.ProductOrderInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -127,7 +128,7 @@ public class ProductController {
         return "/product/view";
 
     }
-
+// ===========장바구니============
     @GetMapping("/cart/{userName}")
     public String productCart(
             @PathVariable String userName,
@@ -139,16 +140,6 @@ public class ProductController {
         return "/product/cart";
     }
 
-    @PostMapping("/order")
-    public void productOrder(
-            @ModelAttribute ProductCartOrderDto productCartOrderDto,
-            Model model
-            ){
-        log.info("productCartOrderDto ===>>> {}", productCartOrderDto);
-
-
-    }
-
 
     @PostMapping("/cart")
     @ResponseBody
@@ -158,6 +149,19 @@ public class ProductController {
         log.info("productCartInsertDto ====>>> {}",productCartInsertDto);
         Long productCartCount = productCartService.insertProductCart(productCartInsertDto);
         return productCartCount;
+    }
+
+    // ============== 주문내역=========
+
+    @PostMapping("/order")
+    public String productOrder(
+            @ModelAttribute ProductCartOrderDto productCartOrderDto,
+            Model model
+    ){
+        log.info("productCartOrderDto ===>>> {}", productCartOrderDto);
+        List<ProductOrderInfoDto> productOrderInfoList = productCartService.findByUserNickInProductCartId(productCartOrderDto);
+        model.addAttribute("productOrderInfo", productOrderInfoList);
+        return "/product/order";
     }
 
     @PostMapping("/deletecart")
