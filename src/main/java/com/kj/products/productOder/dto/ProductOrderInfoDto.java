@@ -1,4 +1,6 @@
 package com.kj.products.productOder.dto;
+
+
 import com.kj.products.product.entity.ProductSize;
 import com.kj.products.productCart.entity.ProductCart;
 import lombok.Builder;
@@ -19,6 +21,7 @@ public class ProductOrderInfoDto {
     private int productPrice;
     private int productCount;
     private String productImage;
+
     @Builder
     public ProductOrderInfoDto(ProductCart findProductOrderList) {
         this.productId = findProductOrderList.getProductSize().getProduct().getId();
