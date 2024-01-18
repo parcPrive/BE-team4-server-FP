@@ -5,16 +5,14 @@ import com.kj.deleteMember.entity.DeleteMember;
 import com.kj.log.LogService;
 import com.kj.log.entity.Log;
 import com.kj.member.entity.Member;
+import com.kj.member.service.MemberService;
 import com.kj.utils.BigFaqCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberListController {
+    private final MemberService memberService;
     private final MemberListService memberListService;
     private final DeleteMemberService deleteMemberService;
     private final LogService logService;
@@ -165,5 +164,18 @@ public class MemberListController {
         model.addAttribute("category",category);
         model.addAttribute("keyword",keyword);
         return "memberList/deleteList";
+    }
+
+    @GetMapping("/delete")
+    @ResponseBody
+    public Map<String, Object> deleteMemberList(Model model,@RequestBody List<Long> id){
+        boolean result = memberService.deleteAdminMember(id);
+        Map<String,Object> resultMap = new HashMap<>();
+        if (result){
+        resultMap.put("isLevel",true);
+        }else {
+            resultMap.put("isLevel",false);
+        }
+        return resultMap;
     }
 }

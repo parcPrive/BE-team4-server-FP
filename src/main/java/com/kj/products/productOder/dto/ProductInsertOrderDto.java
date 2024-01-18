@@ -14,4 +14,6 @@ public class ProductInsertOrderDto {
     private String userPostCode;
     private String userPhoneNum;
     private String deliveryRequest;
+
 }
+
