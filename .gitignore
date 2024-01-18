@@ -4,4 +4,4 @@ build/
 application.yml
 aaa
 elk
-.gradle
+.gradle/

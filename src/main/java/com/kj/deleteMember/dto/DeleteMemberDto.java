@@ -16,10 +16,12 @@ import java.time.LocalDateTime;
 public class DeleteMemberDto {
     private Long id;
     private LocalDateTime deleteDate;
+    private String preLevel;
 
-    public static DeleteMember toEntity(DeleteMemberDto logDto, Member member){
+    public static DeleteMember toEntity(DeleteMemberDto dto, Member member){
         return DeleteMember.builder()
-                .id(logDto.id)
+                .id(dto.id)
+                .preLevel(dto.getPreLevel())
                 .member(member)
                 .deleteDate(LocalDateTime.now())
                 .build();

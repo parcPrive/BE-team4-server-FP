@@ -1,5 +1,7 @@
 package com.kj.memberList;
 
+import com.kj.deleteMember.DeleteMemberService;
+import com.kj.deleteMember.entity.DeleteMember;
 import com.kj.log.LogService;
 import com.kj.log.entity.Log;
 import com.kj.member.entity.Member;
@@ -24,6 +26,7 @@ import java.util.Map;
 @Slf4j
 public class MemberListController {
     private final MemberListService memberListService;
+    private final DeleteMemberService deleteMemberService;
     private final LogService logService;
     private int paginationSize=5;
 
@@ -50,6 +53,7 @@ public class MemberListController {
     public String searchList(Model model,
                              @RequestParam String category,
                              @RequestParam String keyword,
+                             @RequestParam String search,
                              String black,
                              @RequestParam(value = "page", required = true,defaultValue = "0")int page){
         black=".";
@@ -59,19 +63,21 @@ public class MemberListController {
         List<Member> memberList = pagination.getContent();
         int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
         int end =  start + paginationSize;
-        log.info("start==={},end==={}",start,end);
         model.addAttribute("start",start);
         model.addAttribute("end",end);
         model.addAttribute("pagination",pagination);
         model.addAttribute("memberList",memberList);
         model.addAttribute("registerDateList",registerDateList);
         model.addAttribute("logList",logList);
+        model.addAttribute("search",search);
+        model.addAttribute("category",category);
+        model.addAttribute("keyword",keyword);
         return "memberList/list";
     }
     @GetMapping("/searchBlack")
     public String searchBlackList(Model model,
                              @RequestParam String category,
-                             @RequestParam String keyword, @RequestParam String black,
+                             @RequestParam String keyword, @RequestParam String black, @RequestParam String search,
                              @RequestParam(value = "page", required = true,defaultValue = "0")int page){
         Page<Member> pagination = memberListService.findAllSearchPageMember(category,keyword,page,black);
         List<Member> memberList = pagination.getContent();
@@ -83,6 +89,10 @@ public class MemberListController {
         model.addAttribute("end",end);
         model.addAttribute("pagination",pagination);
         model.addAttribute("memberList",memberList);
+        model.addAttribute("search",search);
+        model.addAttribute("category",category);
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("black",black);
         return "memberList/blackList";
     }
     @GetMapping("/level")
@@ -119,5 +129,41 @@ public class MemberListController {
         model.addAttribute("pagination",pagination);
         model.addAttribute("memberList",memberList);
         return "memberList/blackList";
+    }
+
+    @GetMapping("/deleteList")
+    public String deleteListMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
+        //Page<Member> pagination = memberListService.findAllDeletePageMember(page);
+        Page<DeleteMember> pagination = deleteMemberService.findByDeleteMember(page);
+        List<DeleteMember> memberList = pagination.getContent();
+        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
+        int end =  start + paginationSize;
+
+        log.info("start==={},end==={}",start,end);
+        model.addAttribute("start",start);
+        model.addAttribute("end",end);
+        model.addAttribute("pagination",pagination);
+        model.addAttribute("memberList",memberList);
+        return "memberList/deleteList";
+    }
+    @GetMapping("/searchDelete")
+    public String searchDeleteList(Model model,
+                                  @RequestParam String category,
+                                  @RequestParam String keyword, @RequestParam String search,
+                                  @RequestParam(value = "page", required = true,defaultValue = "0")int page){
+        Page<DeleteMember> pagination = deleteMemberService.findAllSearchPageDeleteMember(category,keyword,page);
+        List<DeleteMember> memberList = pagination.getContent();
+        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
+        int end =  start + paginationSize;
+
+        log.info("start==={},end==={}",start,end);
+        model.addAttribute("start",start);
+        model.addAttribute("end",end);
+        model.addAttribute("pagination",pagination);
+        model.addAttribute("memberList",memberList);
+        model.addAttribute("search",search);
+        model.addAttribute("category",category);
+        model.addAttribute("keyword",keyword);
+        return "memberList/deleteList";
     }
 }

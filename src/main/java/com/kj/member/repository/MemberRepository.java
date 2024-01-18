@@ -21,6 +21,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     Optional<Member> findByUserId(String userId);
 
+    //탈퇴 회원이 아닌 전체 맴버 중 아이디 일치 여부 즉 로그인시 사용
+    @Query("select b from Member b where b.levels < '6' and b.userId = :userId")
+    Optional<Member> findByUserIdNotDelete(@Param("userId")String userId);
+
     Optional<Member> findByNickName(String nickName);
 
     @Query("select b from Member b where b.levels < '5'")
@@ -28,17 +32,19 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     List<Member> findByRegisterDateBetween(LocalDateTime startDatetime, LocalDateTime endDatetime);
     @Query("select b from Member b where b.levels = '5'")
     Page<Member> findByBlack(Pageable pageable);
+    @Query(value = "SELECT * FROM MEMBER m LEFT JOIN delete_member dm ON m.ID =dm.member_id WHERE m.LEVELS ='6'",nativeQuery = true)
+    Page<Member> findByDelete(Pageable pageable);
 
-    @Query("select b from Member b where b.userId like %:keyword%")
+    @Query("select b from Member b where b.userId like %:keyword% and b.levels < '5'")
     Page<Member> findByUserId(@Param("keyword") String keyword, Pageable pageable);
     @Query("select b from Member b where b.userId like %:keyword% and b.levels = '5'" )
     Page<Member> findByBlackUserId(@Param("keyword") String keyword, Pageable pageable);
-    @Query("select b from Member b where b.userName like %:keyword%")
+    @Query("select b from Member b where b.userName like %:keyword% and b.levels < '5'")
     Page<Member> findByUserName(@Param("keyword") String keyword,Pageable pageable);
     @Query("select b from Member b where b.userName like %:keyword% and b.levels = '5'")
     Page<Member> findByBlackUserName(String keyword, Pageable pageable);
 
-    @Query("select b from Member b where b.nickName like %:keyword%")
+    @Query("select b from Member b where b.nickName like %:keyword% and b.levels < '5'")
     Page<Member> findByNickName(@Param("keyword") String keyword,Pageable pageable);
 
     @Query("select b from Member b where b.nickName like %:keyword% and b.levels = '5'")
@@ -47,11 +53,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Query("select b from Member b where b.levels like %:keyword%")
     Page<Member> findByLevels(@Param("keyword") String keyword,Pageable pageable);
 
-    @Query(value = "select b from Member b where " +
-            "b.userId like %:keyword% or " +
+    @Query(value = "select b from Member b where b.levels <'5' and " +
+            "(b.userId like %:keyword% or " +
             "b.nickName like %:keyword% or " +
-            "b.userName like %:keyword%  or " +
-            "b.levels like %:keyword%" )
+            "b.userName like %:keyword%)")
     Page<Member> findByAllCategory(@Param("keyword") String keyword,Pageable pageable);
     @Query(value = "select b from Member b where b.levels ='5' and " +
             "(b.userId like %:keyword% or " +

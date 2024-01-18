@@ -23,7 +23,8 @@
             </tr>
             </tbody>
         </table>
-        <a class="btn btn-dark btnBalckList"  th:href="@{/memberList/blackList}">블랙리스트관리</a>
+        <a class="btn btn-dark btnBlackList"  th:href="@{/memberList/blackList}">블랙리스트관리</a>
+        <a class="btn btn-danger btnDeleteList"  th:href="@{/memberList/deleteList}">탈퇴회원리스트</a>
         <h2>회원리스트</h2>
         <form action="../member/deleteAll">
             <table class="table">
@@ -80,7 +81,7 @@
                 <option value="3">플레티넘</option>
                 <option value="4">다이아</option>
             </select>
-            <button class="btn btn-danger" id="btnall" >삭제</button>
+            <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
 
         </form>
     </div>
@@ -97,7 +98,15 @@
 
                     th:if="${item >= start and
                                  item < end }">
-                    <a class="page-link" href="#" th:href="@{/memberList/list(page=${item})}" th:text="${item + 1}">1</a>
+                    <th:block th:if="${search}">
+                        <a class="page-link" href="#"
+                           th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${item},)}" th:text="${item + 1}">1</a>
+                    </th:block>
+                    <th:block th:unless="${search}">
+                        <a class="page-link" href="#"
+                           th:href="@{/memberList/list(page=${item})}" th:text="${item + 1}">1</a>
+                    </th:block>
+
                 </li>
             </th:block>
             <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
@@ -124,6 +133,7 @@
                             th:value="${param.keyword}">
                         </span>
                 </div>
+                <input type="hidden" name="search" value="true">
                 <div class="col-2"><button class="btn btn-primary">검색</button></div>
             </div>
         </form>
@@ -251,7 +261,54 @@
                     })
                     return false;
                 })
+                //탈퇴 기능 level이 6이면 탈퇴리스트
+                $(".btnDelete").on("click",function(){
+                    const $parent = $(this).parent().parent();
+                    console.log($parent)
+                    $.ajax({
+                        url:"/memberList/level",
+                        data:{id:$(this).data("no"),
+                              level:"6"},
+                        success:function(data){
+                            console.log(data);
+                            if(data.isLevel){
+                                alert("탈퇴회원으로 이동되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+                        }
+                    });
+                    return false;
+                });
+                //탈퇴기능 일괄 처리
+                $("#btnDeleteAll").on("click",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/memberList/levelAll",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck,
+                              level:"6"},
+                        success:function(data){
+                            if(data.isLevel){
+                                alert("변경되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
 
+                        }
+                    })
+                    return false;
+                })
             //체크박스 전체 선택 및 해체 기능
                 $("#checkAll").on("change",function(){
                     if($("#checkAll").is(":checked")){
