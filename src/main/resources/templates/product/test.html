@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mt-5 mb-5">WRITE</h2>
+                <form action="" th:action="@{/product/datainsert}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <div class="mb-3">
+
+                            <label for="file" class="form-label">상품사진 </label>
+                            <div>
+                                <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview1">
+                                <input class="img-thumbnail" type="file" id="file1" name="file" value="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg">
+                            </div>
+                            <div>
+                                <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview2">
+                                <input class="img-thumbnail" type="file" id="file2" name="file" value="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg">
+                            </div>
+<!--                            <div>-->
+<!--                                <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview3">-->
+<!--                                <input class="img-thumbnail" type="file" id="file3" name="file3" value="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg">-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                                <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview4">-->
+<!--                                <input class="img-thumbnail" type="file" id="file4" name="file4" value="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg">-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                                <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview5">-->
+<!--                                <input class="img-thumbnail" type="file" id="file5" name="file5" value="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg">-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">제품명</label>
+                        <input type="text" class="form-control" id="productName" placeholder="제품명" name="productName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="productNumber" class="form-label">품번</label>
+                        <input type="text" class="form-control" id="productNumber" placeholder="품번" name="productNumber">
+                    </div>
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">가격</label>
+                        <input type="text" class="form-control" id="productPrice" placeholder="가격" name="productPrice">
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">성별</label>
+                        <select name="gender">
+                            <option value="">성별</option>
+                            <option value="남자">남자</option>
+                            <option value="여자">여자</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div>
+                            <select name="mainProductCategoryId" id="maincategory">
+                                <option value="">메인카테고리선택</option>
+                                <option value="100">상의</option>
+                                <option value="200">바지</option>
+                                <option value="300">아우터</option>
+                                <option value="400">신발</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select name="subProductCategoryId" id="subcategory">
+                                <option>서브카테고리</option>
+                                <option value="400">123</option>
+                                <th:block th:each="productCategory:${productCategory}">
+                                    <th:block th:if="${productCategory.mainProductCategoryId} == 100">
+                                        <option th:value="${productCategory.subProductCategoryId}" th:text="${productCategory.subProductCategoryName}">상의</option>
+                                    </th:block>
+                                </th:block>
+                            </select>
+
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productTag" class="form-label">태그</label>
+                        <div id="productTagAdd">
+                            <input type="text" class="form-control" id="productTag1" placeholder="태그" name="productTag">
+                        </div>
+                        <div>
+                            <a class="btn btn-primary" id="tagButton">+</a>
+                        </div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="productSeason" class="form-label">시즌</label>
+                        <input type="text" class="form-control" id="productSeason" placeholder="ex) 21F/W" name="productSeason">
+                    </div>
+                    <div class="mb-3">
+                        <label for="productSize" class="form-label">사이즈</label>
+                        <div>
+
+                            <span>S</span>
+                            <input type="hidden"  class="form-control" name="productSizeS" value="S">
+                            <input type="text"  class="form-control" name="productCountS" value="0">
+                        </div>
+                        <div>
+                            <span>M</span>
+                            <input type="hidden"  class="form-control" name="productSizeM" value="M">
+                            <input type="text"  class="form-control" name="productCountM" value="0">
+                        </div>
+                        <div>
+                            <span>L</span>
+                            <input type="hidden"  class="form-control" name="productSizeL" value="L">
+                            <input type="text"  class="form-control" name="productCountL" value="0">
+                        </div>
+                        <div>
+                            <span>XL</span>
+                            <input type="hidden"  class="form-control" name="productSizeXL" value="XL">
+                            <input type="text"  class="form-control" name="productCountXL" value="0">
+                        </div>
+                        <div>
+                            <span>XXL</span>
+                            <input type="hidden"  class="form-control" name="productSizeXXL" value="XXL">
+                            <input type="text"  class="form-control" name="productCountXXL" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productDetailImage" class="form-label">상품설명</label>
+                        <textarea type="text" class="form-control" id="content"
+                                  placeholder="productDetailImage" name="productDetailImage"  rows="10"></textarea>
+                        <input type="text" th:value="${bucketName}" id="bucketName" name="productDetailImageBucket">
+                    </div>
+                    <input type="text" th:value="작성자" name="writer">
+                    <div class="d-flex justify-content-center mt-5">
+                        <button class="btn btn-primary" id="btnJoinConfirm">confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+    <script>
+        $("#file1").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview1").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+
+        });
+        $("#file2").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview2").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+
+<!--        $("#file3").on("change", function (e) {-->
+<!--            const file = e.target.files[0];-->
+<!--            if (!file.type.match("image.*")) {-->
+<!--                alert("이미지 파일만 가능합니다.");-->
+<!--                return false;-->
+<!--            }-->
+<!--            let fileReader = new FileReader();-->
+<!--            fileReader.onload=function(e) {-->
+<!--                $("#preview3").attr("src",e.target.result);-->
+<!--            }-->
+<!--            fileReader.readAsDataURL(file);-->
+<!--        });-->
+
+<!--        $("#file4").on("change", function (e) {-->
+<!--            const file = e.target.files[0];-->
+<!--            if (!file.type.match("image.*")) {-->
+<!--                alert("이미지 파일만 가능합니다.");-->
+<!--                return false;-->
+<!--            }-->
+<!--            let fileReader = new FileReader();-->
+<!--            fileReader.onload=function(e) {-->
+<!--                $("#preview4").attr("src",e.target.result);-->
+<!--            }-->
+<!--            fileReader.readAsDataURL(file);-->
+<!--        });-->
+<!--        $("#file5").on("change", function (e) {-->
+<!--            const file = e.target.files[0];-->
+<!--            if (!file.type.match("image.*")) {-->
+<!--                alert("이미지 파일만 가능합니다.");-->
+<!--                return false;-->
+<!--            }-->
+<!--            let fileReader = new FileReader();-->
+<!--            fileReader.onload=function(e) {-->
+<!--                $("#preview5").attr("src",e.target.result);-->
+<!--            }-->
+<!--            fileReader.readAsDataURL(file);-->
+<!--        });-->
+
+        $("#maincategory").on("change", function(e){
+            console.log("여기의 값은==>>" + $(this).val());
+        });
+
+        $("#tagButton").on("click",function(e){
+            $("#productTagAdd").append(`<input type="text" class="form-control" id="productTag4" placeholder="태그" name="productTag">`)
+        })
+
+
+
+
+
+
+
+<!--        ckediter-->
+
+        let editor;
+        const bucketName = $("#bucketName").val()
+        ClassicEditor
+            .create( document.querySelector( '#content' ),{
+                ckfinder:{
+                    uploadUrl: '/product/detailimage/' + bucketName
+                }
+             })
+             .then( newEditor => {
+                console.log(newEditor)
+                editor = newEditor;
+             })
+            .catch( error => {
+                console.error("여기임??");
+                console.error( error );
+            });
+    </script>
+</div>
+</html>

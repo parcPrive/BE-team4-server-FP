@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+  <div class="container">
+    <a class="btn btn-primary btnBalckList"  th:href="@{/memberList/list}">회원관리</a>
+    <h2>블랙리스트</h2>
+    <form action="../member/deleteAll">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">번호</th>
+          <th scope="col">아이디</th>
+          <th scope="col">이름</th>
+          <th scope="col">닉네임</th>
+          <th scope="col">가입날짜</th>
+          <th scope="col">구매한 금액</th>
+          <th scope="col">권한</th>
+          <th scope="col">블랙</th>
+          <th scope="col">삭제</th>
+          <th scope="col"><input type="checkbox" id="checkAll" ></th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="item,status:${memberList}">
+          <tr>
+            <td th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
+            <td><a href="" th:href="@{/admin/mypage/{id}(id=${item.id})}"  th:text="${item.userId}">제목이 들어가겠죠....</a></td>
+            <td th:text="${item.userName}" ></td>
+            <td th:text="${item.nickName}"></td>
+            <td th:text="${#temporals.format(item.registerDate,'yyyy-MM-dd HH:mm')}"></td>
+            <td>구매한 금액</td>
+            <td th:text="${item.role}">권한</td>
+            <td><button class="btn btn-dark btnBlack" th:data-no="${item.id}">해제</button> </td>
+            <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.userId}">삭제</button></td>
+            <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
+          </tr>
+        </th:block>
+        </tbody>
+      </table>
+      <button class="btn btn-dark btnBlackAll" id="btnBlackAll">해제</button>
+      <button class="btn btn-danger" id="btnAll" >삭제</button>
+    </form>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center mt-5">
+      <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
+        <a class="page-link" th:href="@{/memberList/list(page=${pagination.number - 1})}">Previous</a>
+      </li>
+      <!-- 13 -->
+      <!--1,2,3,4,5 /> 6,7,8,9,10 / 11,12,131,14,15-->
+      <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+        <li class="page-item"
+            th:classappend="${item==pagination.number?'active':''}"
+
+            th:if="${item >= start and
+                                 item < end }">
+          <a class="page-link" href="#" th:href="@{/memberList/list(page=${item})}" th:text="${item + 1}">1</a>
+        </li>
+      </th:block>
+      <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
+        <a class="page-link" href="#" th:href="@{/memberList/list(page=${pagination.number+1})}">Next</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container mt-5">
+    <form action="" th:action="@{/memberList/searchBlack}" method="get">
+      <div class="row">
+        <div class="col-4" th:with="category=${param.category}">
+          <select class="form-select btnSearch" aria-label="Default select example" name="category">
+            <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+            <option value="userId"   th:selected="${#strings.equals(category,'userId')  ? true : false}">아이디</option>
+            <option value="userName" th:selected="${#strings.equals(category,'userName')? true : false}">이름</option>
+            <option value="nickName" th:selected="${#strings.equals(category,'nickName')? true : false}">닉네임</option>
+          </select>
+        </div>
+        <div class="col-6 ">
+                    <span class="keywordLevel">
+                      <input type="hidden" name="black" value="5">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+        </div>
+        <div class="col-2"><button class="btn btn-primary">검색</button></div>
+      </div>
+    </form>
+    <script>
+          //블랙 기능 해제 level이 0으로 일반회원을 강등
+          $(".btnBlack").on("click",function(){
+              const $parent = $(this).parent().parent();
+              console.log($parent)
+              $.ajax({
+                  url:"/memberList/level",
+                  data:{id:$(this).data("no"),
+                        level:"0"},
+                  success:function(data){
+                      console.log(data);
+                      if(data.isLevel){
+                          alert("해제되었습니다.")
+                          location.reload();
+                      }else{
+                          alert("오류입니다.")
+                      }
+                  },
+                  fail:function(){
+                  }
+              });
+              return false;
+          });
+          //블랙기능 해제 일괄 처리
+                $(".btnBlackAll").on("click",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/memberList/levelAll",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck,
+                              level:"0"},
+                        success:function(data){
+                            if(data.isLevel){
+                                alert("변경되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+
+                        }
+                    })
+                    return false;
+                })
+      //체크박스 전체 선택 및 해체 기능
+          $("#checkAll").on("change",function(){
+              if($("#checkAll").is(":checked")){
+               $(".check").prop("checked",true);
+              }else{
+               $(".check").prop("checked",false);
+              }
+          })
+    </script>
+
+  </div>
+</div>

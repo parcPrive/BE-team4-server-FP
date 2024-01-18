@@ -1,0 +1,7 @@
+*.yml
+out/
+build/
+application.yml
+aaa
+elk
+.gradle

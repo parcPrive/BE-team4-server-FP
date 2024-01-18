@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<link rel="stylesheet" href="./goods__list.css" />
+<div layout:fragment="content" class="main">
+    <title>장바구니</title>
+    <style>
+        /* 간단한 스타일링 예시 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+    </head>
+    <body>
+
+    <h2>장바구니</h2>
+    <form th:action="@{/product/order}" method="post">
+        <input th:value="mok119" name="userId">
+
+    <table>
+        <thead>
+        <tr>
+            <th><input type="checkbox" name="xxx" value="yyy"></th>
+            <th>상품정보</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>합계</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 장바구니 아이템 예시 -->
+        <block th:each="productCart,stat : ${productCartList}">
+        <tr th:id="|deleteProduct${stat.count}|">
+            <td><input type="checkbox" th:id="|productCartId${stat.count}|" name="productCartId" th:value="${productCart.productCartId}"></td>
+            <td name="productPriceCount">
+                <img th:src="@{${productCart.productImage}}">
+                <span th:text="${productCart.productName}"></span>
+                <span th:text="${productCart.productSize.productSize}"></span>
+            </td>
+            <td th:text="${productCart.productPrice}"}>$50.00</td>
+            <td th:text="${productCart.productCount}">2</td>
+            <td th:text="${productCart.productPrice} * ${productCart.productCount}" th:id="|productPrice${stat.count}|">$100.00</td>
+            <td><button id="aaa" th:text="${stat.count}" th:onclick="|removeItem(${stat.count})|">삭제</button></td>
+        </tr>
+        </block>
+        </tbody>
+    </table>
+
+    <div class="total">
+        총금액: <span id="productTotalPrice"></span>원
+    </div>
+
+    <button onclick="checkout()">주문하기</button>
+    </form>
+    <script>
+        // 아이템 삭제 함수 예시
+        function removeItem(itemId) {
+            const deleteProductPrice = parseInt($("#productPrice" + itemId).text());
+            let prevProductTotalPrice = $("#productTotalPrice").text();
+            const result = (parseInt(prevProductTotalPrice) - deleteProductPrice);
+            const productCartId = $("#productCartId" + itemId).val();
+
+            $.ajax({
+                url:"/product/deletecart",
+                method:"POST",
+                data:{
+                    "productCartId": productCartId
+                },
+                success: function(data){
+                    if(data == "success"){
+                     console.log("성공적")
+                     alert('아이템을 삭제했습니다.');
+                     $("#deleteProduct" + itemId).remove();
+                     $("#productTotalPrice").text(result);
+                    }
+                }
+                })
+
+        }
+
+        // 주문하기 함수 예시
+        function checkout() {
+
+            alert('주문이 완료되었습니다.');
+        }
+        const productCount = $("td[name=productPriceCount]").length;
+        let productTotalPrice = 0;
+        for(let i = 1; i <= productCount; i++){
+            productTotalPrice += parseInt($("#productPrice" + i).text());
+        }
+        $("#productTotalPrice").text(productTotalPrice);
+        console.log("총합===>>> " + productTotalPrice)
+        console.log("길이는 ===>>> " + productCount);
+    </script>
+
+    </body>
+
+</div>
+</html>
+

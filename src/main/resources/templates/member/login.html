@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="d-flex justify-content-center">
+        <form action="../member/login" th:action="@{/member/login}" th:object="${loginDto}" method="post">
+            <h1 class="h3 mb-3 fw-normal">로그인</h1>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="userID" placeholder="ID" name="userId" th:value="${userId}"><!--th:value="${memberDto.userId}" >-->
+                <label for="userID">ID</label>
+            </div>
+            <div class="form-floating ">
+                <div class="input-group">
+                    <input type="password" class="form-control loginPw" placeholder="password" id="password" aria-label="password" aria-describedby="button-addon2" name="password">
+                    <button class="btn btn-outline-secondary btnEyes" type="button" id="btnEyes"><i class="bi bi-eye-fill"></i></button>
+                </div>
+
+            </div>
+            <div class="form-check text-start my-3">
+                <th:block th:if="${userId!=null}">
+                    <input class="form-check-input" type="checkbox" name="check" value="1" id="check"  checked  >
+                </th:block>
+                <th:block th:if="${userId==null}">
+                <input class="form-check-input" type="checkbox" name="check" value="1" id="check">
+                </th:block>
+                <label class="form-check-label" for="check">아이디 기억</label>
+            </div>
+            <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+            <div class="d-flex justify-content-center w-100 py-2">
+                <a class="btn btn-primary form-label findid px-3" th:href="@{/mail/findId}">아이디 찾기</a>
+                <a class=" btn btn-primary form-label findpw px-3" th:href="@{/mail/findPw}">비밀번호 찾기</a>
+            </div>
+            <div class="d-flex justify-content-center mt-5">
+                <div><a class="btn btn-primary" href="/oauth2/authorization/google">구글로그인</a></div>
+                <div>
+                    <a class="btn btn-primary" href="/oauth2/authorization/naver">네이버 로그인</a>
+                </div>
+                <div>
+                    <a class="btn btn-primary" href="/oauth2/authorization/kakao">카카오 로그인</a>
+                </div>
+            </div>
+
+            <div class="login_util">
+                <div>아직 회원이 아니신가요?</div>
+                <div>지금 회원가입을 하시면<br>다양하고 특별한 혜택이 준비되어 있습니다.</div>
+                <div ><a href="/member/insert" th:href="@{/member/insert}">회원가입</a></div>
+            </div>
+
+            <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>
+        </form>
+            <script>
+                //이미지 미리보기
+                $(".btnEyes").on("click",function(){
+                    $('#password').toggleClass('active');
+
+                    if( $('#password').hasClass('active') == true ){
+                        $('#password').attr("type","text")
+                        $(this).find('i').attr("class","bi bi-eye-slash")
+                    }
+                    else{
+                        $('#password').attr("type","password")
+                        $(this).find('i').attr("class","bi bi-eye-fill")
+                    }
+
+                });
+            </script>
+        </div>
+
+    </div>
+</div>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mt-5 mb-5">JOIN</h2>
+                <form action="" th:action="@{/member/insert}" th:object="${joinDto}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">userId</label>
+                        <input type="text" class="form-control" id="userId" placeholder="title" name="userId"  th:field="*{userId}">
+                        <div class="error" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">
+                            오류 메세지...</div>
+                        </div>
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">password</label>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control password" placeholder="password" id="password" aria-label="password" aria-describedby="button-addon2" name="password">
+                            <button class="btn btn-outline-secondary btnEyes" type="button" id="btnEyes"><i class="bi bi-eye-fill"></i></button>
+                            <div class="error" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">
+                                오류 메세지...</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">password check</label>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control password" placeholder="password" id="password02" aria-label="password" aria-describedby="button-addon2" name="password02">
+                            <button class="btn btn-outline-secondary btnEyes" type="button" id="btnEyes02"><i class="bi bi-eye-fill"></i></button>
+                            <div class="error" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">
+                                오류 메세지...</div>
+                        </div>
+                        <div class="invalid-feedback" id="invalid-feedbackPW02">글자 써보기</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">userName</label>
+                        <input type="text" class="form-control" id="userName" placeholder="name" name="userName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickName" class="form-label">nickName</label>
+                        <input type="text" class="form-control" id="nickName" placeholder="nickName" name="nickName">
+                        <button class="btn btn-primary" id="btnNickNameCheck">닉네임 중복확인</button>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">email</label>
+                        <input type="text" class="form-control" id="email" placeholder="email"
+                               name="email">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="btnSend">인증번호 받기</button>
+                    </div>
+                    <div class="mb-3" id="emailConfirm" style="display: none">
+                        <label for="email" class="form-label">email confirm</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="confirmNum">
+                            <button class="btn btn-primary" type="button" id="btnConfirm">이메일 인증</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <div class="" >
+                            <label for="gender" class="form-label">남자</label>
+                            <input type="radio" name="gender" class="gender" id="gender" value="1" required/>
+                            <label for="gender" class="form-label">여자</label>
+                            <input type="radio" name="gender" class="gender" id="gender" value="2" required/>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postCode" class="form-label">우편번호</label>
+                        <input type="text" class="form-control" id="postCode" placeholder="post code" name="postCode" required/>
+                        <div>
+                            <button class="btn btn-primary mt-3" id="btnPostcode">우편번호 확인</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">주소</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="address" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="addressDetail" class="form-label">상세 주소</label>
+                        <input type="text" class="form-control" id="addressDetail" placeholder="address Detail" name="addressDetail" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobile" class="form-label">통신사</label>
+                        <select id="mobile" class="form-control" name="mobile" >
+                            <option id="mobile" value="untitled" selected>통신사 선택</option>
+                            <option id="mobile" value="LG">LGU+</option>
+                            <option id="mobile" value="SKT">SKT</option>
+                            <option id="mobile" value="KT" >KT</option>
+                            <option id="mobile" value="ALTTEUL_LG" >알뜰폰 LG</option>
+                            <option id="mobile" value="ALTTEUL_SKT" >알뜰폰 SKT</option>
+                            <option id="mobile" value="ALTTEUL_KT" >알뜰폰 KT</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">전화 번호</label>
+                            <input type="text" maxlength="11" class="form-control tel01" id="phone" placeholder="phone" name="phone"
+                                  th:field="*{phone}" required/>
+                            <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">
+                                오류 메세지...</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-5">
+                        <button class="btn btn-primary" id="btnJoinConfirm">confirm</button>
+                    </div>
+                </form>
+            <script>
+                //비밀번호 보기 or 감추기
+                $(".btnEyes").on("click",function(){
+                    $('#password').toggleClass('active');
+                    if( $('#password').hasClass('active') == true ){
+                        $('#password').attr("type","text")
+                        $(this).find('i').attr("class","bi bi-eye-slash")
+                    }
+                    else{
+                        $('#password').attr("type","password")
+                        $(this).find('i').attr("class","bi bi-eye-fill")
+                    }
+                });
+                //비밀번호 일치 불일치
+                $("#password02").on("keyup", function () {    //id는 # , class는 .
+                    if ($("#password").val() !== $("#password02").val()) {
+                    console.log("test")
+                    $("#invalid-feedbackPW02").show();
+                    $("#invalid-feedbackPW02").text("password가 맞지 않습니다.");
+                    } else {
+                     $("#userPW02").removeClass("is-invalid")
+   		             $("#userPW02").addClass("is-valid")
+                     $("#invalid-feedbackPW02").hide();
+                    }
+                });
+                //이메일 인증받기
+                let isAuth = true;
+                let confirmNum = 0;
+                $("#btnSend").on("click",function() {
+                    $("#emailConfirm").show();
+                    $.ajax({
+                        url:"/mail/confirm",
+                        method:"post",
+                        data:{mail:$("#email").val()},
+                        success:function(result) {
+                            alert("인증메일 발송되었습니다.");
+                            confirmNum = result.confirmNumber;
+                            console.log(result);
+                        }
+                    });
+                    return false;
+                });
+                $("#btnConfirm").on("click",function(){
+                    if(confirmNum == $("#confirmNum").val()) {
+                        alert("이메일 인증되었습니다");
+                        isAuth= true;
+                    } else {
+                        alert("이메일 확인해 주세요.");
+                    }
+                });
+                // 우편주소
+              function postcode() {
+                new daum.Postcode({
+                  oncomplete: function (data) {
+
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    const roadAddr = data.roadAddress; // 도로명 주소 변수
+                    const extraRoadAddr = ""; // 참고 항목 변수
+
+
+                    document.querySelector("#postCode").value = data.zonecode;
+                    document.querySelector("#address").value = roadAddr;
+
+                  },
+                }).open();
+              }
+
+              $("#btnPostcode").on("click", function () {
+                postcode();
+                return false;
+              });
+              $("#postCode").on("click",function(){
+                  $("#postCode").removeClass("is-invalid")
+                  $("#postCode").addClass("is-valid")
+                  $("#invalid-feedbackPost").hide();
+                  postcode();
+                  return false;
+              })
+               $("#address").on("click",function(){
+                  postcode();
+                  return false;
+              })
+            //닉네임 체크
+             $("#btnNickNameCheck").on("click", function(){
+                  $.ajax({
+                        url:"/member/nickNameCheck",
+                        type:"get",
+                        data:{nickName: $("#nickName").val()},
+                         success : function(data){
+                           if(data.nickNameCheck){
+                           console.log("중복되었습니다.");
+                           }else{
+                           console.log("사용가능")
+                           }
+                         }
+                  });
+                  return false;
+              });
+
+
+
+            </script>
+            </div>
+        </div>
+    </div>
+
+</html>
