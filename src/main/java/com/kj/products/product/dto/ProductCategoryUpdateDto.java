@@ -12,13 +12,6 @@ public class ProductCategoryUpdateDto {
     private String mainProductCategoryName;
     private String subProductCategoryName;
 
-//    @QueryProjection
-//    public ProductCategoryUpdateDto(Long id, int mainProductCategoryId, String mainProductCategoryName, String subProductCategoryName) {
-//        this.id = id;
-//        this.mainProductCategoryId = mainProductCategoryId;
-//        this.mainProductCategoryName = mainProductCategoryName;
-//        this.subProductCategoryName = subProductCategoryName;
-//    }
 
     @Builder
     public ProductCategoryUpdateDto(ProductCategory productCategory) {
