@@ -48,15 +48,20 @@
       <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
         <a class="page-link" th:href="@{/memberList/list(page=${pagination.number - 1})}">Previous</a>
       </li>
-      <!-- 13 -->
-      <!--1,2,3,4,5 /> 6,7,8,9,10 / 11,12,131,14,15-->
       <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
         <li class="page-item"
             th:classappend="${item==pagination.number?'active':''}"
 
             th:if="${item >= start and
                                  item < end }">
-          <a class="page-link" href="#" th:href="@{/memberList/list(page=${item})}" th:text="${item + 1}">1</a>
+          <th:block th:if="${search}">
+            <a class="page-link" href="#"
+               th:href="@{/memberList/searchBlack(category=${category},black=${black},keyword=${keyword},search=${search},page=${item},)}" th:text="${item + 1}">1</a>
+          </th:block>
+          <th:block th:unless="${search}">
+            <a class="page-link" href="#"
+               th:href="@{/memberList/blackList(page=${item})}" th:text="${item + 1}">1</a>
+          </th:block>
         </li>
       </th:block>
       <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
@@ -83,6 +88,7 @@
                             th:value="${param.keyword}">
                         </span>
         </div>
+        <input type="hidden" name="search" value="true">
         <div class="col-2"><button class="btn btn-primary">검색</button></div>
       </div>
     </form>

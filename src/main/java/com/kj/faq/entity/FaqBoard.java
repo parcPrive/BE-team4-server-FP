@@ -34,7 +34,7 @@ public class FaqBoard {
     @ManyToOne
     @JoinColumn(name = "faqCategoryId")
     private FaqCategory faqCategory;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member writer;
 
     public FaqBoard update(FaqBoardDto faqBoardDto, FaqCategory faqCategory){

@@ -1,5 +1,8 @@
 package com.kj.memberList;
 
+import com.kj.deleteMember.dto.DeleteMemberDto;
+import com.kj.deleteMember.entity.DeleteMember;
+import com.kj.deleteMember.repository.DeleteMemberRepository;
 import com.kj.jwt.JwtUtil;
 import com.kj.member.entity.Member;
 import com.kj.member.repository.MemberRepository;
@@ -26,6 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class MemberListService {
     private final MemberRepository memberRepository;
+    private final DeleteMemberRepository deleteMemberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtUtil jwtUtil;
@@ -45,7 +49,11 @@ public class MemberListService {
         Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"registerDate"));
         Page<Member> memberList = memberRepository.findByBlack(pageable);
         return memberList;
-
+    }
+    public Page<Member> findAllDeletePageMember(int page) {
+        Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"register_Date"));
+        Page<Member> memberList = memberRepository.findByDelete(pageable);
+        return memberList;
     }
     public Page<Member> findAllSearchPageMember(String category, String keyword,int page, String black) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "registerDate"));
@@ -74,36 +82,52 @@ public class MemberListService {
 
     @Transactional
     public Member updateLevel(String level,Long id) {
-        int realLevel = 0;
-        realLevel = Integer.parseInt(level);
-        log.info("level=={}",level);
-        log.info("realId=={}",id);
         Optional<Member> member = memberRepository.findById(id);
-        if(member.isPresent()){
-            log.info("realId=={}","ㅂㄷㄱㄹㄷㄱㅎㄱㅎ");
-            return member.get().updateLevel(level);
-        }
+        Optional<DeleteMember> deleteMember = deleteMemberRepository.findByMember(id);
+            DeleteMemberDto dto = new DeleteMemberDto();
+            dto.setPreLevel(member.get().getLevels());
+            if(member.isPresent()){
+                //탈퇴되면 탈퇴로그에 저장
+                if(level.equals("6")){
+                    log.info("====일치",level);
+                    DeleteMember inserDeleteMember = DeleteMemberDto.toEntity(dto,member.get());
+                    deleteMemberRepository.save(inserDeleteMember);
+                    return member.get().updateLevel(level);
+                }else {
+                    if (deleteMember.isPresent()){
+                        deleteMemberRepository.delete(deleteMember.get());
+                        level = deleteMember.get().getPreLevel();
+                        return member.get().updateLevel(level);
+                    }else{
+                        return member.get().updateLevel(level);
+                    }
+                }
+            }
+
         throw new RuntimeException("없음");
     }
 
     @Transactional
     public Member updateLevelAll(String level, List<Long> id) {
-        log.info("=={}",id);
+        DeleteMemberDto dto = new DeleteMemberDto();
         List<Member> memberList = memberRepository.findLevelAll(id);
+        List<DeleteMember> deleteMemberList =  deleteMemberRepository.findByDeletelAll(id);
         Member member = null;
         for (int i=0;i<memberList.size();i++){
-            member=  memberList.get(i).updateLevel(level);
+            dto.setPreLevel(memberList.get(i).getLevels());
+            if(level.equals("6")){
+                log.info("====일치",level);
+                DeleteMember deleteMember = DeleteMemberDto.toEntity(dto,memberList.get(i));
+                deleteMemberRepository.save(deleteMember);
+                member=  memberList.get(i).updateLevel(level);
+            }else if(deleteMemberList.size()>0) {
+                deleteMemberRepository.delete(deleteMemberList.get(i));
+                level = deleteMemberList.get(i).getPreLevel();
+                member=  memberList.get(i).updateLevel(level);
+            }else {
+                member=  memberList.get(i).updateLevel(level);
+            }
         }
         return member;
-
     }
-   /* @Transactional
-    public Member updateLevelAll(String level, Long[] id) {
-        Optional<Member> member = memberRepository.findLevelAll(id);
-        if(member.isPresent()){
-            log.info("realId=={}","ㅂㄷㄱㄹㄷㄱㅎㄱㅎ");
-            return member.get().updateLevel(level);
-        }
-        throw new RuntimeException("없음");
-    }*/
 }

@@ -17,8 +17,10 @@ import java.time.LocalDateTime;
 public class DeleteMember {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "deleteId")
     private Long id;
     private LocalDateTime deleteDate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    private String preLevel;
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member member;
 }

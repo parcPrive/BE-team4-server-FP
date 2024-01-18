@@ -1,5 +1,8 @@
 package com.kj.member.service;
 
+import com.kj.deleteMember.dto.DeleteMemberDto;
+import com.kj.deleteMember.entity.DeleteMember;
+import com.kj.deleteMember.repository.DeleteMemberRepository;
 import com.kj.jwt.JwtUtil;
 import com.kj.log.dto.LogDto;
 import com.kj.log.entity.Log;
@@ -41,6 +44,7 @@ import java.util.UUID;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final LogRepository logRepository;
+    private final DeleteMemberRepository deleteMemberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtUtil jwtUtil;
@@ -134,12 +138,10 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(() ->
         new UsernameNotFoundException("아이디 존재하지 않습니다."));
         if (bCryptPasswordEncoder.matches(password, member.getPassword())){
-            memberRepository.delete(member);
             return true;
         }else {
             return false;
         }
-
     }
 
     @Transactional
@@ -177,6 +179,19 @@ public class MemberService {
             memberDtoList.add(MemberDto.toDto(memberList.get(i)));
         }
         return memberDtoList;
+    }
+    @Transactional
+    public Member updateLevel(String level,Long id, DeleteMemberDto dto) {
+        Optional<Member> member = memberRepository.findById(id);
+        if(member.isPresent()){
+            if(level.equals("6")){
+                log.info("====일치",level);
+                DeleteMember deleteMember = DeleteMemberDto.toEntity(dto,member.get());
+                deleteMemberRepository.save(deleteMember);
+            }
+            return member.get().updateLevel(level);
+        }
+        throw new RuntimeException("없음");
     }
 
 

@@ -9,6 +9,8 @@
             <form method="post" action="/member/delete" >
                 <div class="mb-3" sec:authorize="isAuthenticated()">
                     <label for="userId" class="form-label">userId</label>
+                    <input type="hidden" class="form-control" placeholder="id" id="id"
+                           name="id" th:value="${#authentication.principal.loggedMember.id}" readonly>
                     <input type="text" class="form-control" placeholder="id" id="userId"
                            name="userId" th:value="${#authentication.principal.loggedMember.userId}" readonly>
                 </div>
@@ -21,33 +23,30 @@
                     <p class="alert alert-danger" th:text="${exception}">아이디 패스워드 확인해 주세요.</p>
                 </div>
                 <div class="mt-5">
-                    <button class="btn btn-primary" id="btnSubmit">submit</button>
                     <button class="btn btn-primary" id="btnDelete">ajax delete</button>
                 </div>
             </form>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
         <script>
-
             $("#btnDelete").on("click",function(e){
                 //e.preventDefault();
                 //console.log("click");
                 const sendData = $("form").serialize();
                 $.ajax({
                     url:"/member/delete",
-                    method:"delete",
-                    /*data: {
+                    method:"post",
+                    data: {
                         userId:$("input[name='userId']").val(),
                         password:$("input[name='password']").val(),
-                        name:$("input[name='name']").val(),
-                        email:$("input[name='email']").val()
-                    },*/
-                    data:sendData,
+                        level:'6',
+                        id:$("input[name='id']").val()
+                    },
                     success:function(data){
-                        if(data.isState==="ok") {
+                    console.log(data.isLevel);
+                        if(data.isLevel) {
                             console.log(sendData);
-                            location.href="/";
-                            //gsap.to(".main .container",{y:-1000,ease:"back.in",duration:1.5});
+                            location.href="/member/logout";
                         } else {
                             alert("패스워드 확인해 주세요.");
                         }

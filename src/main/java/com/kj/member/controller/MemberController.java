@@ -1,15 +1,16 @@
 package com.kj.member.controller;
 
+import com.kj.deleteMember.dto.DeleteMemberDto;
 import com.kj.log.dto.LogDto;
 import com.kj.member.dto.*;
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
+import com.kj.memberList.MemberListService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -26,6 +26,8 @@ import java.util.Map;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
+    private final MemberListService memberListService;
+
     private int paginationSize=5;
     @GetMapping("/login")
     public String login(Model model, @CookieValue(value = "cookieID", required = false)Cookie cookie){
@@ -101,7 +103,7 @@ public class MemberController {
         return "/member/delete";
     }
 
-    @PostMapping("/delete")
+    /*@PostMapping("/delete")
     public String deleteProcess(@RequestParam String password, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
         log.info("=={}",customUserDetails.getLoggedMember().getId());
         log.info("=={}",password);
@@ -112,8 +114,23 @@ public class MemberController {
             //model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다.");
             return "/member/join";
         }
-    }
+    }*/
 
+    @PostMapping("/delete")
+    @ResponseBody
+    public Map<String, Object> updateLevel(Model model, String level, String userId , String password, Long id, DeleteMemberDto dto){
+        log.info("id==={}",id);
+        log.info("id==={}",password);
+        boolean result =  memberService.deleteMember(id,password);
+        Map<String,Object> resultMap = new HashMap<>();
+        if (result) {
+            memberService.updateLevel(level, id,dto);
+            resultMap.put("isLevel", true);
+        }else{
+            resultMap.put("isLevel", false);
+        }
+        return resultMap;
+    }
 
 
 
