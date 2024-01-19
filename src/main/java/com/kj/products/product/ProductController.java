@@ -6,8 +6,11 @@ import com.kj.products.product.dto.*;
 import com.kj.products.productCart.ProductCartService;
 import com.kj.products.productCart.dto.ProductCartInsertDto;
 import com.kj.products.productCart.dto.ProductCartListDto;
+import com.kj.products.productOder.ProductOderservice;
 import com.kj.products.productOder.dto.ProductCartOrderDto;
 import com.kj.products.productOder.dto.ProductOrderInfoDto;
+import com.kj.products.productOder.dto.ProductOrderSuccessDto;
+import com.kj.products.productOder.entity.MyProductOrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -31,6 +34,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
     private final ProductCartService productCartService;
+    private final ProductOderservice productOderservice;
 // ================상품 등록 관련========================
     @GetMapping("/insert")
     public String InsertProduct(
@@ -175,6 +179,29 @@ public class ProductController {
         productCartService.deleteByProductCartId(productCartId);
         return "success";
 
+    }
+
+
+    //=========결제내역, 주문내역=========
+    @GetMapping("/paymentsuccess")
+    public String productPaymentSuccess(
+            @RequestParam List<Long> orderIds,
+            Model model
+    ){
+        List<ProductOrderSuccessDto> productOrderSuccessList = productOderservice.findProductOrdersByOrderId(orderIds);
+        model.addAttribute("productOrderSuccessList",productOrderSuccessList);
+        return "/product/paymentsuccess";
+    }
+
+    // 내주문내역에서 환불처리
+    @GetMapping("/myorderlist/{usernickname}")
+    public String myOrderList(
+            @PathVariable String usernickname,
+            Model model
+    ){
+        List<MyProductOrderDto> myProductOrders = productOderservice.findProductOrdersByUserNickName(usernickname);
+        model.addAttribute("myProductOrders", myProductOrders);
+        return "/product/myorderlist";
     }
 
 

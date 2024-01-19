@@ -101,7 +101,7 @@ public class Product {
     }
 
     public void testProduct(String productName, String productNumber, int productPrice, String gender, String productSeason, String productDetailImageBucket, String productDatailImage){
-        this.productName =productName;
+        this.productName = productName;
         this.productNumber = productNumber;
         this.productPrice = productPrice;
         this.gender = gender;

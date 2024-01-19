@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<link rel="stylesheet" href="./goods__list.css" />
+<div layout:fragment="content" class="main">
+    <title>주문내역</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+    </head>
+    <body>
+
+    <h2>주문내역</h2>
+        <input th:value="mok119" name="userId">
+
+        <table>
+            <thead>
+            <tr>
+                <th>상품정보</th>
+                <th>주문일자</th>
+                <th>주문금액(수량)</th>
+                <th>환불</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 장바구니 아이템 예시 -->
+            <block th:each="myProductOrder,stat : ${myProductOrders}">
+                <input type="hidden" th:id="|productOrderId${stat.count}|" th:value="${myProductOrder.getProductOrderId()}">
+                <tr th:id="|deleteProduct${stat.count}|">
+                    <td name="productPriceCount">
+                        <img th:src="@{${myProductOrder.getProductImage()}}">
+                        <span th:text="${myProductOrder.getProductName()}">상품이름</span>
+                        <span th:text="${myProductOrder.getProductSize()}">상품사이즈</span>
+                    </td>
+                    <td th:text="${myProductOrder.getOrderDate()}">주문일자</td>
+                    <td>
+                        <span th:text="${myProductOrder.getProductPrice()}">총 주문금액</span>
+                        <span th:text="${myProductOrder.getProductCount()}">상품수량</span>
+                    </td>
+                    <td><button th:id="|refund${stat.count}|" th:text="${stat.count}" th:onclick="|refund(${stat.count})|">삭제</button></td>
+                </tr>
+            </block>
+            </tbody>
+        </table>
+
+    <script>
+        // 환불하기!!
+        function refund(itemId) {
+            const productOrderId = $("#productOrderId" + itemId).val();
+            console.log("프로덕트 아이드, ===>>" + productOrderId)
+            if(confirm("환불하시겠습니까??") == true){
+                console.log("환불시작");
+                $.ajax({
+                    url:"/productpayment/myorderrefund",
+                    method:"GET",
+                    data:{
+                        "productOrderId": productOrderId
+                    },
+                    success: function (e){
+                        console.log(e)
+                    }
+                })
+            }else{
+                console.log("환불 취소");
+            }
+            return false;
+
+
+        }
+
+        // 주문하기 함수 예시
+        function checkout() {
+
+            alert('주문이 완료되었습니다.');
+        }
+        const productCount = $("td[name=productPriceCount]").length;
+        let productTotalPrice = 0;
+        for(let i = 1; i <= productCount; i++){
+            productTotalPrice += parseInt($("#productPrice" + i).text());
+        }
+        $("#productTotalPrice").text(productTotalPrice);
+        console.log("총합===>>> " + productTotalPrice)
+        console.log("길이는 ===>>> " + productCount);
+    </script>
+
+    </body>
+
+</div>
+</html>
+
