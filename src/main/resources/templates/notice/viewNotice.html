@@ -3,8 +3,117 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/layout}">
 <div layout:fragment="content" class="main">
-    <div class="container">
-        <h2>공지사항 글 보기</h2>
+    <div class="container" id="textBox">
+        <h3 class="fontTitle">공지사항 글 보기</h3>
+        <div class="justify-content-center border-bottom mb-3">
+            <h3 class="text-center fontTitle" th:text="${noticeInfo.noticeTitle}">서울사랑 누리집이 새롭게 바뀌었습니다</h3>
+        </div>
 
+        <div class="nav justify-content-end mb-3" style="font-size: 20px;">
+    <span class="text-end ms-auto">
+        <a href="#none" class="fontSmall"
+           title="글자크기 작게">
+            <span class="minus"><i class="bi bi-dash-square"></i></span>
+        </a>
+        <a href="#none"  class="fontBig"
+           title="글자크기 크게">
+            <span class="plus"><i class="bi bi-plus-square"></i></span>
+        </a>
+    </span>
+        </div>
+
+        <div class="contents notice-view js_font_chg text-center">
+            <div class="view-box ">
+                <div class="view-header row border-top">
+                    <div class="col-md-6 mt-2">
+                        <dl>
+                            <dt>작성일</dt>
+                            <dd th:text="${#temporals.format(noticeInfo.noticeDate,'yyyy-MM-dd HH:mm')}"></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <dl>
+                            <dt>조회수</dt>
+                            <dd th:text="${noticeInfo.noticeView}">1854</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="view-content border-top" style="height: 500px;">
+                    <div class="content h-100 mt-3" th:utext="${noticeInfo.noticeContent}">
+
+                    </div>
+                </div>
+                <th:block th:each="item:${#numbers.sequence(no-1,no)}">
+                    <li class="page-item">
+                        <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${item})}" th:text="${item}">1</a>
+                    </li>
+                </th:block>
+
+                <div class="view-header row border-top d-flex align-items-center">
+                    <th:block th:each="item:${#numbers.sequence(no-1,no)}">
+                    <div class="col-md-6 mt-2" >
+                        <dl>
+                            <dt th:text="${item==no-1} ? '이전글' :'다음글'"></dt>
+                            <dd>
+                                <th:block th:if="${item == 0}">
+                                    <span >이전글은 없습니다.</span>
+                                </th:block>
+                                <a th:if="${item == no-1 && item >0}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(0).id},no=${no-1})}">
+                                <span th:text="${item==no-1} ? ${noticeList.get(0).noticeTitle} : ${noticeList.get(2).noticeTitle}"></span></a>
+
+                                <th:block th:if="${item < pagination.totalElements && item>0}">
+                                    <a th:if="${item != 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(2).id},no=${no+1})}">
+                                    <span th:if="${item== no}" th:text="${noticeList.get(2).noticeTitle}"></span></a>
+
+                                    <a th:if="${item == 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(1).id},no=${no+1})}">
+                                        <span th:if="${item== no}" th:text="${noticeList.get(1).noticeTitle}"></span></a>
+                                </th:block>
+                                <th:block th:if="${item == pagination.totalElements}">
+                                    <span >다음글은 없습니다.</span>
+                                </th:block>
+                            </dd>
+                        </dl>
+                    </div>
+                    </th:block>
+                </div>
+
+                <div class="view-footer border-top mt-1 align-items-center">
+                    <button class="btn btn-secondary mt-3" onclick="javascript:goList();">목록</button>
+                </div>
+
+            </div>
+        </div>
     </div>
+    <script>
+        let titleFont = 28
+        let basicFont = 16
+        console.log(basicFont);
+        $(".fontBig").on("click",function(){
+         basicFont++; // basicFont는 1씩 계속 증가하고,
+         titleFont++
+         console.log(basicFont);
+         // 20 넘어가면 20에서 동작 멈춤
+            if( basicFont > 20  ) {basicFont = 20; return false;}
+            if( titleFont > 32 ) {titleFont = 32; return false;}
+                $("#textBox").css("font-size", basicFont);
+                $(".fontTitle").css("font-size", titleFont);
+
+        });
+
+        $(".fontSmall").on("click",function(){
+         basicFont--; // basicFont는 1씩 계속 감소하고,
+         titleFont--
+         console.log(basicFont);
+         // 20 넘어가면 20에서 동작 멈춤
+            if( basicFont < 10 ) {basicFont = 10; return false;}
+            if( titleFont < 22 ) {titleFont = 22; return false;}
+                $("#textBox").css("font-size", basicFont);
+                $(".fontTitle").css("font-size", titleFont);
+        });
+
+
+
+
+    </script>
 </div>

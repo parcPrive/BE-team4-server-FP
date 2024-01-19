@@ -32,12 +32,12 @@ public class MemberListController {
     @GetMapping("/list")
     public String listMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
         Page<Member> pagination = memberListService.findAllPageMember(page);
+        List<Member> memberSize = memberListService.findAllPageMember();
         List<Log> logList = logService.findByLog();
         List<Member> registerDateList = memberListService.findByRegisterDate();
         List<Member> memberList = pagination.getContent();
         int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
         int end =  start + paginationSize;
-        String xx = BigFaqCategory.FAQ001.getValue();
 
         model.addAttribute("start",start);
         model.addAttribute("end",end);
@@ -45,7 +45,7 @@ public class MemberListController {
         model.addAttribute("memberList",memberList);
         model.addAttribute("logList",logList);
         model.addAttribute("registerDateList",registerDateList);
-        model.addAttribute("xx",xx);
+        model.addAttribute("memberSize",memberSize);
         return "memberList/list";
     }
     @GetMapping("/search")
@@ -58,6 +58,7 @@ public class MemberListController {
         black=".";
         Page<Member> pagination = memberListService.findAllSearchPageMember(category,keyword,page,black);
         List<Member> registerDateList = memberListService.findByRegisterDate();
+        List<Member> memberSize = memberListService.findAllPageMember();
         List<Log> logList = logService.findByLog();
         List<Member> memberList = pagination.getContent();
         int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
@@ -68,6 +69,7 @@ public class MemberListController {
         model.addAttribute("memberList",memberList);
         model.addAttribute("registerDateList",registerDateList);
         model.addAttribute("logList",logList);
+        model.addAttribute("memberSize",memberSize);
         model.addAttribute("search",search);
         model.addAttribute("category",category);
         model.addAttribute("keyword",keyword);
@@ -168,7 +170,8 @@ public class MemberListController {
 
     @GetMapping("/delete")
     @ResponseBody
-    public Map<String, Object> deleteMemberList(Model model,@RequestBody List<Long> id){
+    public Map<String, Object> deleteMemberList(Model model,@RequestParam(value = "id")List<Long> id){
+        log.info("test=={}",id.size());
         boolean result = memberService.deleteAdminMember(id);
         Map<String,Object> resultMap = new HashMap<>();
         if (result){

@@ -29,6 +29,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     @Query("select b from Member b where b.levels < '5'")
     Page<Member> findByAll(Pageable pageable);
+    @Query("select b from Member b where b.levels < '5'")
+    List<Member> findByAllSize();
     List<Member> findByRegisterDateBetween(LocalDateTime startDatetime, LocalDateTime endDatetime);
     @Query("select b from Member b where b.levels = '5'")
     Page<Member> findByBlack(Pageable pageable);

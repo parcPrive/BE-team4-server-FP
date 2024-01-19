@@ -19,7 +19,7 @@
                 <td >#</td>
                 <td th:text="${registerDateList.size()}"></td>
                 <td th:text="${logList.size()}"></td>
-                <td th:text="${memberList.size()}"></td>
+                <td th:text="${memberSize.size()}"></td>
             </tr>
             </tbody>
         </table>
@@ -88,7 +88,13 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-5">
             <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
-                <a class="page-link" th:href="@{/memberList/list(page=${pagination.number - 1})}">Previous</a>
+                <th:block th:if="${search}">
+                    <a class="page-link" href="#"
+                       th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number-1})}">Previous</a>
+                </th:block>
+                <th:block th:unless="${search}">
+                    <a class="page-link" href="#" th:href="@{/memberList/list(page=${pagination.number-1})}">Previous</a>
+                </th:block>
             </li>
             <!-- 13 -->
             <!--1,2,3,4,5 /> 6,7,8,9,10 / 11,12,131,14,15-->
@@ -100,17 +106,22 @@
                                  item < end }">
                     <th:block th:if="${search}">
                         <a class="page-link" href="#"
-                           th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${item},)}" th:text="${item + 1}">1</a>
+                           th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${item})}" th:text="${item + 1}">1</a>
                     </th:block>
                     <th:block th:unless="${search}">
                         <a class="page-link" href="#"
                            th:href="@{/memberList/list(page=${item})}" th:text="${item + 1}">1</a>
                     </th:block>
-
                 </li>
             </th:block>
             <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
-                <a class="page-link" href="#" th:href="@{/memberList/list(page=${pagination.number+1})}">Next</a>
+                <th:block th:if="${search}">
+                    <a class="page-link" href="#"
+                       th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number+1})}">Next</a>
+                </th:block>
+                <th:block th:unless="${search}">
+                    <a class="page-link" href="#" th:href="@{/memberList/list(page=${pagination.number+1})}">Next</a>
+                </th:block>
             </li>
         </ul>
     </nav>

@@ -145,15 +145,12 @@ public class MemberService {
     }
     @Transactional
     public boolean deleteAdminMember(List<Long> id) {
-        Member member = null;
+        Optional<Member>  member = null;
         for (int i=0;i<id.size();i++){
-            member =  memberRepository.findById(id.get(i)).orElseThrow(() ->
-                    new UsernameNotFoundException("아이디 존재하지 않습니다."));
-            memberRepository.delete(member);
-            return true;
+            member = memberRepository.findById(id.get(i));
+            memberRepository.delete(member.get());
         }
-        return false;
-
+        return true;
     }
 
     @Transactional
