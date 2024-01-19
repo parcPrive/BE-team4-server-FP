@@ -41,7 +41,7 @@
                 </tbody>
             </table>
             <button class="btn btn-dark btnBlackAll" id="btnBlackAll">해제</button>
-            <button class="btn btn-danger" id="btnAll" >삭제</button>
+            <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
         </form>
     </div>
     <nav aria-label="Page navigation example">
@@ -113,7 +113,7 @@
                 });
                 return false;
             });
-            //블랙기능 해제 일괄 처리
+            //탈퇴회원 해제 일괄 처리
                   $(".btnBlackAll").on("click",function(){
                       let arrayLevelCheck =[];
                       $("input:checkbox[name=removeCheck]:checked").each(function(){
@@ -128,6 +128,51 @@
                           success:function(data){
                               if(data.isLevel){
                                   alert("변경되었습니다.")
+                                  location.reload();
+                              }else{
+                                  alert("오류입니다.")
+                              }
+                          },
+                          fail:function(){
+
+                          }
+                      })
+                      return false;
+                  })
+                   //탈퇴 해제 기존 level로 이동
+            $(".btnDelete").on("click",function(){
+                $.ajax({
+                    url:"/memberList/delete",
+                    data:{id:$(this).data("no")},
+                    success:function(data){
+                        console.log(data);
+                        if(data.isLevel){
+                            alert("해당회원님이 삭제되었습니다.")
+                            location.reload();
+                        }else{
+                            alert("오류입니다.")
+                        }
+                    },
+                    fail:function(){
+                    }
+                });
+                return false;
+            });
+
+             //탈퇴회원 DB삭제 일괄 처리
+                  $("#btnDeleteAll").on("click",function(){
+                      let arrayLevelCheck =[];
+                      $("input:checkbox[name=removeCheck]:checked").each(function(){
+                          arrayLevelCheck.push($(this).val());
+                      })
+                      console.log(arrayLevelCheck);
+                      $.ajax({
+                          url:"/memberList/delete",
+                          traditional: true,   //ajax 배열 넘기기 옵션
+                          data:{id:arrayLevelCheck},
+                          success:function(data){
+                              if(data.isLevel){
+                                  alert("선택하신 회원 모두 삭제되었습니다.")
                                   location.reload();
                               }else{
                                   alert("오류입니다.")
