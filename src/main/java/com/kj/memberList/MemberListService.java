@@ -39,8 +39,13 @@ public class MemberListService {
         Page<Member> memberList = memberRepository.findByAll(pageable);
         return memberList;
     }
+    public List<Member> findAllPageMember() {
+        List<Member> memberList = memberRepository.findByAllSize();
+        return memberList;
+    }
+
     public List<Member> findByRegisterDate(){
-        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0)); //어제 00:00:00
+        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,0,0)); //어제 00:00:00
         LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59)); //오늘 23:59:59
         List<Member> memberList = memberRepository.findByRegisterDateBetween(startDatetime,endDatetime);
         return memberList;

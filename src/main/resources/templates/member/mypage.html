@@ -6,60 +6,59 @@
     <div class="container">
         <h2>MY PAGE</h2>
         <table class="table">
-            <div class="profile">
-                <th:block th:if="${memberInfo.profileImageUrl==null}">
-                    <img src="/images/user.png" id="memberProfileImage">
-                </th:block>
-                <th:block th:unless="${memberInfo.profileImageUrl==null}">
-                    <img src="${pageContext.request.contextPath}" th:src="@{|/upload/${memberInfo.profileImageUrl}|}" id="memberProfileImage">
-                </th:block>
-            </div>
+            <tr>
+                <td class="profile">
+                    <th:block th:if="${memberInfo.profileImageUrl==null}">
+                        <img src="/images/user.png" id="memberProfileImage">
+                    </th:block>
+                    <th:block th:unless="${memberInfo.profileImageUrl==null}">
+                        <img src="${pageContext.request.contextPath}" th:src="@{|/upload/${memberInfo.profileImageUrl}|}" id="memberProfileImage">
+                    </th:block>
+                </td>
+            </tr>
+            <!-- 프로필 이미지 업로드 폼 -->
             <form method="post" action="" enctype="multipart/form-data" id="profileImageForm" style="display: none">
                 <input th:type="file" name="profileImageUrl" id="profileSelect">
             </form>
-           <!-- <div>
-                <a th:href="@{/image/upload(id=${memberInfo.id})}" class="btn btn-primary mx-1">프로필 수정</a>
-            </div>-->
-            <tbody>
             <tr>
                 <th scope="row">USER ID</th>
-                <td th:text="${memberInfo.userId}">Mark</td>
+                <td th:text="${memberInfo.userId}"></td>
             </tr>
             <tr>
                 <th scope="row">USER NAME</th>
-                <td th:text="${memberInfo.userName}">Mark</td>
+                <td th:text="${memberInfo.userName}"></td>
             </tr>
             <tr>
                 <th scope="row">EMAIL</th>
-                <td th:text="${memberInfo.email}">Mark</td>
+                <td th:text="${memberInfo.email}"></td>
             </tr>
             <tr>
                 <th scope="row">NICK NAME</th>
-                <td th:text="${memberInfo.nickName}">Mark</td>
+                <td th:text="${memberInfo.nickName}"></td>
             </tr>
             <tr>
-                <th scope="row">address</th>
-                <td th:text="${memberInfo.address}">Mark</td>
-                <td th:text="${memberInfo.addressDetail}">Mark</td>
+                <th scope="row">ADDRESS</th>
+                <td th:text="${memberInfo.address}"></td>
+                <td th:text="${memberInfo.addressDetail}"></td>
             </tr>
             <tr>
-                <th scope="row">mobile</th>
-                <td th:text="${memberInfo.mobile}">Mark</td>
-                <td th:text="${memberInfo.phone}">Mark</td>
+                <th scope="row">MOBILE</th>
+                <td th:text="${memberInfo.mobile}"></td>
+                <td th:text="${memberInfo.phone}"></td>
             </tr>
-
-            </tbody>
         </table>
-        <div class="mt-5 d-flex justify-content-center" >
+        <div class="mt-5 d-flex justify-content-center">
             <a th:href="@{/member/delete(id=${memberInfo.id})}" class="btn btn-danger">회원 탈퇴</a>
-            <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                 <a th:href="@{/admin/update/{id}(id=${memberInfo.id})}" class="btn btn-primary mx-1">회원 정보 수정</a>
             </th:block>
             <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
-            <a th:href="@{/member/update(id=${memberInfo.id})}" class="btn btn-primary mx-1">회원 정보 수정</a>
+                <a th:href="@{/member/update(id=${memberInfo.id})}" class="btn btn-primary mx-1">회원 정보 수정</a>
             </th:block>
         </div>
     </div>
+
+
     <script th:inline="javascript">
 
 
@@ -100,7 +99,6 @@
                     fileReader.readAsDataURL(file); // 요거 써야지만 onload 이벤트 발생한다.
                 }
             })
-            //  key:value
 
         })
     </script>

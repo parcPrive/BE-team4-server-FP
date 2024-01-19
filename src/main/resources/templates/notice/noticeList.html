@@ -3,8 +3,64 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/layout}">
 <div layout:fragment="content" class="main">
-    <div class="container">
-        <h2>공지사항 글 목록</h2>
+    <div class="container mt-5">
+        <h2>공지사항</h2>
 
+        <div class="table_wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">카테고리</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성일</th>
+                    <th scope="col">조회수</th>
+                    <th scope="col">작성자</th>
+                </tr>
+                </thead>
+                <tbody id="resultList">
+                <th:block th:each="item,status:${noticeList}">
+                    <tr>
+                        <td class="" th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
+                        <td th:text="${item.noticeCategory}" ></td>
+                        <td><a href="" th:href="@{/cs/notice/view/{id}/{no}(id=${item.id},no=${pagination.totalElements - pagination.number*pagination.size - status.index})}"
+                               th:text="${item.noticeTitle}">제목이 들어가겠죠....</a></td>
+                        <td th:text="${#temporals.format(item.noticeDate,'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${item.noticeView}" ></td>
+                        <td th:text="${item.writer.role}" ></td>
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.id}">삭제</button></td>
+                            <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
+                        </th:block>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center mt-5">
+                    <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
+                        <a class="page-link" th:href="@{/cs/notice/list(page=${pagination.number - 1})}">Previous</a>
+                    </li>
+                    <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+                        <li class="page-item"
+                            th:classappend="${item==pagination.number?'active':''}"
+                            th:if="${item >= start and
+                                 item < end }">
+                            <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${item})}" th:text="${item + 1}">1</a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
+                        <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${pagination.number+1})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+        <div class="mt-5 d-flex justify-content-center">
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+                <a th:href="@{/cs/notice/insert}" class="btn btn-primary">글쓰기</a>
+            </th:block>
+        </div>
     </div>
 </div>

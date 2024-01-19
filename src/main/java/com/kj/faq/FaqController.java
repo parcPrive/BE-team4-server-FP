@@ -87,11 +87,7 @@ public class FaqController {
     @GetMapping("/faq/{code}")
     public String listFaqCode( @PathVariable String code, Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page,
                                @RequestParam(defaultValue = "FAQ001") String faqCategory) {
-        log.info("code=={}",code);
-        for (int i =1;i<=6;i++)
-        if (code.equals("00"+i)){
-            faqCategory = "FAQ00"+i;
-        }
+        faqCategory = "FAQ"+code;
         Page<FaqBoard> pagination = faqBoardService.findByPageFaq(page,faqCategory);
         List<FaqBoard> faqBoardList = pagination.getContent();
         int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
