@@ -140,16 +140,17 @@
 
         let productTotalName = $("#productName1").text() + $("#productCount1").text() + "개";
         console.log("이름 ===>> " + productTotalName)
-        let productCount = 0;
+        let productTotalCount = 0;
         if(tagCount > 1){
             for(let i = 2; i <= tagCount; i++){
-                productCount += parseInt($("#productCount" + i).text());
+                productTotalCount += parseInt($("#productCount" + i).text());
             }
-           productTotalName = productTotalName + " 외 " + productCount +"개";
+           productTotalName = productTotalName + " 외 " + productTotalCount +"개";
         }
 
         const productCartId = [];
         const productSizeId = [];
+        const productCount = []
         for(let i = 1; i <= tagCount; i++){
             productCartId.push($("#productCartId" + i).val())
             productSizeId.push($("#productSizeId" + i).val())
@@ -215,6 +216,26 @@
                                             "productCartId": productCartId,
                                             "productSizeId": productSizeId
                                         },
+                                        success:function (data){
+                                            const url = `/product/paymentsuccess?orderIds=${data}`;
+                                            location.replace(url)
+                                        }
+                                    })
+                                }else{
+                                    $.ajax({
+                                        url: "/productpayment/refund",
+                                        method: "GET",
+                                        data:{
+                                            "impUid": impUid,
+                                            "productTotalPrice": productAmount
+                                        },
+                                        success: function (data){
+                                            if(data){
+                                                alert("환불성공")
+                                            }else{
+                                                alert("결제에 실패했습니다. 관리자에게 문의주세요.")
+                                            }
+                                        }
                                     })
                                 }
                             }

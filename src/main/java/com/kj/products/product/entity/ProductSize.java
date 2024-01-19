@@ -33,4 +33,7 @@ public class ProductSize {
         this.productCount = productSize.productCount;
         this.product = productSize.getProduct();
     }
+    public void setProductCount(int productCount) {
+        this.productCount = productCount;
+    }
 }

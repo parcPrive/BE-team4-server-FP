@@ -219,7 +219,7 @@ public class MemberService {
         }
     }
 
-    // 현목 주문에 필요한 회원 기본 배송지 데이터 필요 findByuserId or findByuserNickName
+    // 현목 회원의 닉네임으로 회원정보를 조회한다.
     public Member findByUserNickName(String userNickName){
         Optional<Member> findMember = memberRepository.findByNickName(userNickName);
         if(findMember.isPresent()){

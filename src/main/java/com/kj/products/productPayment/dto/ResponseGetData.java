@@ -17,6 +17,9 @@ public class ResponseGetData {
     public ResponseGetPaymentDetail getPaymentDetail(ResponseGetData response){
         ResponseGetPaymentDetail getPaymentDetail = new ResponseGetPaymentDetail(response.getResponse());
         return getPaymentDetail;
-
+    }
+    public ResponseGetRefundDetail getRefundDetail(ResponseGetData response){
+        ResponseGetRefundDetail getRefundDetail = new ResponseGetRefundDetail(response.getResponse());
+        return getRefundDetail;
     }
 }

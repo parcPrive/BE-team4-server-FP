@@ -37,6 +37,7 @@ public class ProductCartRepositoryImpl implements ProductCartRepositoryCustom{
                 .fetchOne();
     }
 
+
     @Override
     public List<ProductCartListDto> findByUserId(String userId) {
         List<ProductCart> findProductCart = queryFactory.selectFrom(productCart)
@@ -52,6 +53,14 @@ public class ProductCartRepositoryImpl implements ProductCartRepositoryCustom{
         }
         log.info("productCartList ===>>> {}",productCartList);
         return productCartList;
+    }
+
+    @Override
+    public List<ProductCart> findByProductCartId(List<Long> productCartId) {
+        List<ProductCart> productCarts = queryFactory.selectFrom(productCart)
+                .where(productCart.id.in(productCartId))
+                .fetch();
+        return productCarts;
     }
 
     @Override

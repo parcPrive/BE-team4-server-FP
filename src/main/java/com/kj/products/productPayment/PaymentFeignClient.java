@@ -15,4 +15,11 @@ public interface PaymentFeignClient {
     ResponseGetData checkPayment(
             @PathVariable(value = "imp_uid") String imp_uid,
             @RequestHeader("Authorization") String headerAccessToken);
+
+    @GetMapping("/payments/cancel")
+    ResponseGetData refund(
+            @PathVariable(value = "imp_uid") String impUid,
+            @PathVariable(value = "amount") int productTotalPrice,
+            @RequestHeader("Authorization") String accessToken
+    );
 }

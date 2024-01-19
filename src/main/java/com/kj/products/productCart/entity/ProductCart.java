@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(of = {"id"})
+@ToString(of = {"id","productCount"})
 public class ProductCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

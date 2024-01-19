@@ -11,5 +11,6 @@ public interface ProductCartRepositoryCustom {
     Long countByUserId(String userId);
     List<ProductCartListDto> findByUserId(String userId);
 
+    List<ProductCart> findByProductCartId(List<Long> productCartId);
     List<ProductOrderInfoDto> findByUserNickInProductCartId(ProductCartOrderDto productCartOrderDto);
 }

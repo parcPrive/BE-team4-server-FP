@@ -10,4 +10,7 @@ public class ResponseGetDto {
     private int amount;
     private String buyer_name;
     private String imp_uid;
+    //환불관련
+    private int cancel_amount;
+    private String status;
 }
