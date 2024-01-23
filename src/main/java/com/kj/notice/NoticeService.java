@@ -6,11 +6,9 @@ import com.kj.notice.dto.NoticeDto;
 import com.kj.notice.entity.Notice;
 import com.kj.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +30,13 @@ public class NoticeService {
         return noticeList;
     }
 
+    public Page<Notice> viewNoticeList(int page, int no){
+        Pageable pageable = PageRequest.of(0,3, Sort.by(Sort.Direction.DESC,"noticeDate"));
+        List<Notice> viewNoticeList = noticeRepository.findByBetweenNum(no);
+        Page<Notice> notices = new PageImpl<>(viewNoticeList,pageable, viewNoticeList.size());
+        return notices;
+    }
+
     public Notice findById(Long id) {
         Optional<Notice> notice = noticeRepository.findById(id);
         if (notice.isPresent()){
@@ -40,8 +45,31 @@ public class NoticeService {
         throw new RuntimeException("게시판이 없습니다.");
     }
 
-    public List<Notice> findByBetweenNum(int no) {
-        List<Notice> noticeList = noticeRepository.findByBetweenNum(no);
-        return noticeList;
+    @Transactional
+    public Notice findByIdPlusView(Long id) {
+        Optional<Notice> notice = noticeRepository.findById(id);
+        if (notice.isPresent()){
+            int noticeView = notice.get().getNoticeView()+1;
+            Notice notice1 = notice.get().updateView(noticeView);
+            return notice1;
+        }
+        throw new RuntimeException("게시판이 없습니다.");
+    }
+
+    public Notice updateNotice(NoticeDto noticeDto) {
+        Optional<Notice> notice = noticeRepository.findById(noticeDto.getId());
+        if (notice.isPresent()){
+            return notice.get().update(noticeDto);
+        }
+        throw new  RuntimeException("존재하지 않습니다.");
+    }
+
+    public boolean deleteById(Long id) {
+        Optional<Notice> notice = noticeRepository.findById(id);
+        if (notice.isPresent()){
+            noticeRepository.delete(notice.get());
+            return true;
+        }
+        return false;
     }
 }

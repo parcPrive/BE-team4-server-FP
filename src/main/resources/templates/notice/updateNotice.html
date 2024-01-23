@@ -4,7 +4,54 @@
       layout:decorate="~{/layout/layout}">
 <div layout:fragment="content" class="main">
     <div class="container">
-        <h2>공지사항 글 수정</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mt-5 mb-5">공지사항 글 수정</h2>
+                <form action="" th:action="@{/cs/notice/update}"
+                      method="post">
+                    <div class="row">
+                        <div class="col">
+                            <input type="hidden" name="id" th:value="${noticeInfo.id}">
+                            <label class="form-label" for="noticeCategory" name="noticeCategory">대분류</label>
+                            <select class="form-control noticeCategory" id="noticeCategory" name="noticeCategory">
+                                <option value="">대분류</option>
+                                <option value="FAQ001" th:selected="${noticeInfo.noticeCategory} == '회원정보'">회원정보</option>
+                                <option value="FAQ002" th:selected="${noticeInfo.noticeCategory} == '상품확인'">상품확인</option>
+                                <option value="FAQ003" th:selected="${noticeInfo.noticeCategory} == '주문/결제'">주문/결제</option>
+                                <option value="FAQ004" th:selected="${noticeInfo.noticeCategory} == '배송'">배송</option>
+                                <option value="FAQ005" th:selected="${noticeInfo.noticeCategory} == '교환/취소(반품)'">교환/취소(반품)</option>
+                                <option value="FAQ006" th:selected="${noticeInfo.noticeCategory} == '서비스'">서비스</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">제목</label>
+                        <input type="text" class="form-control" id="subject" placeholder="title" name="noticeTitle" th:value="${noticeInfo.noticeTitle}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">CONTENT</label>
+                        <textarea type="text" class="form-control" id="content"
+                                  placeholder="content" name="noticeContent" th:utext="${noticeInfo.noticeContent}" rows="10"></textarea>
 
+                    </div>
+                    <div class="d-flex justify-content-center mt-5">
+                        <button class="btn btn-primary" id="btnJoinConfirm">저장</button>
+                        <a href="javascript:history.back();" class="btn btn-secondary">취소</a>
+                    </div>
+                </form>
+                <script>
+                    ClassicEditor
+                        .create( document.querySelector( "#content" ),{
+                            ckfinder:{
+                                uploadUrl:"/cs/upload"
+                            }
+                        } )
+                        .catch( error => {
+                            console.error( error );
+                        } );
+
+                </script>
+            </div>
+        </div>
     </div>
 </div>

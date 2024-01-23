@@ -123,7 +123,6 @@ public class FaqController {
     }
     @GetMapping("/deleteFaq/{id}")
     public String delete(@PathVariable Long id) {
-        log.info("=={}",id);
         boolean isDelete = faqBoardService.deleteById(id);
         if(isDelete){
             return "redirect:/cs/faq";
