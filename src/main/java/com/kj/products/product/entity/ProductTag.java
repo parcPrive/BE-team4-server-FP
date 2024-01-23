@@ -12,6 +12,9 @@ public class ProductTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long joinId;
+
     private String productTag;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -19,8 +22,9 @@ public class ProductTag {
     private Product product;
 
     @Builder
-    public ProductTag(String productTag, Product product) {
+    public ProductTag(String productTag,Long joinId ,Product product) {
         this.productTag = productTag;
+        this.joinId = joinId;
         this.product = product;
     }
 }

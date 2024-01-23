@@ -71,6 +71,10 @@ dependencies {
 	implementation platform("org.springframework.cloud:spring-cloud-dependencies:2022.0.2")
 	//스프링 클라우드 openfeign 관련
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1'
+	// 엘라스틱 서치 추가
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+//	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+
 }
 
 tasks.named('test') {

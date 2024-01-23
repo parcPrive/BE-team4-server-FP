@@ -3,6 +3,117 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <div layout:fragment="content" class="main">
+    <style>
+        .star_rating {
+            width: 100%;
+            box-sizing: border-box;
+            display: inline-flex;
+            float: left;
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+        .star_rating .star {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            display: inline-block;
+            background: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FE2bww%2FbtsviSSBz4Q%2F5UYnwSWgTlFt6CEFZ1L3Q0%2Fimg.png') no-repeat;
+            background-size: 100%;
+            box-sizing: border-box;
+        }
+        .star_rating .star.on {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            display: inline-block;
+            background: url('https://blog.kakaocdn.net/dn/b2d6gV/btsvbDoal87/XH5b17uLeEJcBP3RV3FyDk/img.png') no-repeat;
+            background-size: 100%;
+            box-sizing: border-box;
+        }
+
+        .star_box {
+            width: 400px;
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 15px 0;
+            background: #F3F4F8;
+            border: 0;
+            border-radius: 10px;
+            height: 100px;
+            resize: none;
+            padding: 15px;
+            font-size: 13px;
+            font-family: sans-serif;
+        }
+        .btn02 {
+            display:block;
+            width: 400px;
+            font-weight: bold;
+            border: 0;
+            border-radius: 10px;
+            max-height: 50px;
+            padding: 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+            background:bisque;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        /* 닫기 버튼 스타일 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .review {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .user-info {
+            font-style: italic;
+            color: #666;
+        }
+
+        .rating {
+            unicode-bidi: bidi-override;
+            direction: rtl;
+            font-size: 30px;
+        }
+        .star {
+            display: inline-block;
+            margin-right: 5px;
+            color: gold;
+        }
+
+    </style>
     <body>
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #e3f2fd;">
@@ -97,16 +208,68 @@
     </section>
     <!-- Related items section-->
     <section class="py-5 bg-light">
-        <div class="container">
-            <p class="lead" id="description" style="text-align: center" >Lorem ipsum dolor sit amet consectetur adipisicing?</p>
-        </div>
         <hr class="my-4">
         <div class="container px-4 px-lg-5 mt-5"  >
             <div class="text-center">
-                <img class="card-img-top rounded mb-5 mb-md-0" style="padding-bottom: 50px; width: 550px; height:700px" >
+                여기에 상품디테일 사진들 ck에디터꺼 들어간다.
             </div>
         </div>
     </section>
+
+
+    <button onclick="openModal()">상품 후기 작성</button>
+    <!-- 모달 창 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <!-- 여기에 후기 작성 폼 등을 추가하세요 -->
+                <h2>리뷰 작성하기</h2>
+            <form action="" th:action="@{/product/insertreview}" method="post" enctype="multipart/form-data">
+                <div class ="star_rating">
+                    <span class="star on" value="1"> </span>
+                    <span class="star" value="2"> </span>
+                    <span class="star" value="3"> </span>
+                    <span class="star" value="4"> </span>
+                    <span class="star" value="5"> </span>
+                </div>
+                <input type="hidden" id="starCount" name="star">
+                <input type="hidden" id="productId" name="productId" th:value="${findOneProduct.getId()}">
+                <input type="hidden"  name="userName" value="mok119">
+                <div>
+                    <div>
+                        <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview1">
+                        <input class="img-thumbnail" type="file" id="file1" name="productReviewImages" value="">
+                    </div>
+                    <div>
+                        <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview2">
+                        <input class="img-thumbnail" type="file" id="file2" name="productReviewImages" value="">
+                    </div>
+                </div>
+
+                <textarea class="star_box" id="review" name="productReview" placeholder="리뷰 내용을 작성해주세요." ></textarea>
+                <input type="submit" class="btn02" value="리뷰작성" >
+            </form>
+
+        </div>
+
+    </div>
+    <div>
+        <block th:each="review : ${findOneProduct.getProductReview()}">
+            <div class="review">
+
+                <h6 th:text="${review.getUserName()}"></h6>
+                    <block th:each="star : ${#numbers.sequence(1, review.getStar())}">
+                        <span class="star">&#9733;</span>
+                    </block>
+                <p th:text="${review.getProductReview()}">상품리뷰내용</p>
+                <img class="card-img-top mb-5 mb-md-0"  th:src="@{${review.getProductImage().get(0)}}" style="max-width: 10%; height: auto;" />
+                <img class="card-img-top mb-5 mb-md-0"  th:src="@{${review.getProductImage().get(1)}}" style="max-width: 10%; height: auto;" />
+                <p class="user-info" th:text="${review.getCreatedAt()}">구매일</p>
+            </div>
+        </block>
+
+    </div>
+
     <!-- Footer-->
     <footer class="py-5 bg-dark">
         <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Roominis</p></div>
@@ -214,6 +377,91 @@
 
             })
         })
+
+
+        function openModal() {
+            document.getElementById('myModal').style.display = 'flex';
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            var modal = document.getElementById('myModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        let star = 1;
+        $('.star_rating > .star').click(function() {
+            $(this).parent().children('span').removeClass('on');
+            $(this).addClass('on').prevAll('span').addClass('on');
+
+            star = $(".on").length;
+            console.log("===별별별======")
+            console.log(star)
+            $("#starCount").val(star);
+            console.log("===별별별======")
+
+        })
+
+        $("#file1").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview1").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+
+        });
+
+        $("#file2").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview2").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+
+        // $("#reviewbtn").on("click", function(){
+        //     let files = [];
+        //     let formData = new FormData();
+        //     for(let i = 1; i <= 2; i++){
+        //         files.push($("#file" + i).val());
+        //     }
+        //     formData.append("productReviewImages[]", files);
+        //     formData.append("start", star);
+        //     formData.append("productId", $("#productId"))
+        //     formData.append("title", "mok119")
+        //     formData.append("productReview",$("#review"))
+        //     console.log(files)
+        //     $.ajax({
+        //         url:"/product/insertreview",
+        //         method: "POST",
+        //         data:formData,
+        //         success:function (e){
+        //             console.log("성공")
+        //             console.log(e)
+        //         }
+        //     })
+        //     return false;
+        // })
+
+
+
 
     </script>
 </div>

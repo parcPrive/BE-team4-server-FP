@@ -14,16 +14,8 @@ public class ProductInputDto {
     private String gender;
     private String productSeason;
     // 사이즈와 수량
-    private String productSizeS;
-    private int productCountS;
-    private String productSizeM;
-    private int productCountM;
-    private String productSizeL;
-    private int productCountL;
-    private String productSizeXL;
-    private int productCountXL;
-    private String productSizeXXL;
-    private int productCountXXL;
+    private List<String> productSize;
+    private List<Integer> productCount;
     // ckediter에서 들어오니까
     private String productDetailImageBucket;
     private String productDetailImage;

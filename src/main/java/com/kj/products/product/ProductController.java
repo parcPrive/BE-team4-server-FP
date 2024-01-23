@@ -1,16 +1,23 @@
 package com.kj.products.product;
 
+
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.kj.config.ClientConf;
 import com.kj.productCategory.ProductCategoryService;
 import com.kj.productCategory.dto.ProductCategoryfindDto;
 import com.kj.products.product.dto.*;
 import com.kj.products.productCart.ProductCartService;
 import com.kj.products.productCart.dto.ProductCartInsertDto;
 import com.kj.products.productCart.dto.ProductCartListDto;
+import com.kj.products.productElasticSearch.ProductElasticSearchClient;
+import com.kj.products.productElasticSearch.entity.ProductDocument;
 import com.kj.products.productOder.ProductOderservice;
 import com.kj.products.productOder.dto.ProductCartOrderDto;
 import com.kj.products.productOder.dto.ProductOrderInfoDto;
 import com.kj.products.productOder.dto.ProductOrderSuccessDto;
 import com.kj.products.productOder.entity.MyProductOrderDto;
+import com.kj.products.productReview.dto.ProductinsertReviewDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -20,10 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 @Controller
@@ -35,6 +39,9 @@ public class ProductController {
     private final ProductCategoryService productCategoryService;
     private final ProductCartService productCartService;
     private final ProductOderservice productOderservice;
+
+    private final ProductElasticSearchClient productElasticSearchClient;
+    private final ClientConf client;
 // ================상품 등록 관련========================
     @GetMapping("/insert")
     public String InsertProduct(
@@ -132,6 +139,7 @@ public class ProductController {
         return "/product/view";
 
     }
+
 // ===========장바구니============
     @GetMapping("/cart/{userName}")
     public String productCart(
@@ -225,6 +233,75 @@ public class ProductController {
         log.info("insertProdudtProcess===>> {} ", productInputDto);
         productService.insertTest(productInputDto);
         return "/product/insert";
+    }
+
+    @GetMapping("/search1")
+    @ResponseBody
+    public String search() {
+        return productElasticSearchClient.getSearchData();
+    }
+
+    @GetMapping("/search2")
+    @ResponseBody
+    public String search2(){
+        log.info("여디!!!");
+        String aaa = """
+                {
+                    "query":{
+                        "match": {
+                            "product_name": "123"
+                        }
+                    }
+                }
+                """;
+//        SearchResponse<ProductDocument> response =  productElasticSearchClient.getSearchName(aaa);
+
+        String response =  productElasticSearchClient.getSearchName(aaa);
+        log.info("검색결과 ====>>> {}", productElasticSearchClient.getSearchName(aaa));
+
+        return response;
+
+    }
+
+    @GetMapping("/search3")
+    @ResponseBody
+    public List<ProductDocument> search3() throws IOException {
+
+//        String aaa = """
+//                {
+//                    "query":{
+//                        "match": {
+//                            "product_name": "123"
+//                        }
+//                    }
+//                }
+//                """;
+//        Reader input = new StringReader(aaa);
+//        IndexRequest<JsonData> requerst = IndexRequest.of(i -> i
+//                .index("myproduct03")
+//                .withJson(input));
+//        IndexResponse response = client.client.index(requerst);
+//        log.info("여기로 ?? ===>>> {}", response.index().);
+        int aa = 123;
+
+        SearchResponse<ProductDocument> search = client.client.search(s -> s
+                        .index("myproduct05")
+                        .query(q -> q
+                                .term(t -> t
+                                        .field("product_name")
+                                        .value(v -> v.stringValue(String.valueOf(aa)))
+
+                                )),
+                ProductDocument.class);
+        List<ProductDocument> result = new ArrayList<>();
+        Long total = search.hits().total().value(); // 총갯수
+        List<Hit<ProductDocument>> hits =  search.hits().hits();
+        for(Hit<ProductDocument> hit : hits){
+            result.add(hit.source());
+        }
+        log.info("결과 ===>>> {}", result);
+        return result;
+
     }
 
 

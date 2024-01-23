@@ -97,28 +97,28 @@
                         <div>
 
                             <span>S</span>
-                            <input type="hidden"  class="form-control" name="productSizeS" value="S">
-                            <input type="text"  class="form-control" name="productCountS" value="0">
+                            <input type="hidden"  class="form-control" name="productSize" value="S">
+                            <input type="text"  class="form-control" name="productCount" value="0">
                         </div>
                         <div>
                             <span>M</span>
-                            <input type="hidden"  class="form-control" name="productSizeM" value="M">
-                            <input type="text"  class="form-control" name="productCountM" value="0">
+                            <input type="hidden"  class="form-control" name="productSize" value="M">
+                            <input type="text"  class="form-control" name="productCount" value="0">
                         </div>
                         <div>
                             <span>L</span>
-                            <input type="hidden"  class="form-control" name="productSizeL" value="L">
-                            <input type="text"  class="form-control" name="productCountL" value="0">
+                            <input type="hidden"  class="form-control" name="productSize" value="L">
+                            <input type="text"  class="form-control" name="productCount" value="0">
                         </div>
                         <div>
                             <span>XL</span>
-                            <input type="hidden"  class="form-control" name="productSizeXL" value="XL">
-                            <input type="text"  class="form-control" name="productCountXL" value="0">
+                            <input type="hidden"  class="form-control" name="productSize" value="XL">
+                            <input type="text"  class="form-control" name="productCount" value="0">
                         </div>
                         <div>
                             <span>XXL</span>
-                            <input type="hidden"  class="form-control" name="productSizeXXL" value="XXL">
-                            <input type="text"  class="form-control" name="productCountXXL" value="0">
+                            <input type="hidden"  class="form-control" name="productSize" value="XXL">
+                            <input type="text"  class="form-control" name="productCount" value="0">
                         </div>
                     </div>
                     <div class="mb-3">
@@ -152,6 +152,9 @@
 
         });
         $("#file2").on("change", function (e) {
+            console.log("이이잉이이이이이이잉이이")
+            console.log(e)
+            console.log("이이잉이이이이이이잉이이")
             const file = e.target.files[0];
             if (!file.type.match("image.*")) {
                 alert("이미지 파일만 가능합니다.");
