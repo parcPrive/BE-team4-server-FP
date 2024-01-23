@@ -2,15 +2,11 @@ package com.kj.products.product;
 
 import com.amazonaws.services.s3.model.*;
 import com.kj.config.S3Config;
-import com.kj.member.entity.Member;
-import com.kj.member.repository.MemberRepository;
 import com.kj.products.product.dto.*;
 import com.kj.products.product.entity.*;
 import com.kj.products.product.repository.*;
 import com.kj.productCategory.Repository.ProductCategoryRepository;
 import com.kj.productCategory.entity.ProductCategory;
-import com.kj.products.productCart.dto.ProductCartInsertDto;
-import com.kj.products.productCart.entity.ProductCart;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -109,19 +105,27 @@ public class ProductService {
     }
     @Transactional
     public void insertProductSize(ProductInputDto productInputDto, Product product){
-        ProductSize productSizeS = new ProductSize(productInputDto.getProductSizeS(), productInputDto.getProductCountS(), product);
-        ProductSize productSizeM = new ProductSize(productInputDto.getProductSizeM(), productInputDto.getProductCountM(), product);
-        ProductSize productSizeL = new ProductSize(productInputDto.getProductSizeL(), productInputDto.getProductCountL(), product);
-        ProductSize productSizeXL = new ProductSize(productInputDto.getProductSizeXL(), productInputDto.getProductCountXL(), product);
-        ProductSize productSizeXXL = new ProductSize(productInputDto.getProductSizeXXL(), productInputDto.getProductCountXXL(), product);
-        productSizeRepository.saveAll(Arrays.asList(productSizeS, productSizeM, productSizeL, productSizeXL, productSizeXXL));
+        List<ProductSize> insertProductSize = new ArrayList<>();
+        for(int i = 0; i < productInputDto.getProductCount().size(); i++){
+            insertProductSize.add(new ProductSize(productInputDto.getProductSize().get(i),productInputDto.getProductCount().get(i),product));
+        }
+        productSizeRepository.saveAll(insertProductSize);
     }
     @Transactional
     public void insertProductTag(List<String> productTags, Product product){
+        List<ProductTag> insertProductTag = new ArrayList<>();
         for(String productTag : productTags){
+            Optional<ProductTag> findProductTag = productTagRepository.findProductTagByProductTagName(productTag);
+            if(!findProductTag.isPresent()){ // null 일때 null이면 신규 등록
+                log.info("태그 신규 등록");
+
+            }else{ // null이 아니고 기존에 있는 태그 사용
+                log.info("태그 기존 등록");
+
+            }
             log.info("productTag ===>> {}", productTag );
-            ProductTag insertProductTag = new ProductTag(productTag,product);
-            productTagRepository.save(insertProductTag);
+//            ProductTag insertProductTag = new ProductTag(productTag,product);
+//            productTagRepository.save(insertProductTag);
 
         }
     }
@@ -179,7 +183,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductUpdateDto findByProductId(int no) {
+    public ProductUpdateDto findByProductId(long no) {
         Product findProduct = productRepository.findByProductId(no).orElseThrow( () -> new RuntimeException("asd"));
         ProductUpdateDto result = new ProductUpdateDto(findProduct);
             log.info("productUpdateDto -=======>>>>> {}", result);

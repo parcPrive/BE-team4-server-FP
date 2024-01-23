@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ProductRepositoryCustom {
     int findByMaxProductId();
 
-    Optional<Product> findByProductId(int no);
+    Optional<Product> findByProductId(long no);
 
     PageImpl<ProductListDto> findListProducPage(Pageable pageable, ProductSearchCondotion productSearchCondotion);
 

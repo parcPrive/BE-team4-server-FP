@@ -1,10 +1,10 @@
 package com.kj.products.product.dto;
 
-import com.kj.productReview.entity.ProductReview;
 import com.kj.products.product.entity.Product;
 import com.kj.products.product.entity.ProductImage;
 import com.kj.products.product.entity.ProductSize;
 import com.kj.products.product.entity.ProductTag;
+import com.kj.products.productReview.entity.ProductReview;
 import lombok.Builder;
 import lombok.Data;
 

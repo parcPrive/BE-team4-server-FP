@@ -1,6 +1,5 @@
 package com.kj.products.product.repository;
 
-import com.kj.productReview.entity.ProductReview;
 import com.kj.products.product.dto.ProductFindOneDto;
 import com.kj.products.product.dto.ProductListDto;
 import com.kj.products.product.dto.ProductSearchCondotion;
@@ -8,6 +7,8 @@ import com.kj.products.product.entity.Product;
 import com.kj.products.product.entity.ProductSize;
 import com.kj.products.product.entity.ProductTag;
 
+import com.kj.products.productReview.entity.ProductReview;
+import com.kj.products.productReview.entity.QProductReview;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLTemplates;
@@ -23,12 +24,12 @@ import java.util.Optional;
 
 
 import static com.kj.productCategory.entity.QProductCategory.productCategory;
-import static com.kj.productReview.entity.QProductReview.*;
 import static com.kj.products.product.entity.QProduct.*;
 import static com.kj.products.product.entity.QProductImage.productImage;
 import static com.kj.products.product.entity.QProductLike.productLike;
 import static com.kj.products.product.entity.QProductSize.productSize1;
 import static com.kj.products.product.entity.QProductTag.productTag1;
+import static com.kj.products.productReview.entity.QProductReview.productReview1;
 import static org.springframework.util.StringUtils.hasText;
 
 
@@ -53,7 +54,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public Optional<Product> findByProductId(int no) {
+    public Optional<Product> findByProductId(long no) {
         Product result = queryFactory.selectFrom(product)
                 .leftJoin(productImage)
                 .on(product.id.eq(productImage.product.id)).fetchJoin()
@@ -61,7 +62,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                 .on(product.id.eq(productSize1.product.id)).fetchJoin()
                 .leftJoin(productTag1)
                 .on(product.id.eq(productTag1.product.id)).fetchJoin()
-                .where(product.id.eq((long) no))
+                .where(product.id.eq( no))
                 .fetchOne();
 //        result ===>>Product(id=1, productName=123, productNumber=123, productPrice=123, gender=남자, productSeanson=123, clickCount=0, createdAt=2024-01-02T10:52:07.937482, productDetailImageBucket=1, productDatailImage=<p>111</p>, writer=작성자, updateedAt=null, productImages=[com.kj.product.entity.ProductImage@3338ed8a, com.kj.product.entity.ProductImage@5c30981e], productSize=[com.kj.product.entity.ProductSize@27fe2d5, com.kj.product.entity.ProductSize@69e947ce, com.kj.product.entity.ProductSize@71e379be, com.kj.product.entity.ProductSize@10da9652, com.kj.product.entity.ProductSize@6dcea7d6], productTags=[com.kj.product.entity.ProductTag@78ba7566, com.kj.product.entity.ProductTag@6448ee0d], productCategory=ProductCategory(id=1, mainProductCategoryId=100, mainProductCategoryName=상의, subProductCategoryName=반팔), productCart= [], productLike=[], productReview=[], productQnA=[])
 
@@ -159,8 +160,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                         .where(productSize1.product.id.eq((long) productId))
                         .fetch();
         List<ProductReview> findProductReview = queryFactory.selectFrom(productReview1)
-                        .where(productReview1.product.id.eq((long) productId))
-                        .fetch();
+                .where(productReview1.product.id.eq((long) productId))
+                .orderBy(productReview1.id.desc())
+                .fetch();
         List<ProductTag> findProductTags = queryFactory.selectFrom(productTag1)
                     .where(productTag1.product.id.eq((long) productId))
                     .fetch();
