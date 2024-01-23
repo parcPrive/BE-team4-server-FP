@@ -44,11 +44,6 @@
 
                     </div>
                 </div>
-                <th:block th:each="item:${#numbers.sequence(no-1,no)}">
-                    <li class="page-item">
-                        <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${item})}" th:text="${item}">1</a>
-                    </li>
-                </th:block>
 
                 <div class="view-header row border-top d-flex align-items-center">
                     <th:block th:each="item:${#numbers.sequence(no-1,no)}">
@@ -56,36 +51,95 @@
                         <dl>
                             <dt th:text="${item==no-1} ? '이전글' :'다음글'"></dt>
                             <dd>
+
                                 <th:block th:if="${item == 0}">
                                     <span >이전글은 없습니다.</span>
+                                </th:block>
+                                <th:block th:if="${pagination.totalElements == 1 && item == no && item ==1}">
+                                    <span >다음글은 없습니다.</span>
                                 </th:block>
                                 <a th:if="${item == no-1 && item >0}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(0).id},no=${no-1})}">
                                 <span th:text="${item==no-1} ? ${noticeList.get(0).noticeTitle} : ${noticeList.get(2).noticeTitle}"></span></a>
 
-                                <th:block th:if="${item < pagination.totalElements && item>0}">
+                                <th:block th:if="${pagination.totalElements != 1 && pagination.totalElements != 2 && item == no && item>no-1}">
                                     <a th:if="${item != 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(2).id},no=${no+1})}">
-                                    <span th:if="${item== no}" th:text="${noticeList.get(2).noticeTitle}"></span></a>
-
+                                    <span th:text="${noticeList.get(2).noticeTitle}"></span></a>
                                     <a th:if="${item == 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(1).id},no=${no+1})}">
-                                        <span th:if="${item== no}" th:text="${noticeList.get(1).noticeTitle}"></span></a>
+                                        <span th:text="${noticeList.get(1).noticeTitle}"></span></a>
                                 </th:block>
-                                <th:block th:if="${item == pagination.totalElements}">
+
+                                <th:block th:if="${pagination.totalElements == 2 && item == no && item !=1}">
                                     <span >다음글은 없습니다.</span>
                                 </th:block>
+                                <th:block th:if="${pagination.totalElements == 2 && item == no && item ==1}">
+                                    <a th:if="${item == 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(1).id},no=${no+1})}">
+                                        <span th:text="${noticeList.get(1).noticeTitle}"></span></a>
+                                </th:block>
+
                             </dd>
                         </dl>
                     </div>
                     </th:block>
                 </div>
+                <div class="text-start">
+                    <h2>댓글 목록</h2>
+                    <th:block th:each="item,status:${commentList}">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1" th:text="${item.writer.userId}"></h5>
+                                <small th:text="${#temporals.format(item.commentDate,'yyyy-MM-dd HH:mm')}">2024-01-22</small>
+                            </div>
+                            <p class="mb-1" th:text="${item.commentContent}">작성자 아이디</p>
 
+                            <!-- 대댓글 리스트 -->
+                            <ul class="list-group mt-3 ml-5">
+                                <li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">대댓글 작성자아이디</h6>
+                                        <small>2024-01-23</small>
+                                    </div>
+                                    <p class="mb-1">사용자1에 대한 첫 번째 대댓글입니다.</p>
+                                </li>
+                                <!-- 추가적인 대댓글 항목들을 필요에 따라 반복해서 추가할 수 있습니다. -->
+                            </ul>
+
+                        </li>
+                    </ul>
+                    </th:block>
+                </div>
+                <div class="text-start">
+                    <h2>댓글 달기</h2>
+                    <form th:action="@{/cs/comment/insert}" method="post">
+                        <input type="hidden" name="id" th:value="${noticeInfo.id}">
+                        <input type="hidden" name="memberId" th:value="${#authentication.principal.loggedMember.id}">
+                        <div class="form-group">
+                            <label for="commentContent">댓글:</label>
+                            <textarea class="form-control" id="commentContent" name="commentContent" rows="4" placeholder="댓글을 입력하세요" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">댓글 작성</button>
+                    </form>
+                </div>
                 <div class="view-footer border-top mt-1 align-items-center">
-                    <button class="btn btn-secondary mt-3" onclick="javascript:goList();">목록</button>
+                    <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+                        <li class="page-item" th:if="${no > (pagination.totalElements-pagination.size)}">
+                            <a class="btn btn-secondary" href="#" th:href="@{/cs/notice/list(page=${item})}" >목록</a>
+                        </li>
+                        <li class="page-item" th:if="${item!=no/pagination.size}">
+                            <a class="btn btn-secondary" href="#" th:href="@{/cs/notice/list(page=0)}" >목록</a>
+                        </li>
+                    </th:block>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+                        <a th:href="@{/cs/notice/delete/{id}(id=${noticeInfo.id})}" class="btn btn-danger">글 삭제</a>
+                        <a th:href="@{/cs/notice/update/{id}(id=${noticeInfo.id})}" class="btn btn-primary mx-1">글 수정</a>
+                    </th:block>
                 </div>
 
             </div>
         </div>
     </div>
     <script>
+        //글자 크기
         let titleFont = 28
         let basicFont = 16
         console.log(basicFont);

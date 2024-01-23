@@ -63,4 +63,23 @@
             </th:block>
         </div>
     </div>
+<script th:inline="javascript">
+            //삭제 기능
+           $(".btnDelete").on("click",function(){
+               const $parent = $(this).parent().parent();
+               console.log($parent);
+               const loggedId = $(this).data("no");
+               console.log(loggedId);
+               $.ajax({
+                   url:"/cs/notice/delete/"+loggedId,
+                   data:{id:$(this).data("no")},
+                   success:function(data){
+                        location.reload();
+                   },
+                   fail:function(){
+                   }
+               });
+               return false;
+           });
+</script>
 </div>
