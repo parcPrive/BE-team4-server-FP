@@ -118,9 +118,12 @@ public class ProductService {
             Optional<ProductTag> findProductTag = productTagRepository.findProductTagByProductTagName(productTag);
             if(!findProductTag.isPresent()){ // null 일때 null이면 신규 등록
                 log.info("태그 신규 등록");
-
+                Long tagIdCount = productTagRepository.productTagIdMaxCount();
+                insertProductTag.add(new ProductTag(productTag, tagIdCount,product));
+                log.info("tagcount =====>>>> {}",tagIdCount);
             }else{ // null이 아니고 기존에 있는 태그 사용
                 log.info("태그 기존 등록");
+
 
             }
             log.info("productTag ===>> {}", productTag );
