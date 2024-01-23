@@ -91,7 +91,11 @@
                                 <small th:text="${#temporals.format(item.commentDate,'yyyy-MM-dd HH:mm')}">2024-01-22</small>
                             </div>
                             <p class="mb-1" th:text="${item.commentContent}">작성자 아이디</p>
-
+                            <div>
+                            <button class="btn btn-primary">대댓글 작성</button>
+                            <button class="btn btn-secondary">댓글 수정</button>
+                            <button class="btn btn-danger">댓글 삭제</button>
+                            </div>
                             <!-- 대댓글 리스트 -->
                             <ul class="list-group mt-3 ml-5">
                                 <li class="list-group-item">
