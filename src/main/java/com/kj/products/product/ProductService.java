@@ -126,6 +126,9 @@ public class ProductService {
                 log.info("태그 신규 등록");
                 log.info("pk + 1 신규 ===>>> {}", productTagIdMax);
 
+                Long tagIdCount = productTagRepository.productTagIdMaxCount();
+                insertProductTag.add(new ProductTag(productTag, tagIdCount,product));
+                log.info("tagcount =====>>>> {}",tagIdCount);
             }else{ // null이 아니고 기존에 있는 태그 사용
                 // 기존에 있는 태그의 프라이머리키 가져온다.
                 Long productTagPk = productTagRepository.productTagIdminCount(productTag);
@@ -133,6 +136,7 @@ public class ProductService {
                 inProductTag = new ProductTag(productTag, productTagPk, product);
                 log.info("태그 기존 등록");
                 log.info("기존 조인아이디에들어갈 pk ===>>> {}",productTagPk);
+
             }
             productTagRepository.save(inProductTag);
         }
