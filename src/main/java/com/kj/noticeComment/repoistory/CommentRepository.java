@@ -10,7 +10,13 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Long> {
-    @Query(value = "select c from Comment c where c.notice.id = :id")
-    List<Comment> findByNoticeId(@Param("id") Long id);
+    @Query(value = "SELECT *" +
+            "FROM notice_comment" +
+            " WHERE NOTICE_ID = :idx START WITH parent_id IS NULL" +
+            " CONNECT BY PRIOR id = parent_id",nativeQuery = true)
+    List<Comment> findByNoticeIds(@Param("idx") Long id);
+
+    @Query(value = "select c from Comment c where c.parent.id = :id")
+    List<Comment> findByParentIds(@Param("id") Long id);
 
 }

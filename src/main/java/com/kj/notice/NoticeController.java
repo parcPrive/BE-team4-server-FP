@@ -56,10 +56,12 @@ public class NoticeController {
 
 
     @GetMapping("/view/{id}/{no}")
-    public String viewNotice(@PathVariable Long id,
-                             @PathVariable int no,Model model,@RequestParam(value = "page", required = true, defaultValue = "0") int page){
+    public String viewNotice(@PathVariable Long id, //공지사항 ID
+                             @PathVariable int no,Model model,
+                             @RequestParam(value = "page", required = true, defaultValue = "0") int page){
         Page<Notice> pagination = noticeService.viewNoticeList(page,no);
         Notice noticeInfo = noticeService.findByIdPlusView(id);
+
         List<Comment> commentList = commentService.commentList(id);
         List<Notice> noticeList = pagination.getContent();
         model.addAttribute("noticeInfo",noticeInfo);
