@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -114,20 +115,28 @@ public class ProductService {
     @Transactional
     public void insertProductTag(List<String> productTags, Product product){
         List<ProductTag> insertProductTag = new ArrayList<>();
+        ProductTag inProductTag = new ProductTag();
         for(String productTag : productTags){
-            Optional<ProductTag> findProductTag = productTagRepository.findProductTagByProductTagName(productTag);
-            if(!findProductTag.isPresent()){ // null 일때 null이면 신규 등록
+            List<ProductTag> findProductTag = productTagRepository.findProductTagByProductTagName(productTag);
+            if(findProductTag.size() < 1){ // null 일때 null이면 신규 등록
+                // Pk 찾기
+                Long productTagIdMax = productTagRepository.productTagIdMaxCount();
+                insertProductTag.add(new ProductTag(productTag, productTagIdMax, product));
+                inProductTag = new ProductTag(productTag, productTagIdMax, product);
                 log.info("태그 신규 등록");
+                log.info("pk + 1 신규 ===>>> {}", productTagIdMax);
 
             }else{ // null이 아니고 기존에 있는 태그 사용
+                // 기존에 있는 태그의 프라이머리키 가져온다.
+                Long productTagPk = productTagRepository.productTagIdminCount(productTag);
+                insertProductTag.add(new ProductTag(productTag, productTagPk, product));
+                inProductTag = new ProductTag(productTag, productTagPk, product);
                 log.info("태그 기존 등록");
-
+                log.info("기존 조인아이디에들어갈 pk ===>>> {}",productTagPk);
             }
-            log.info("productTag ===>> {}", productTag );
-//            ProductTag insertProductTag = new ProductTag(productTag,product);
-//            productTagRepository.save(insertProductTag);
-
+            productTagRepository.save(inProductTag);
         }
+//        productTagRepository.saveAll(insertProductTag);
     }
 
 
@@ -194,7 +203,7 @@ public class ProductService {
 
 
     @Transactional
-    private void insertProductUpdateSize(ProductUpdateInputDto productUpdateInputDto, Product findProduct) {
+    public void insertProductUpdateSize(ProductUpdateInputDto productUpdateInputDto, Product findProduct) {
             ProductSize productSizeS = new ProductSize(productUpdateInputDto.getProductSizeS(), productUpdateInputDto.getProductCountS(), findProduct);
             ProductSize productSizeM = new ProductSize(productUpdateInputDto.getProductSizeM(), productUpdateInputDto.getProductCountM(), findProduct);
             ProductSize productSizeL = new ProductSize(productUpdateInputDto.getProductSizeL(), productUpdateInputDto.getProductCountL(), findProduct);
@@ -204,7 +213,7 @@ public class ProductService {
     }
 
     @Transactional
-    private void insertProductUpdateImage(List<String> updateImageList, Product findProduct) {
+    public void insertProductUpdateImage(List<String> updateImageList, Product findProduct) {
         List<ProductImage> insertProductUpdateImages = new ArrayList<>();
         log.info("여기가 0이라고???? ===>>> {}",updateImageList.size());
         for(int i = 0; i < updateImageList.size(); i++){
@@ -217,7 +226,7 @@ public class ProductService {
         productImageRepository.saveAll(insertProductUpdateImages);
     }
 
-    private int updateCkeditorS3FolderCheck(String newBucketName) {
+    public int updateCkeditorS3FolderCheck(String newBucketName) {
         String S3FolderName = "productdetailimage/"+ newBucketName +"/";
         ObjectListing productDetailImageFolder =  s3Config.amazonS3Client().listObjects(bucket, S3FolderName);
         log.info("asdasdasdas {}", newBucketName);
@@ -261,7 +270,7 @@ public class ProductService {
     }
 
     @Transactional
-    private List<String> S3UpdateProductImageInsert(List<MultipartFile> updateProductFiles, String bucketName) throws IOException {
+    public List<String> S3UpdateProductImageInsert(List<MultipartFile> updateProductFiles, String bucketName) throws IOException {
         String localLocation = myLocalFolder + UUID.randomUUID() + "/";
         File folder = new File(localLocation);
         List<String> updateProductImageName = new ArrayList<>();

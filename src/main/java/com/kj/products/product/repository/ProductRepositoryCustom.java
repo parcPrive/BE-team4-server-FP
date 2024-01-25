@@ -5,6 +5,7 @@ import com.kj.products.product.dto.ProductFindOneDto;
 import com.kj.products.product.dto.ProductListDto;
 import com.kj.products.product.dto.ProductSearchCondotion;
 import com.kj.products.product.entity.Product;
+import com.kj.products.productElasticSearch.ProductCategorySearchCondition;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -18,5 +19,7 @@ public interface ProductRepositoryCustom {
     PageImpl<ProductListDto> findListProducPage(Pageable pageable, ProductSearchCondotion productSearchCondotion);
 
     ProductFindOneDto findByProductId1(int productId);
+
+    PageImpl<ProductListDto> findProductByProductCategory(Pageable pageable, ProductCategorySearchCondition productCategorySearchCondition);
 
 }
