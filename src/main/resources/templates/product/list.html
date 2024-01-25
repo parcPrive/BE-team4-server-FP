@@ -4,6 +4,99 @@
       layout:decorate="~{layout/layout}">
 <link rel="stylesheet" href="./goods__list.css" />
 <div layout:fragment="content" class="main">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .category-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #f2f2f2;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .category-item {
+            margin: 0;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .category-item a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .category-item:hover {
+            background-color: #ddd;
+        }
+
+        .category-menu1 {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .category-menu2 {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .category-menu3 {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .category-menu4 {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .category-menu1 a {
+            display: block;
+            padding: 10px;
+            color: #555;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .category-menu2 a {
+            display: block;
+            padding: 10px;
+            color: #555;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .category-menu3 a {
+            display: block;
+            padding: 10px;
+            color: #555;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .category-menu4 a {
+            display: block;
+            padding: 10px;
+            color: #555;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .category-menu a:hover {
+            background-color: #ddd;
+        }
+    </style>
+
+
     <h2>상품리스트</h2>
     <div class="container mt-2">
         <form action="" th:action="@{/product/list/1}" method="get">
@@ -23,6 +116,113 @@
                 <div class="col-2"><button class="btn btn-primary">검색</button></div>
             </div>
         </form>
+        <div class="d-flex">
+        <div role="tablist" class="sc-8hpehb-0 Xgves">
+            <div class="sc-8hpehb-1 ikgyph">
+                <button class="sc-8hpehb-2 jmROMB category-item1">
+                    <div class="sc-8hpehb-3 HnLvd">
+                        <strong class="sc-8hpehb-4 gSyKpj">상의</strong>
+                        <span class="sc-8hpehb-5 dYmkDE">Top</span>
+                    </div>
+                    <div class="sc-8hpehb-6 iUMgho">
+                        <svg width="18" height="18" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 5V25M25 15H5" stroke="black" style="vector-effect: non-scaling-stroke;"></path>
+                        </svg>
+                    </div>
+                </button>
+                <div class="sc-8hpehb-7 liOFHO category-menu1">
+                    <ul class="sc-8hpehb-8 jJHbFL">
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(mainCategory=상의)}" class="sc-8hpehb-10 gUJCm">전체</a></li>
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=반팔)}" class="sc-8hpehb-10 gUJCm">반팔</a></li>
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=긴팔)}" class="sc-8hpehb-10 gUJCm">긴팔</a></li>
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=후드)}" class="sc-8hpehb-10 gUJCm">후드</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div role="tablist" class="sc-8hpehb-0 Xgves">
+            <div class="sc-8hpehb-1 ikgyph">
+                <button class="sc-8hpehb-2 jmROMB category-item2">
+                    <div class="sc-8hpehb-3 HnLvd">
+                        <strong class="sc-8hpehb-4 gSyKpj">아우터</strong>
+                        <span class="sc-8hpehb-5 dYmkDE">Outer</span>
+                    </div>
+                    <div class="sc-8hpehb-6 iUMgho">
+                        <svg width="18" height="18" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 5V25M25 15H5" stroke="black" style="vector-effect: non-scaling-stroke;"></path>
+                        </svg>
+                    </div>
+                </button>
+                <div class="sc-8hpehb-7 liOFHO category-menu2">
+                    <ul class="sc-8hpehb-8 jJHbFL">
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(mainCategory=아우터)}" class="sc-8hpehb-10 gUJCm">전체</a></li>
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=패딩)}" class="sc-8hpehb-10 gUJCm">패딩</a></li>
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=코드)}" class="sc-8hpehb-10 gUJCm">코드</a></li>
+                        <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=가디건)}" class="sc-8hpehb-10 gUJCm">가디건</a></li>
+                        <!-- 다른 카테고리 항목들도 추가할 수 있습니다. -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+            <div role="tablist" class="sc-8hpehb-0 Xgves">
+                <div class="sc-8hpehb-1 ikgyph">
+                    <button class="sc-8hpehb-2 jmROMB category-item3">
+                        <div class="sc-8hpehb-3 HnLvd">
+                            <strong class="sc-8hpehb-4 gSyKpj">하의</strong>
+                            <span class="sc-8hpehb-5 dYmkDE">Pants</span>
+                        </div>
+                        <div class="sc-8hpehb-6 iUMgho">
+                            <svg width="18" height="18" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 5V25M25 15H5" stroke="black" style="vector-effect: non-scaling-stroke;"></path>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="sc-8hpehb-7 liOFHO category-menu3">
+                        <ul class="sc-8hpehb-8 jJHbFL">
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(mainCategory=하의)}" class="sc-8hpehb-10 gUJCm">전체</a></li>
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=긴바지)}" class="sc-8hpehb-10 gUJCm">긴바지</a></li>
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=반바지)}" class="sc-8hpehb-10 gUJCm">반바지</a></li>
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=스포츠바지)}" class="sc-8hpehb-10 gUJCm">스포츠바지</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div role="tablist" class="sc-8hpehb-0 Xgves">
+                <div class="sc-8hpehb-1 ikgyph">
+                    <button class="sc-8hpehb-2 jmROMB category-item4">
+                        <div class="sc-8hpehb-3 HnLvd">
+                            <strong class="sc-8hpehb-4 gSyKpj">신발</strong>
+                            <span class="sc-8hpehb-5 dYmkDE">Shoes</span>
+                        </div>
+                        <div class="sc-8hpehb-6 iUMgho">
+                            <svg width="18" height="18" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 5V25M25 15H5" stroke="black" style="vector-effect: non-scaling-stroke;"></path>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="sc-8hpehb-7 liOFHO category-menu4">
+                        <ul class="sc-8hpehb-8 jJHbFL">
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(mainCategory=신발)}" class="sc-8hpehb-10 gUJCm">전체</a></li>
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=런닝화)}" class="sc-8hpehb-10 gUJCm">런닝화</a></li>
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=구두)}" class="sc-8hpehb-10 gUJCm">구두</a></li>
+                            <li class="sc-8hpehb-9 eatmFI"><a th:href="@{/product/categorysearch/1(subCategory=슬리퍼)}" class="sc-8hpehb-10 gUJCm">슬리퍼</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
     </div>
     <div class="container1">
         <th:block th:each="product : ${products.getContent()}">
@@ -63,6 +263,28 @@
     </div>
 
     <script th:inline="javascript">
+
+        document.querySelector('.category-item1').addEventListener('click', function() {
+            var menu = document.querySelector('.category-menu1');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            menu.style.maxHeight = menu.style.maxHeight === '0px' ? menu.scrollHeight + 'px' : '0px';
+        });
+        document.querySelector('.category-item2').addEventListener('click', function() {
+            var menu = document.querySelector('.category-menu2');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            menu.style.maxHeight = menu.style.maxHeight === '0px' ? menu.scrollHeight + 'px' : '0px';
+        });
+        document.querySelector('.category-item3').addEventListener('click', function() {
+            var menu = document.querySelector('.category-menu3');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            menu.style.maxHeight = menu.style.maxHeight === '0px' ? menu.scrollHeight + 'px' : '0px';
+        });
+        document.querySelector('.category-item4').addEventListener('click', function() {
+            var menu = document.querySelector('.category-menu4');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            menu.style.maxHeight = menu.style.maxHeight === '0px' ? menu.scrollHeight + 'px' : '0px';
+        });
+
 
     </script>
 </div>

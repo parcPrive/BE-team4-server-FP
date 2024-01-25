@@ -4,6 +4,8 @@ import com.kj.products.product.entity.ProductTag;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.kj.products.product.entity.QProductTag.*;
@@ -29,12 +31,11 @@ public class ProductTagRepositoryImpl implements ProductTagRepositoryCustom{
     }
 
     @Override
-    public Optional<ProductTag> findProductTagByProductTagName(String productTagName) {
-        ProductTag findproductTag = queryFactory.selectFrom(productTag1)
+    public List<ProductTag> findProductTagByProductTagName(String productTagName) {
+        List<ProductTag> findproductTag = queryFactory.selectFrom(productTag1)
                 .where(productTag1.productTag.eq(productTagName))
-                .fetchOne();
-        Optional<ProductTag> resultProductTag = Optional.ofNullable(findproductTag);
-        return resultProductTag;
+                .fetch();
+        return findproductTag;
     }
 
     @Override
@@ -42,7 +43,17 @@ public class ProductTagRepositoryImpl implements ProductTagRepositoryCustom{
         Long productTagIdcount = queryFactory.select(productTag1.id.max())
                 .from(productTag1)
                 .fetchOne();
-        if(productTagIdcount == 0) return (long)1;
+        if(productTagIdcount == null) return (long)1;
         else return productTagIdcount + 1;
     }
+
+    @Override
+    public Long productTagIdminCount(String productTagname) {
+        Long ProductTagIdmin = queryFactory.select(productTag1.id.min())
+                .from(productTag1)
+                .where(productTag1.productTag.eq(productTagname))
+                .fetchOne();
+        return ProductTagIdmin;
+    }
+
 }

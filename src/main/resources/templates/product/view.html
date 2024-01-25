@@ -45,7 +45,34 @@
             font-size: 13px;
             font-family: sans-serif;
         }
+        .QA_box {
+            width: 400px;
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 15px 0;
+            background: #F3F4F8;
+            border: 0;
+            border-radius: 10px;
+            height: 20px;
+            resize: none;
+            padding: 15px;
+            font-size: 13px;
+            font-family: sans-serif;
+        }
+
         .btn02 {
+            display:block;
+            width: 400px;
+            font-weight: bold;
+            border: 0;
+            border-radius: 10px;
+            max-height: 50px;
+            padding: 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+            background:bisque;
+        }
+        .btn03 {
             display:block;
             width: 400px;
             font-weight: bold;
@@ -111,6 +138,16 @@
             display: inline-block;
             margin-right: 5px;
             color: gold;
+        }
+
+        .conect_detail_comment {
+            cursor: pointer;
+        }
+        .conect_feedback_comment {
+            display: none;
+        }
+        .reviewDetail{
+            display: none;
         }
 
     </style>
@@ -249,14 +286,11 @@
                 <textarea class="star_box" id="review" name="productReview" placeholder="리뷰 내용을 작성해주세요." ></textarea>
                 <input type="submit" class="btn02" value="리뷰작성" >
             </form>
-
         </div>
-
     </div>
     <div>
         <block th:each="review : ${findOneProduct.getProductReview()}">
             <div class="review">
-
                 <h6 th:text="${review.getUserName()}"></h6>
                     <block th:each="star : ${#numbers.sequence(1, review.getStar())}">
                         <span class="star">&#9733;</span>
@@ -270,6 +304,96 @@
 
     </div>
 
+    <button onclick="openModalQ()">상품QnA</button>
+    <!-- 모달 창 -->
+    <div id="myModalQ" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModalQ()">&times;</span>
+            <h2>제품QnA</h2>
+
+                <input type="hidden" id="productIdQ" name="productId" th:value="${findOneProduct.getId()}">
+                <input type="hidden"  id="userName" name="userName" value="mok119">
+                <p>제목</p>
+                <div>
+                    <select name="productQACategoryId" id="productQnACategoryList">
+                        <option>문의내용</option>
+                    </select>
+                </div>
+                <input class="QA_box" type="text" id="productQATitle" name="productQATitle">
+                <p>내용</p>
+                <textarea class="star_box"  id="ProductQAContent" name="ProductQAContent" placeholder="문의 내용을 작성해주세요." ></textarea>
+                <input type="submit" class="btn02 productQnA" value="QnA작성" >
+
+        </div>
+
+    </div>
+    <div>
+        <table class="table_basic table_detail_qa">
+            <!-- 이전 테이블 내용 생략 -->
+                <tbody>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">답변여부</th>
+                    <th scope="col">구분</th>
+                    <th scope="col">내용</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">등록일자</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>
+                        <strong>답변완료</strong>
+                    </td>
+                    <td>배송</td>
+                    <td class="qa_contents">
+                        <a href="javascript:void(0)" onclick="toggleFeedback(5)">
+                            상품 관련 문의 입니다.
+                        </a>
+                    </td>
+                    <td>ej***</td>
+                    <td><strong>2023-09-24</strong></td>
+                    <td>
+                        <button onclick="openModalA()">관리자 응답</button>
+                        <!-- 모달 창 -->
+                        <div id="myModalA" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeModalA()">&times;</span>
+                                <h2>제품QnA</h2>
+                                <form action="" th:action="@{/admin/product/insertqna}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" id="productIdA" name="productId" th:value="${findOneProduct.getId()}">
+                                    <input type="hidden"  name="adminId" value="mok119">
+                                    <input type="hidden" name="productQnAId" value="4">
+                                    <p>내용</p>
+                                    <textarea class="star_box"  name="productAdminQnAContent" placeholder="문의 내용을 작성해주세요." ></textarea>
+                                    <input type="submit" class="btn03" value="관리자 응답" >
+                                </form>
+
+                            </div>
+                    </td>
+                </tr>
+
+                        <tr id="q5" >
+                            <td colspan="6">
+                                <p>사이즈안맞아 교환했는데 언제쯤받나요</p>
+                            </td>
+                        </tr>
+                        <tr id="fb_5" >
+                            <td>트릴리온<br>담당자<br></td>
+                            <td class="feedback_comment" colspan="4">
+                                <!-- 피드백 내용 -->
+                            </td>
+                            <td class="feedback_writer">
+                                2024.01.23
+                            </td>
+                        </tr>
+
+                    <!-- 상품 Q&A END -->
+                </tbody>
+
+        </table>
+        <!-- 새로 추가한 행 -->
+    </div>
     <!-- Footer-->
     <footer class="py-5 bg-dark">
         <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Roominis</p></div>
@@ -279,6 +403,7 @@
     <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
     </body>
+
     <script th:inline="javascript">
         $("#minusBtn").on("click",function(e){
             let prevProductCount = $("#productCount").val();
@@ -356,7 +481,7 @@
         if(productTotalCount == 0){
             return false;
         }
-            
+
             const productPrice = $("#totalPrice").text();
             console.log("productTotalCount" + productTotalCount);
             console.log("productSizeId" + productSizeId);
@@ -395,6 +520,40 @@
                 modal.style.display = 'none';
             }
         }
+
+        function openModalQ() {
+            document.getElementById('myModalQ').style.display = 'flex';
+            $.ajax({
+                url: "/product/findqnacategory",
+                method: "GET",
+                success: function (data){
+
+                    $.each(data , function (index, item){
+                        console.log(item.productQnACategoryName)
+                        $("#productQnACategoryList").append(`<option value="${item.productQnACategoryId}">${item.productQnACategoryName}</option>`)
+                    })
+
+                }
+            })
+        }
+
+        // 모달 닫기
+        function closeModalQ() {
+            document.getElementById('myModalQ').style.display = 'none';
+        }
+
+        function openModalA() {
+            document.getElementById('myModalA').style.display = 'flex';
+        }
+        // 모달 닫기
+        function closeModalA() {
+            document.getElementById('myModalA').style.display = 'none';
+        }
+
+
+
+
+
 
         let star = 1;
         $('.star_rating > .star').click(function() {
@@ -436,30 +595,35 @@
             fileReader.readAsDataURL(file);
         });
 
-        // $("#reviewbtn").on("click", function(){
-        //     let files = [];
-        //     let formData = new FormData();
-        //     for(let i = 1; i <= 2; i++){
-        //         files.push($("#file" + i).val());
-        //     }
-        //     formData.append("productReviewImages[]", files);
-        //     formData.append("start", star);
-        //     formData.append("productId", $("#productId"))
-        //     formData.append("title", "mok119")
-        //     formData.append("productReview",$("#review"))
-        //     console.log(files)
-        //     $.ajax({
-        //         url:"/product/insertreview",
-        //         method: "POST",
-        //         data:formData,
-        //         success:function (e){
-        //             console.log("성공")
-        //             console.log(e)
-        //         }
-        //     })
-        //     return false;
-        // })
+        $(".productQnA").on("click", function (e){
+            const userName = $("#userName").val();
+            const productQACategoryId = $("#productQnACategoryList").val();
+            const productQATitle = $("#productQATitle").val();
+            const ProductQAContent = $("#ProductQAContent").val();
+            const productId = $("#productIdQ").val();
+            $.ajax({
+                url:"/product/insertqna",
+                method: "POST",
+                data: {
+                    "userName":userName,
+                    "productQACategoryId":productQACategoryId,
+                    "productQATitle": productQATitle,
+                    "ProductQAContent": ProductQAContent,
+                    "productId": productId
+                },
+                success: function (data){
+                    console.log(data)
+                }
+            })
+        })
 
+        function toggleFeedback(commentId) {
+            console.log("asdasd")
+            console.log(commentId)
+            var feedbackRow = document.getElementById("reviewDetail" + commentId);
+            console.log("asdasd")
+            feedbackRow.style.display = (feedbackRow.style.display === "table-row") ? "none" : "table-row";
+        }
 
 
 

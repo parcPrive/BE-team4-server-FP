@@ -3,7 +3,7 @@ package com.kj.products.product.entity;
 import com.kj.products.product.dto.ProductInputDto;
 import com.kj.products.product.dto.ProductUpdateInputDto;
 import com.kj.productCategory.entity.ProductCategory;
-import com.kj.productQnA.entity.ProductQnA;
+import com.kj.products.productQnA.entity.ProductQnA;
 import com.kj.products.productReview.entity.ProductReview;
 import jakarta.persistence.*;
 import lombok.*;

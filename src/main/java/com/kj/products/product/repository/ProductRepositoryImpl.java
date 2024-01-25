@@ -7,8 +7,12 @@ import com.kj.products.product.entity.Product;
 import com.kj.products.product.entity.ProductSize;
 import com.kj.products.product.entity.ProductTag;
 
+import com.kj.products.productElasticSearch.ProductCategorySearchCondition;
+import com.kj.products.productQnA.dto.ProductQnAfind;
+import com.kj.products.productQnA.entity.ProductQnA;
+import com.kj.products.productQnA.entity.QProductQnA;
 import com.kj.products.productReview.entity.ProductReview;
-import com.kj.products.productReview.entity.QProductReview;
+
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLTemplates;
@@ -29,6 +33,9 @@ import static com.kj.products.product.entity.QProductImage.productImage;
 import static com.kj.products.product.entity.QProductLike.productLike;
 import static com.kj.products.product.entity.QProductSize.productSize1;
 import static com.kj.products.product.entity.QProductTag.productTag1;
+
+import static com.kj.products.productQnA.entity.QProductQnA.productQnA;
+import static com.kj.products.productQnACategory.entity.QProductQnACategory.productQnACategory;
 import static com.kj.products.productReview.entity.QProductReview.productReview1;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -170,14 +177,59 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                          .from(productLike)
                                  .where(productLike.product.id.eq((long) productId))
                                          .fetchOne();
+         
 
+        List<ProductQnA> qnAS= queryFactory.selectFrom(productQnA)
+                .leftJoin(productQnA.children).fetchJoin()
+                .join(productQnA.productQnACategory,productQnACategory).fetchJoin()
+                .where(
+                        productQnA.product.id.eq((long)productId)
+                )
+                .orderBy(
+                        productQnA.parent.id.asc().nullsFirst(),
+                        productQnA.createdAt.desc()
+                )
+                .fetch();
+        List<ProductQnAfind> pp = new ArrayList<>();
+        for(ProductQnA qq : qnAS){
+            log.info("과연?? ===>>>{}" , qq.getId());
+            log.info("과연?? ===>>>{}" , qq.getProductQAContent());
+            pp.add(new ProductQnAfind(qq));
+        }
+        log.info("asdasdasdasdasdasdasdasd ===> {}",pp);
         log.info("프로덕트 아이디가 없다고??? ===>>> {}", findOneProduct);
         ProductFindOneDto result = new ProductFindOneDto(findOneProduct, findProductSize, findProductReview, findProductTags,producLike);
         log.info("====================================================={}", result);
         return result;
 
-        /*.leftJoin(productTag1)
-                .on(product.id.eq(productTag1.product.id)).fetchJoin()*/
+    }
+
+    @Override
+    public PageImpl<ProductListDto> findProductByProductCategory(Pageable pageable, ProductCategorySearchCondition productCategorySearchCondition) {
+        QueryResults<Long> productIds = queryFactory.select(product.id)
+                .from(product)
+                .where(
+                        maincategoryEq(productCategorySearchCondition.getMainCategory()),
+                        subCategoryEq(productCategorySearchCondition.getSubCategory())
+                )
+                .orderBy(product.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Product> findProducts =queryFactory.selectFrom(product)
+                        .join(product.productImages,productImage).fetchJoin()
+                        .where(product.id.in(productIds.getResults()))
+                        .orderBy(product.id.desc())
+                        .fetch();
+        List<ProductListDto> productListDtos = new ArrayList<>();
+        for(Product result : findProducts){
+            productListDtos.add(new ProductListDto(result));
+        }
+        PageImpl<ProductListDto> pageList = new PageImpl<>(productListDtos, pageable, productIds.getTotal());
+
+        return pageList;
+
     }
 
     private BooleanExpression categoryEq(String category){
@@ -188,5 +240,12 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
 
     private BooleanExpression productSearchWord(String productSearchWord){
         return hasText(productSearchWord) ? product.productName.like("%" + productSearchWord + "%") : null;
+    }
+
+    private BooleanExpression maincategoryEq(String mainCategory){
+        return hasText(mainCategory) ? product.productCategory.mainProductCategoryName.eq(mainCategory) : null;
+    }
+    private BooleanExpression subCategoryEq(String subCategory){
+        return hasText(subCategory) ? product.productCategory.subProductCategoryName.eq(subCategory) : null;
     }
 }
