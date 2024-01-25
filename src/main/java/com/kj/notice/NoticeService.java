@@ -20,7 +20,7 @@ public class NoticeService {
 
 
     public void insertNotice(NoticeDto noticeDto, CustomUserDetails customUserDetails){
-        Notice notice = NoticeDto.toEntity(noticeDto,customUserDetails.getLoggedMember());
+        Notice notice = NoticeDto.toEntity(noticeDto,customUserDetails.getLoggedMember(),null);
         noticeRepository.save(notice);
     }
 
@@ -51,6 +51,7 @@ public class NoticeService {
         if (notice.isPresent()){
             int noticeView = notice.get().getNoticeView()+1;
             Notice notice1 = notice.get().updateView(noticeView);
+
             return notice1;
         }
         throw new RuntimeException("게시판이 없습니다.");

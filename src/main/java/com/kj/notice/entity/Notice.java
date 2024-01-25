@@ -32,7 +32,7 @@ public class Notice {
     private int noticeView;
     @ManyToOne(fetch = FetchType.EAGER)
     private Member writer;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany( mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
     public Notice update(NoticeDto noticeDto) {

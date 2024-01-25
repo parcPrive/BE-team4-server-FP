@@ -1,5 +1,6 @@
 package com.kj.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kj.deleteMember.entity.DeleteMember;
 import com.kj.faq.entity.FaqBoard;
@@ -54,12 +55,16 @@ public class Member {
 
 
     @OneToMany(mappedBy = "member_id", cascade = CascadeType .REMOVE)
+    @JsonIgnore
     List<Log> logList = new ArrayList<>();
     @OneToMany(mappedBy = "writer", cascade = CascadeType .REMOVE)
+    @JsonIgnore
     List<FaqBoard> faqBoardList = new ArrayList<>();
     @OneToMany(mappedBy = "writer", cascade = CascadeType .REMOVE)
+    @JsonIgnore
     List<Notice> noticeList = new ArrayList<>();
     @OneToMany(mappedBy = "member", cascade = CascadeType .REMOVE)
+    @JsonIgnore
     List<DeleteMember> deleteMemberList = new ArrayList<>();
 
 
