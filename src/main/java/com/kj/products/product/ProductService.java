@@ -7,6 +7,10 @@ import com.kj.products.product.entity.*;
 import com.kj.products.product.repository.*;
 import com.kj.productCategory.Repository.ProductCategoryRepository;
 import com.kj.productCategory.entity.ProductCategory;
+import com.kj.products.productQnA.entity.QProductQnA;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -376,10 +380,18 @@ public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondo
     }
 
     @Transactional
-    public ProductFindOneDto findOneByProductId(int productId) {
-        ProductFindOneDto findOneProduct = productRepository.findByProductId1(productId);
+    public ProductFindOneDto findOneByProductId(int productId, int reviewPage, int qnAPage, HttpServletRequest req) {
+
+
+        Pageable productReviewPage = PageRequest.of(reviewPage - 1, 10);
+        Pageable productQnAPage = PageRequest.of(qnAPage - 1, 10);
+        ProductFindOneDto findOneProduct = productRepository.findByProductId1(productId, productReviewPage, productQnAPage);
         log.info("파인트원 프로덕트 ====>>> {}", findOneProduct);
         return findOneProduct;
+    }
+
+    public void productClickCount(int productId, String Productclick){
+
     }
 
 }

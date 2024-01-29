@@ -18,7 +18,7 @@ public interface ProductRepositoryCustom {
 
     PageImpl<ProductListDto> findListProducPage(Pageable pageable, ProductSearchCondotion productSearchCondotion);
 
-    ProductFindOneDto findByProductId1(int productId);
+    ProductFindOneDto findByProductId1(int productId, Pageable productReviewPage,Pageable productQnAPage);
 
     PageImpl<ProductListDto> findProductByProductCategory(Pageable pageable, ProductCategorySearchCondition productCategorySearchCondition);
 

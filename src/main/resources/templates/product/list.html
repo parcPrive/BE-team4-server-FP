@@ -233,7 +233,7 @@
                     </th:block>
                 </div>
                 <div class="textBox">
-                    <a th:href="@{/product/view/{productId}(productId=${product.id})}">
+                    <a th:href="@{/product/view/{productId}(productId=${product.id},reviewPage=1,qnaPage=1)}">
                     <p class="textBox__name" th:text="${product.ProductName}">탁상용 조명</p>
                     <p class="textBox__price" th:text="${product.ProductPrice}">260,000 원</p>
                     </a>
@@ -248,12 +248,12 @@
                 <th:block th:each="page : ${#numbers.sequence(1, products.getTotalPages())}">
                 <li class="page-item">
                     <th:block th:if="${param.category != null}">
-                    <a class="page-link" th:text="${page}" th:href="@{/product/list/{page}(page=${page},
+                    <a class="page-link" th:if="${page} > 0" th:text="${page}" th:href="@{/product/list/{page}(page=${page},
                                                                                      category=${param.category},
                                                                                       searchWord=${param.searchWord})}">0</a>
                     </th:block>
                     <th:block th:unless="${param.category != null}">
-                        <a class="page-link" th:text="${page}" th:href="@{/product/list/{page}(page=${page})}">0</a>
+                        <a class="page-link" th:if="${page} > 0" th:text="${page}" th:href="@{/product/list/{page}(page=${page})}">0</a>
                     </th:block>
                 </li>
                 </th:block>

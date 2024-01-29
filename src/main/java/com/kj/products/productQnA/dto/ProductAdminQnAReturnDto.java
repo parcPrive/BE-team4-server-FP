@@ -12,7 +12,7 @@ public class ProductAdminQnAReturnDto {
     private String productAdminQnAContent;
     private LocalDateTime createdAt;
 
-    @Builder
+
     public ProductAdminQnAReturnDto(ProductQnA productQnA) {
         this.id = productQnA.getId();
         this.adminId = productQnA.getMember().getNickName();

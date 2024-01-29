@@ -4,9 +4,12 @@ import com.kj.products.product.entity.Product;
 import com.kj.products.product.entity.ProductImage;
 import com.kj.products.product.entity.ProductSize;
 import com.kj.products.product.entity.ProductTag;
+import com.kj.products.productQnA.dto.ProductQnAfind;
+import com.kj.products.productQnA.entity.ProductQnA;
 import com.kj.products.productReview.entity.ProductReview;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +34,12 @@ public class ProductFindOneDto {
     private List<ProductImage> productImages;
     private List<ProductSize> productSize;
     private List<ProductTag> productTags;
-    private List<ProductReview> productReview = new ArrayList<>();
+    private PageImpl<ProductReview> productReviews;
+    private PageImpl<ProductQnA> productQnAPage;
 
 
     @Builder
-    public ProductFindOneDto(Product product, List<ProductSize> findProductSize, List<ProductReview> findProductReview, List<ProductTag> findProductTags, Long producLike) {
+    public ProductFindOneDto(Product product, List<ProductSize> findProductSize, PageImpl<ProductReview> productReviews, List<ProductTag> findProductTags, Long producLike, PageImpl<ProductQnA> productQnAPage) {
         this.id = product.getId();
         this.productName = product.getProductName();
         this.productNumber = product.getProductNumber();
@@ -48,6 +52,7 @@ public class ProductFindOneDto {
         this.productSize = findProductSize;
         this.productTags = findProductTags;
         this.productLike = producLike;
-        this.productReview = findProductReview;
+        this.productReviews = productReviews;
+        this.productQnAPage = productQnAPage;
     }
 }

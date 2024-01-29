@@ -17,7 +17,7 @@ public class ProductQnAfind {
 
     public ProductQnAfind(ProductQnA productQnA) {
         this.id = productQnA.getId();
-//        this.prodcutQACategory = productQnA.getProductQnACategory().getProductQnACategoryName();
+        this.prodcutQACategory = productQnA.getProductQnACategory().getProductQnACategoryName();
         this.productQATitle = productQnA.getProductQATitle();
         this.productQAContent = productQnA.getProductQAContent();
         this.createdAt = productQnA.getCreatedAt();
