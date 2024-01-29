@@ -250,3 +250,16 @@ li {
 }
 
 /*====================================================productCartList================================================================================ */
+
+.depth1{
+    padding-left:1rem !important;
+}
+.depth2{
+    padding-left:2rem !important;
+}
+.depth3{
+    padding-left:3rem !important;
+}
+.depth4{
+    padding-left:4rem !important;
+}
