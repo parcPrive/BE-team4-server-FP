@@ -34,7 +34,8 @@
                     <div class="col-md-6 mt-2">
                         <dl>
                             <dt>조회수</dt>
-                            <dd th:text="${noticeInfo.noticeView}">1854</dd>
+                            <dd th:text="${noticeInfo.noticeView}"></dd>
+
                         </dl>
                     </div>
                 </div>
@@ -45,62 +46,72 @@
                     </div>
                 </div>
 
+
                 <div class="view-header row border-top d-flex align-items-center">
-                    <th:block th:each="item:${#numbers.sequence(no-1,no)}">
                     <div class="col-md-6 mt-2" >
                         <dl>
-                            <dt th:text="${item==no-1} ? '이전글' :'다음글'"></dt>
-                            <dd>
-
-                                <th:block th:if="${item == 0}">
-                                    <span >이전글은 없습니다.</span>
+                            <dt>이전글</dt>
+                            <dd th:if="${noticeInfo.prevNotice == null}">
+                                <span>이전글 없습니다.</span>
+                            </dd>
+                            <dd th:unless="${noticeInfo.prevNotice==null}">
+                                <th:block th:if="${search}">
+                                    <a th:href="@{/cs/notice/searchView/{id}/{category}/{keyword}/{search}(id=${noticeInfo.prevNotice.id},
+                                    category=${category},keyword=${keyword},search=${search})}">
+                                        <span th:text="${noticeInfo.prevNotice.noticeTitle}"></span>
+                                    </a>
                                 </th:block>
-                                <th:block th:if="${pagination.totalElements == 1 && item == no && item ==1}">
-                                    <span >다음글은 없습니다.</span>
+                                <th:block th:if="${search == null}">
+                                <a th:href="@{/cs/notice/view/{id}(id=${noticeInfo.prevNotice.id})}">
+                                    <span th:text="${noticeInfo.prevNotice.noticeTitle}"></span>
+                                </a>
                                 </th:block>
-                                <a th:if="${item == no-1 && item >0}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(0).id},no=${no-1})}">
-                                <span th:text="${item==no-1} ? ${noticeList.get(0).noticeTitle} : ${noticeList.get(2).noticeTitle}"></span></a>
-
-                                <th:block th:if="${pagination.totalElements != 1 && pagination.totalElements != 2 && item == no && item>no-1}">
-                                    <a th:if="${item != 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(2).id},no=${no+1})}">
-                                    <span th:text="${noticeList.get(2).noticeTitle}"></span></a>
-                                    <a th:if="${item == 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(1).id},no=${no+1})}">
-                                        <span th:text="${noticeList.get(1).noticeTitle}"></span></a>
-                                </th:block>
-
-                                <th:block th:if="${pagination.totalElements == 2 && item == no && item !=1}">
-                                    <span >다음글은 없습니다.</span>
-                                </th:block>
-                                <th:block th:if="${pagination.totalElements == 2 && item == no && item ==1}">
-                                    <a th:if="${item == 1}" th:href="@{/cs/notice/view/{id}/{no}(id=${noticeList.get(1).id},no=${no+1})}">
-                                        <span th:text="${noticeList.get(1).noticeTitle}"></span></a>
-                                </th:block>
-
                             </dd>
                         </dl>
                     </div>
-                    </th:block>
+                    <div class="col-md-6 mt-2" >
+                    <dl>
+                        <dt>다음글</dt>
+                        <dd th:if="${noticeInfo.nextNotice == null}">
+                            <span>다음글 없습니다.</span>
+                        </dd>
+                        <dd th:unless="${noticeInfo.nextNotice == null}">
+                            <th:block th:if="${search}">
+                            <a th:href="@{/cs/notice/searchView/{id}/{category}/{keyword}/{search}(id=${noticeInfo.nextNotice.id},
+                            category=${category},keyword=${keyword},search=${search})}">
+                                <span th:text="${noticeInfo.nextNotice.noticeTitle}"></span>
+                            </a>
+                            </th:block>
+                            <th:block th:if="${search == null}">
+                                <a th:href="@{/cs/notice/view/{id}(id=${noticeInfo.nextNotice.id})}">
+                                    <span th:text="${noticeInfo.nextNotice.noticeTitle}"></span>
+                                </a>
+                            </th:block>
+                        </dd>
+                    </dl>
                 </div>
+                </div>
+
+
                 <div class="text-start">
                     <h2>댓글 목록</h2>
                     <th:block th:each="item,status:${commentList}">
-                        <th:block th:if="${item.depth}== '0'"><ul class="list-group"></th:block>
-                        <th:block th:if="${item.depth}== '1'"><ul class="list-group ms-3"></th:block>
-                        <th:block th:if="${item.depth}== '2'"><ul class="list-group ms-4"></th:block>
-                        <th:block th:if="${item.depth}== '3'"><ul class="list-group ms-5"></th:block>
+                        <th:block th:if="${item.depth}== '0'"><ul class="list-group depth-list"></th:block>
+                        <th:block th:if="${item.depth}== '1'"><ul class="list-group ms-3 depth-list depth1"></th:block>
+                        <th:block th:if="${item.depth}== '2'"><ul class="list-group ms-4 depth-list depth2"></th:block>
+                        <th:block th:if="${item.depth}== '3'"><ul class="list-group ms-4 depth-list depth3"></th:block>
+                        <th:block th:if="${item.depth}== '4'"><ul class="list-group ms-5 depth-list depth4"></th:block>
                         <li class="list-group-item">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1" th:text="${item.writer.userId}"></h5>
                                 <small th:text="${#temporals.format(item.commentDate,'yyyy-MM-dd HH:mm')}">2024-01-22</small>
+                            </div>
                             <p class="content" th:text="${item.commentContent}"th:value="${item.commentContent}">작성자 아이디</p>
-                            <div>
                             <button class="btn btn-primary btnComment" th:data-no="${item.id}" th:value="${item.id}">대댓글 작성</button>
                                 <span th:if="${#authentication.principal.loggedMember.id} == ${item.writer.id}">
                                     <button class="btn btn-secondary btnCommentUpdate" th:data-no="${item.id}">댓글 수정</button>
                                     <button class="btn btn-danger btnCommentDelete" th:data-no="${item.id}">댓글 삭제</button>
                                 </span>
-                            </div>
-                            </div>
                             <div class="feed-list" th:data-no="${item.id}" th:data-idx="${item.depth}">
 
                             </div>
@@ -122,18 +133,13 @@
                             <label for="commentContent">댓글:</label>
                             <textarea class="form-control" id="commentContent" name="commentContent" rows="4" placeholder="댓글을 입력하세요" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">댓글 작성</button>
+                        <button type="submit" class="btn btn-primary btnInsertComment">댓글 작성</button>
                     </form>
                 </div>
                 <div class="view-footer border-top mt-1 align-items-center">
-                    <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
-                        <li class="page-item" th:if="${no > (pagination.totalElements-pagination.size)}">
-                            <a class="btn btn-secondary" href="#" th:href="@{/cs/notice/list(page=${item})}" >목록</a>
-                        </li>
-                        <li class="page-item" th:if="${item!=no/pagination.size}">
+                        <li class="page-item">
                             <a class="btn btn-secondary" href="#" th:href="@{/cs/notice/list(page=0)}" >목록</a>
                         </li>
-                    </th:block>
                     <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
                         <a th:href="@{/cs/notice/delete/{id}(id=${noticeInfo.id})}" class="btn btn-danger">글 삭제</a>
                         <a th:href="@{/cs/notice/update/{id}(id=${noticeInfo.id})}" class="btn btn-primary mx-1">글 수정</a>
@@ -144,6 +150,26 @@
         </div>
     </div>
     <script th:inline="javascript">
+        $(".btnInsertComment").on("click",function(){
+            $.ajax({
+                url:"/cs/comment/insert",
+                method:"POST",
+                data:{id : $('input[name=id]').val(),
+                      memberId :$('input[name=memberId]').val(),
+                      commentContent : $("#commentContent").val()},
+                      success:function(response){
+                      console.log(response);
+                      if(response.insert =='ok'){
+                        alert("댓글등록");
+                        location.reload();
+                      }else{
+                      alert("댓글등록실패");
+                      }
+
+                      }
+            });
+            return false;
+        });
         //글자 크기
         let titleFont = 28
         let basicFont = 16
@@ -181,8 +207,8 @@
                                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" ></textarea>
                                     <button class="btn btn-outline-primary btn-comment mt-2">comment</button>
                                 </div> `;
-          $(this).parent().parent().next(".feed-list").html("");
-          $(this).parent().parent().next(".feed-list").append(tempHtml);
+          $(this).next().next(".feed-list").html("");
+          $(this).next().next(".feed-list").append(tempHtml);
           tempHtml="";
 
           return false;
@@ -275,8 +301,8 @@
                                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">${content}</textarea>
                                     <button class="btn btn-outline-primary btn-comment-update mt-2">comment</button>
                                 </div> `;
-          $(this).parent().parent().parent().next(".feed-list").html("");
-          $(this).parent().parent().parent().next(".feed-list").append(tempHtml);
+          $(this).parent().next(".feed-list").html("");
+          $(this).parent().next(".feed-list").append(tempHtml);
           tempHtml="";
 
           return false;

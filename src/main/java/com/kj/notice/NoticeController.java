@@ -5,10 +5,13 @@ import com.kj.faq.dto.FaqCategoryDto;
 import com.kj.faq.entity.FaqBoard;
 import com.kj.faq.entity.FaqCategory;
 import com.kj.member.dto.CustomUserDetails;
+import com.kj.member.entity.Member;
 import com.kj.notice.dto.NoticeDto;
 import com.kj.notice.entity.Notice;
 import com.kj.noticeComment.CommentService;
 import com.kj.noticeComment.entity.Comment;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,6 +45,26 @@ public class NoticeController {
         model.addAttribute("noticeList",noticeList);
         return "/notice/noticeList";
     }
+    @GetMapping("/search")
+    public String searchList(Model model,@RequestParam String category,
+                             @RequestParam String keyword,@RequestParam String search, @RequestParam(value = "page", required = true, defaultValue = "0") int page){
+
+        Page<Notice> pagination = noticeService.searchList(category,keyword,page);
+        List<Notice> noticeList = pagination.getContent();
+        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
+        int end =  start + paginationSize;
+        model.addAttribute("start",start);
+        model.addAttribute("end",end);
+        model.addAttribute("pagination",pagination);
+        model.addAttribute("search",search);
+        model.addAttribute("category",category);
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("noticeList",noticeList);
+        if (keyword ==""){
+            return "redirect:/cs/notice/list";
+        }
+        return "/notice/noticeList";
+    }
     @GetMapping("/insert")
     public String insertNotice(){
         return "/notice/insertNotice";
@@ -53,22 +76,32 @@ public class NoticeController {
         noticeService.insertNotice(noticeDto,customUserDetails);
         return "redirect:/cs/notice/list";
     }
+    @GetMapping("/searchView/{id}/{category}/{keyword}/{search}")
+    public String searchViewNotice(@PathVariable Long id, //공지사항 ID
+                              @PathVariable String category,
+                                   @PathVariable String keyword,
+                                   @PathVariable String search,Model model,
+                                   @RequestParam(value = "page", required = true, defaultValue = "0") int page
+            , HttpServletRequest request, HttpServletResponse response){
 
-
-    @GetMapping("/view/{id}/{no}")
-    public String viewNotice(@PathVariable Long id, //공지사항 ID
-                             @PathVariable int no,Model model,
-                             @RequestParam(value = "page", required = true, defaultValue = "0") int page){
-        Page<Notice> pagination = noticeService.viewNoticeList(page,no);
-        Notice noticeInfo = noticeService.findByIdPlusView(id);
-
+        Notice noticeInfo = noticeService.findByIdSearchPlusView(id,category,keyword,request,response);
         List<Comment> commentList = commentService.commentList(id);
-        List<Notice> noticeList = pagination.getContent();
         model.addAttribute("noticeInfo",noticeInfo);
-        model.addAttribute("pagination",pagination);
-        model.addAttribute("noticeList",noticeList);
         model.addAttribute("commentList",commentList);
-        model.addAttribute("no",no);
+        model.addAttribute("category",category);
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("search",search);
+        return "/notice/viewNotice";
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewNotice(@PathVariable Long id, Model model,
+                             @RequestParam(value = "page", required = true, defaultValue = "0") int page,
+                             HttpServletRequest request, HttpServletResponse response){
+        Notice noticeInfo = noticeService.findByIdPlusView(id,request,response);
+        List<Comment> commentList = commentService.commentList(id);
+        model.addAttribute("noticeInfo",noticeInfo);
+        model.addAttribute("commentList",commentList);
         return "/notice/viewNotice";
     }
     @GetMapping("/update/{id}")

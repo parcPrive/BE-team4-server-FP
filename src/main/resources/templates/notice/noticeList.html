@@ -23,8 +23,12 @@
                     <tr>
                         <td class="" th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
                         <td th:text="${item.noticeCategory}" ></td>
-                        <td><a href="" th:href="@{/cs/notice/view/{id}/{no}(id=${item.id},no=${pagination.totalElements - pagination.number*pagination.size - status.index})}"
-                               th:text="${item.noticeTitle}">제목이 들어가겠죠....</a></td>
+                        <td><th:block th:if="${search}"><a href="" th:href="@{/cs/notice/searchView/{id}/{category}/{keyword}/{search}(id=${item.id},
+                            category=${category},keyword=${keyword},search=${search})}"
+                                                           th:text="${item.noticeTitle}">제목이 들어가겠죠....</a></th:block>
+                            <th:block th:unless="${search}">
+                            <a href="" th:href="@{/cs/notice/view/{id}(id=${item.id})}"
+                               th:text="${item.noticeTitle}">제목이 들어가겠죠....</a></th:block></td>
                         <td th:text="${#temporals.format(item.noticeDate,'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${item.noticeView}" ></td>
                         <td th:text="${item.writer.role}" ></td>
@@ -55,7 +59,27 @@
                     </li>
                 </ul>
             </nav>
-
+        </div>
+        <div class="container mt-5">
+        <form action="" th:action="@{/cs/notice/search}" method="get">
+            <div class="row">
+                <div class="col-4" th:with="category=${param.category}">
+                    <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                        <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                        <option value="noticeTitle"   th:selected="${#strings.equals(category,'noticeTitle')  ? true : false}">제목</option>
+                        <option value="noticeCategory" th:selected="${#strings.equals(category,'noticeCategory')? true : false}">카테고리</option>
+                    </select>
+                </div>
+                <div class="col-6 ">
+                    <span class="keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+                </div>
+                <input type="hidden" name="search" value="true">
+                <div class="col-2"><button class="btn btn-primary">검색</button></div>
+            </div>
+        </form>
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->

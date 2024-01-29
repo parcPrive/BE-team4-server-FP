@@ -21,12 +21,14 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/insert")
-    public String insertComment(@RequestParam Long id, @RequestParam Long memberId ,
-                                @RequestParam Long no ,CommentDto commentDto){
+    @ResponseBody
+    public Map<String,Object> insertComment(@RequestParam Long id, @RequestParam Long memberId ,CommentDto commentDto){
         log.info("=={}",id);
         log.info("=={}",memberId);
         Long commentId = commentService.insert(id,memberId,commentDto);
-        return "redirect:/cs/notice/view/"+id+"/"+no;
+        Map<String,Object> resultMap = new HashMap<>();
+        resultMap.put("insert","ok");
+        return resultMap;
     }
     @PostMapping("/insertReply")
     @ResponseBody
