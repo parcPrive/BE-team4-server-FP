@@ -158,7 +158,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public ProductFindOneDto findByProductId1(int productId) {
+    public ProductFindOneDto findByProductId1(int productId, Pageable productReviewPage,Pageable productQnAPage) {
         Product findOneProduct = queryFactory.selectFrom(product)
                 .join(product.productImages, productImage).fetchJoin()
                 .where(product.id.eq((long) productId))
@@ -166,10 +166,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         List<ProductSize> findProductSize = queryFactory.selectFrom(productSize1)
                         .where(productSize1.product.id.eq((long) productId))
                         .fetch();
-        List<ProductReview> findProductReview = queryFactory.selectFrom(productReview1)
-                .where(productReview1.product.id.eq((long) productId))
-                .orderBy(productReview1.id.desc())
-                .fetch();
+
         List<ProductTag> findProductTags = queryFactory.selectFrom(productTag1)
                     .where(productTag1.product.id.eq((long) productId))
                     .fetch();
@@ -177,31 +174,57 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                          .from(productLike)
                                  .where(productLike.product.id.eq((long) productId))
                                          .fetchOne();
-         
+         QueryResults<Long> productReviewIds = queryFactory.select(productReview1.id)
+                 .from(productReview1)
+                 .orderBy(productReview1.id.desc())
+                 .offset(productReviewPage.getOffset())
+                 .limit(productReviewPage.getPageSize())
+                 .fetchResults();
 
-        List<ProductQnA> qnAS= queryFactory.selectFrom(productQnA)
+        List<ProductReview> findProductReview = queryFactory.selectFrom(productReview1)
+                .where(
+                        productReview1.product.id.eq((long) productId),
+                        productReview1.id.in(productReviewIds.getResults())
+                )
+                .orderBy(productReview1.id.desc())
+                .fetch();
+
+        PageImpl<ProductReview> productReviews = new PageImpl<>(findProductReview, productReviewPage,productReviewIds.getTotal());
+
+
+
+        QueryResults<Long> productQnAIds = queryFactory.select(productQnA.id)
+                .from(productQnA)
+                .where(productQnA.parent.isNull())
+                .orderBy(productQnA.id.desc())
+                .offset(productQnAPage.getOffset())
+                .limit(productQnAPage.getPageSize())
+                .fetchResults();
+
+        List<ProductQnA> productQnAList= queryFactory.selectFrom(productQnA)
                 .leftJoin(productQnA.children).fetchJoin()
                 .join(productQnA.productQnACategory,productQnACategory).fetchJoin()
                 .where(
-                        productQnA.product.id.eq((long)productId)
+                        productQnA.product.id.eq((long)productId),
+                        productQnA.id.in(productQnAIds.getResults())
                 )
                 .orderBy(
-                        productQnA.parent.id.asc().nullsFirst(),
-                        productQnA.createdAt.desc()
+                        productQnA.sortNum.desc()
                 )
                 .fetch();
-        List<ProductQnAfind> pp = new ArrayList<>();
-        for(ProductQnA qq : qnAS){
-            log.info("과연?? ===>>>{}" , qq.getId());
-            log.info("과연?? ===>>>{}" , qq.getProductQAContent());
-            pp.add(new ProductQnAfind(qq));
-        }
-        log.info("asdasdasdasdasdasdasdasd ===> {}",pp);
+
+
+        PageImpl<ProductQnA> productQnAPages = new PageImpl<>(productQnAList,productQnAPage,productQnAIds.getTotal());
+//        List<ProductQnAfind> productQnAList = new ArrayList<>();
+//        for(ProductQnA qq : qnAS){
+//            productQnAList.add(new ProductQnAfind(qq));
+//
+//        }
+        log.info("asdasdasdasdasdasdasdasd ===> {}",productQnAList);
         log.info("프로덕트 아이디가 없다고??? ===>>> {}", findOneProduct);
-        ProductFindOneDto result = new ProductFindOneDto(findOneProduct, findProductSize, findProductReview, findProductTags,producLike);
+        ProductFindOneDto result = new ProductFindOneDto(findOneProduct, findProductSize, productReviews, findProductTags,producLike, productQnAPages);
         log.info("====================================================={}", result);
         return result;
-
     }
 
     @Override

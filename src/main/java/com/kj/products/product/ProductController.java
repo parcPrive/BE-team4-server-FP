@@ -18,6 +18,8 @@ import com.kj.products.productOder.dto.ProductOrderInfoDto;
 import com.kj.products.productOder.dto.ProductOrderSuccessDto;
 import com.kj.products.productOder.entity.MyProductOrderDto;
 import com.kj.products.productReview.dto.ProductinsertReviewDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -131,10 +133,16 @@ public class ProductController {
     @GetMapping("/view/{productId}")
     public String productView(
             @PathVariable int productId,
+            @RequestParam int reviewPage,
+            @RequestParam int qnaPage,
+            HttpServletRequest req,
             Model model
     ){
         log.info("prprprprprpr =====>>> {}", productId);
-        ProductFindOneDto productFindOneDto = productService.findOneByProductId(productId);
+        log.info("prprprprprpr =====>>> {}", reviewPage);
+        log.info("prprprprprpr =====>>> {}", qnaPage);
+
+        ProductFindOneDto productFindOneDto = productService.findOneByProductId(productId, reviewPage, qnaPage, req);
         model.addAttribute("findOneProduct", productFindOneDto);
         return "/product/view";
 

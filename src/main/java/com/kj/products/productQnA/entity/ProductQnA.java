@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class ProductQnA {
     private Long id;
     private String productQATitle;
     private String productQAContent;
+    private Long sortNum;
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,13 +49,14 @@ public class ProductQnA {
     private ProductQnA children;
 
     @Builder
-    public ProductQnA(ProductQnAInputDto productQnAInputDto, ProductQnACategory findProductQnACategory, Product findProduct, Member findMember) {
+    public ProductQnA(ProductQnAInputDto productQnAInputDto, ProductQnACategory findProductQnACategory, Product findProduct, Member findMember, Long sortNum) {
         this.productQATitle = productQnAInputDto.getProductQATitle();
         this.productQAContent = productQnAInputDto.getProductQAContent();
         this.createdAt = LocalDateTime.now();
         this.productQnACategory = findProductQnACategory;
         this.product = findProduct;
         this.member = findMember;
+        this.sortNum = sortNum;
     }
     @Builder
     public ProductQnA(ProductAdminQnAInputDto productAdminQnAInputDto, Product product, Member member,ProductQnA productQnA) {
@@ -62,6 +65,7 @@ public class ProductQnA {
         this.product = product;
         this.member = member;
         this.parent = productQnA;
+        this.sortNum = productQnA.getSortNum();
     }
 
 }
