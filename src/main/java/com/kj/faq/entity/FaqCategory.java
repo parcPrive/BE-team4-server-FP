@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 public class FaqCategory {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "faqCategoryId")
     private Long id;
     @Enumerated(EnumType.STRING)

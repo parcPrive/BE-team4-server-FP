@@ -59,7 +59,7 @@ public class JoinDto {
                 .phone(joinDto.getPhone())
                 .levels("0")
                 .registerDate(LocalDateTime.now())
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .build();
     }
 }
