@@ -10,8 +10,6 @@ import com.kj.products.product.dto.*;
 import com.kj.products.productCart.ProductCartService;
 import com.kj.products.productCart.dto.ProductCartInsertDto;
 import com.kj.products.productCart.dto.ProductCartListDto;
-import com.kj.products.productElasticSearch.ProductElasticSearchClient;
-import com.kj.products.productElasticSearch.entity.ProductDocument;
 import com.kj.products.productOder.ProductOderservice;
 import com.kj.products.productOder.dto.ProductCartOrderDto;
 import com.kj.products.productOder.dto.ProductOrderInfoDto;
@@ -42,7 +40,6 @@ public class ProductController {
     private final ProductCartService productCartService;
     private final ProductOderservice productOderservice;
 
-    private final ProductElasticSearchClient productElasticSearchClient;
     private final ClientConf client;
 // ================상품 등록 관련========================
     @GetMapping("/insert")
@@ -135,14 +132,15 @@ public class ProductController {
             @PathVariable int productId,
             @RequestParam int reviewPage,
             @RequestParam int qnaPage,
-            HttpServletRequest req,
+            HttpServletRequest req, // 상품조회 수 쿠키이름 => productClick
+            HttpServletResponse res,
             Model model
     ){
         log.info("prprprprprpr =====>>> {}", productId);
         log.info("prprprprprpr =====>>> {}", reviewPage);
         log.info("prprprprprpr =====>>> {}", qnaPage);
 
-        ProductFindOneDto productFindOneDto = productService.findOneByProductId(productId, reviewPage, qnaPage, req);
+        ProductFindOneDto productFindOneDto = productService.findOneByProductId(productId, reviewPage, qnaPage, req, res);
         model.addAttribute("findOneProduct", productFindOneDto);
         return "/product/view";
 
@@ -243,37 +241,37 @@ public class ProductController {
         return "/product/insert";
     }
 
-    @GetMapping("/search1")
-    @ResponseBody
-    public String search() {
-        return productElasticSearchClient.getSearchData();
-    }
+//    @GetMapping("/search1")
+//    @ResponseBody
+//    public String search() {
+//        return productElasticSearchClient.getSearchData();
+//    }
+//
+//    @GetMapping("/search2")
+//    @ResponseBody
+//    public String search2(){
+//        log.info("여디!!!");
+//        String aaa = """
+//                {
+//                    "query":{
+//                        "match": {
+//                            "product_name": "123"
+//                        }
+//                    }
+//                }
+//                """;
+////        SearchResponse<ProductDocument> response =  productElasticSearchClient.getSearchName(aaa);
+//
+//        String response =  productElasticSearchClient.getSearchName(aaa);
+//        log.info("검색결과 ====>>> {}", productElasticSearchClient.getSearchName(aaa));
+//
+//        return response;
+//
+//    }
 
-    @GetMapping("/search2")
-    @ResponseBody
-    public String search2(){
-        log.info("여디!!!");
-        String aaa = """
-                {
-                    "query":{
-                        "match": {
-                            "product_name": "123"
-                        }
-                    }
-                }
-                """;
-//        SearchResponse<ProductDocument> response =  productElasticSearchClient.getSearchName(aaa);
-
-        String response =  productElasticSearchClient.getSearchName(aaa);
-        log.info("검색결과 ====>>> {}", productElasticSearchClient.getSearchName(aaa));
-
-        return response;
-
-    }
-
-    @GetMapping("/search3")
-    @ResponseBody
-    public List<ProductDocument> search3() throws IOException {
+//    @GetMapping("/search3")
+//    @ResponseBody
+//    public List<ProductDocument> search3() throws IOException {
 
 //        String aaa = """
 //                {
@@ -290,27 +288,27 @@ public class ProductController {
 //                .withJson(input));
 //        IndexResponse response = client.client.index(requerst);
 //        log.info("여기로 ?? ===>>> {}", response.index().);
-        int aa = 123;
-
-        SearchResponse<ProductDocument> search = client.client.search(s -> s
-                        .index("myproduct05")
-                        .query(q -> q
-                                .term(t -> t
-                                        .field("product_name")
-                                        .value(v -> v.stringValue(String.valueOf(aa)))
-
-                                )),
-                ProductDocument.class);
-        List<ProductDocument> result = new ArrayList<>();
-        Long total = search.hits().total().value(); // 총갯수
-        List<Hit<ProductDocument>> hits =  search.hits().hits();
-        for(Hit<ProductDocument> hit : hits){
-            result.add(hit.source());
-        }
-        log.info("결과 ===>>> {}", result);
-        return result;
-
-    }
+//        int aa = 123;
+//
+//        SearchResponse<ProductDocument> search = client.client.search(s -> s
+//                        .index("myproduct05")
+//                        .query(q -> q
+//                                .term(t -> t
+//                                        .field("product_name")
+//                                        .value(v -> v.stringValue(String.valueOf(aa)))
+//
+//                                )),
+//                ProductDocument.class);
+//        List<ProductDocument> result = new ArrayList<>();
+//        Long total = search.hits().total().value(); // 총갯수
+//        List<Hit<ProductDocument>> hits =  search.hits().hits();
+//        for(Hit<ProductDocument> hit : hits){
+//            result.add(hit.source());
+//        }
+//        log.info("결과 ===>>> {}", result);
+//        return result;
+//
+//    }
 
 
 }

@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ProductCategoryRepositoryCustom {
     List<ProductCategoryfindDto> findAllProductCategory();
+    List<ProductCategory> findProductSubCategoryByProductMainCategoryId(int productMainCategoryId);
+
 }

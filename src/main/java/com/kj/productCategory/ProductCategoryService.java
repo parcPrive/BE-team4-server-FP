@@ -35,9 +35,15 @@ public class ProductCategoryService {
         return result;
     }
 
+    // 없어도 될듯
     public List<ProductCategoryfindDto> findAllProductCategory(){
         List<ProductCategoryfindDto> findAllProductCategory = productCategoryRepository.findAllProductCategory();
         log.info("productCategory ===>> {} ", findAllProductCategory);
         return findAllProductCategory;
+    }
+
+    public List<ProductCategory> findProductSubCategoryByProductMainCategoryId(int productMainCategoryId){
+        return productCategoryRepository.findProductSubCategoryByProductMainCategoryId(productMainCategoryId);
+
     }
 }

@@ -44,7 +44,6 @@
             </tr>
             </thead>
             <tbody>
-            <!-- 장바구니 아이템 예시 -->
             <block th:each="myProductOrder,stat : ${myProductOrders}">
                 <input type="hidden" th:id="|productOrderId${stat.count}|" th:value="${myProductOrder.getProductOrderId()}">
                 <tr th:id="|deleteProduct${stat.count}|">
@@ -78,7 +77,10 @@
                         "productOrderId": productOrderId
                     },
                     success: function (e){
-                        console.log(e)
+                        if(e.status == "cancelled"){
+                            $("#deleteProduct" + itemId).remove()
+                        }
+                        console.log(e.status)
                     }
                 })
             }else{

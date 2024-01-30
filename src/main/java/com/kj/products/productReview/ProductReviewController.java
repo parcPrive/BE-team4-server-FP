@@ -24,7 +24,7 @@ public class ProductReviewController {
         log.info("====================================여길안들어오나요??====================================");
         log.info("리뷰정보들 ===<>>> {}", productinsertReviewDto);
         ProductReview insertProductReview =  productReviewService.InsertProductReview(productinsertReviewDto);
-        return "redirect:/product/view/" + insertProductReview.getProduct().getId();
+        return "redirect:/product/view/" + insertProductReview.getProduct().getId()+ "?reviewPage=1&qnaPage=1";
     }
 
 

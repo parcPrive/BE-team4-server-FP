@@ -201,8 +201,6 @@
                                         <span th:if="${productSize.productCount} < 6 and ${productSize.productCount} > 0" th:text="|${productSize.productCount}개 남음|"></span>
                                     </li>
                                     <input type="hidden" th:value="${productSize.productCount}" th:id="|size${productSize.productSize}Count|">
-                                    <input type="hidden" name="resveSaleGodYn" id="resveSaleGodYnIT202309055185654" value="N">
-                                    <input type="hidden" name="resveOrdDlivyPrearngeDate" id="resveOrdDlivyPrearngeDateIT202309055185654" value="">
                                     </block>
                                 </ul>
                             </div>
@@ -288,21 +286,7 @@
             </form>
         </div>
     </div>
-    <div>
-        <nav aria-label="Page navigation example" class="mt-5 d-flex justify-content-center">
-            <ul class="pagination">
-                <li th:if="${findOneProduct.getProductReviews().hasPrevious()}" class="page-item"><a class="page-link" href="#">이전</a></li>
-                <th:block th:each="page : ${#numbers.sequence(1, findOneProduct.getProductReviews().getTotalPages())}">
-                    <li class="page-item">
-                        <a th:if="${page} > 0" class="page-link" th:text="${page}" th:href="@{/product/view/{productId} (productId=${findOneProduct.getId()}
-                                                                                                              ,reviewPage=${page},
-                                                                                                              qnaPage=1)}">1</a>
-                    </li>
-                </th:block>
-                <li th:if="${findOneProduct.getProductReviews().hasNext()}" class="page-item"><a class="page-link" href="#">다음</a></li>
-            </ul>
-        </nav>
-    </div>
+
     <div>
         <block th:each="review : ${findOneProduct.getProductReviews().getContent()}">
             <div class="review">
@@ -317,6 +301,21 @@
             </div>
         </block>
 
+    </div>
+    <div>
+        <nav aria-label="Page navigation example" class="mt-5 d-flex justify-content-center">
+            <ul class="pagination">
+                <li th:if="${findOneProduct.getProductReviews().hasPrevious()}" class="page-item"><a class="page-link" href="#">이전</a></li>
+                <th:block th:each="page : ${#numbers.sequence(1, findOneProduct.getProductReviews().getTotalPages())}">
+                    <li class="page-item">
+                        <a th:if="${page} > 0" class="page-link" th:text="${page}" th:href="@{/product/view/{productId} (productId=${findOneProduct.getId()}
+                                                                                                              ,reviewPage=${page},
+                                                                                                              qnaPage=1)}">1</a>
+                    </li>
+                </th:block>
+                <li th:if="${findOneProduct.getProductReviews().hasNext()}" class="page-item"><a class="page-link" href="#">다음</a></li>
+            </ul>
+        </nav>
     </div>
 
     <button onclick="openModalQ()">상품QnA</button>
@@ -383,7 +382,7 @@
                                 <form action="" th:action="@{/admin/product/insertqna}" method="post" enctype="multipart/form-data">
                                     <input type="hidden" id="productIdA" name="productId" th:value="${findOneProduct.getId()}">
                                     <input type="hidden"  name="adminId" value="mok119">
-                                    <input type="hidden" name="productQnAId" value="5">
+                                    <input type="hidden" name="productQnAId" th:value="${productQnA.getId()}">
                                     <p>내용</p>
                                     <textarea class="star_box"  name="productAdminQnAContent" placeholder="문의 내용을 작성해주세요." ></textarea>
                                     <input type="submit" class="btn03" value="관리자 응답" >
@@ -455,40 +454,44 @@
 
         })
 
+        let productCount123 = $("#productCountCheck").val()
+        let productCountCheck;
 
 
         $("#plusBtn").on("click", function(e){
-           let prevProductCount = $("#productCount").val();
-           const productCount = $("#productCountCheck").val()
+           let prevProductCount = parseInt($("#productCount").val());
             e.preventDefault();
-            if(prevProductCount < 6){
+            if(prevProductCount < productCount){
+                console.log("여기는 안들어감?")
                 prevProductCount++;
                 $("#productCount").val(prevProductCount)
                 let productPrice = prevProductCount * [[${findOneProduct.productPrice}]]
                 $("#totalPrice").text(productPrice)
              }
+            console.log("카운트값"+ prevProductCount)
+            console.log(" 상품총갯수"+ productCount)
         })
 
-        let productCount;
+
         $("#sizeS").on("click", function(){
             console.log("여기입니다.~~~s사이즈");
             productCount = $("#sizeSCount").val()
             console.log(productCount);
-            $("#productCountCheck").val(productCount)
+            productCountCheck = $("#productCountCheck").val(productCount)
             $("#quantityBox").removeAttr('hidden');
         })
         $("#sizeM").on("click", function(){
             console.log("여기입니다.~~~M사이즈");
             productCount = $("#sizeMCount").val()
             console.log(productCount);
-            $("#productCountCheck").val(productCount)
+            productCountCheck = $("#productCountCheck").val(productCount)
             $("#quantityBox").removeAttr('hidden');
         })
         $("#sizeL").on("click", function(){
             console.log("여기입니다.~~~L사이즈");
             productCount = $("#sizeLCount").val()
             console.log(productCount);
-            $("#productCountCheck").val(productCount)
+            productCountCheck= $("#productCountCheck").val(productCount)
             $("#quantityBox").removeAttr('hidden');
         })
         $("#sizeXL").on("click", function(){

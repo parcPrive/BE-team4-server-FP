@@ -24,6 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @Service
@@ -380,18 +384,41 @@ public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondo
     }
 
     @Transactional
-    public ProductFindOneDto findOneByProductId(int productId, int reviewPage, int qnAPage, HttpServletRequest req) {
+    public ProductFindOneDto findOneByProductId(int productId, int reviewPage, int qnAPage, HttpServletRequest req, HttpServletResponse res) {
 
 
         Pageable productReviewPage = PageRequest.of(reviewPage - 1, 10);
         Pageable productQnAPage = PageRequest.of(qnAPage - 1, 10);
         ProductFindOneDto findOneProduct = productRepository.findByProductId1(productId, productReviewPage, productQnAPage);
+        productClickCount(productId, req, res);
         log.info("파인트원 프로덕트 ====>>> {}", findOneProduct);
         return findOneProduct;
     }
 
-    public void productClickCount(int productId, String Productclick){
-
+    public void productClickCount(int productId, HttpServletRequest req, HttpServletResponse res){
+        Cookie addCookie = null;
+        for(Cookie cookie : req.getCookies()){
+            Optional<Product> clickProduct = productRepository.findByProductId(productId);
+            if(clickProduct.isPresent()){
+                if(cookie.getName().equals("productClick")){ // 조호수 쿠키가 있는지 확인
+                    log.info("쿠키안에느ㅜㄴ?? ===> {}", cookie.getValue());
+                    if(!cookie.getValue().contains("[" + productId + "]")){  // 조회수 쿠키 안에 내가 누른 상품이 없다면 조회수 증가하는 로직
+                        clickProduct.get().setClickCount(clickProduct.get().getClickCount() + 1);//조회수 증가
+                        addCookie.setValue(cookie.getValue() + "[" + productId + "]");
+                        break;
+                    }
+                }else{
+                    clickProduct.get().setClickCount(clickProduct.get().getClickCount() + 1);//조회수 증가
+                    addCookie = new Cookie("productClick", "[" + productId + "]");
+                    break;
+                }
+            }
+        }
+        Long toDayEnd=LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
+        Long toDayNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        addCookie.setPath("/");
+        addCookie.setMaxAge((int) (toDayEnd  - toDayNow));
+        res.addCookie(addCookie);
     }
 
 }

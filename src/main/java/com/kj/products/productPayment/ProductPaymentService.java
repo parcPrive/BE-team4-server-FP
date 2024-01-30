@@ -57,6 +57,7 @@ public class ProductPaymentService {
         ProductOrderInfo productOrderInfo = new ProductOrderInfo(productInsertOrderDto);
         ProductOrderInfo insertResultProductOrder = productOrderInfoRepository.save(productOrderInfo);
         // 사이즈 아이디로 주문상품조회해서 가격 가져오기 카트(장바구니)아이디로 주문 수량 가져오기
+        log.info("사이즈들??? 머지 ===>> {}", productInsertOrderDto.getProductSizeId());
         List<ProductSize> productSizeAndProduct = productSizeRepository.findProductPriceByProductSizeId(productInsertOrderDto.getProductSizeId());
         List<ProductCart> productCartList = productCartRepository.findByProductCartId(productInsertOrderDto.getProductCartId());
 
@@ -122,10 +123,12 @@ public class ProductPaymentService {
         String accessToken = getToken();
         // productOrderProductDetail에서 ==>> impuid, 내가 찍은 상품의 가격 불러오기
         ProductOrderProductDetail findProductOrderInfo = productOrderProductDetailRepository.findProductPriceNimpUidByProductOrderId(productOrderId);
+        log.info("전체!!!!!! ===>>> {}",findProductOrderInfo);
         log.info("getImpUid ===>>> {}",findProductOrderInfo.getProductPayment().getImpUid());
         log.info("getPrice ===>>> {}",findProductOrderInfo.getPrice());
         ResponseGetData refundData =  new ResponseGetData();
-        ResponseGetRefundDetail resultRefundData = refundData.getRefundDetail(paymentFeignClient.refund(findProductOrderInfo.getProductPayment().getImpUid(), 100, accessToken));
+        ResponseGetRefundDetail resultRefundData = refundData.getRefundDetail(paymentFeignClient.refund(findProductOrderInfo.getProductPayment().getImpUid(), findProductOrderInfo.getPrice() * findProductOrderInfo.getProductCount(), accessToken));
+        log.info("환불 정보 ==>>>>{}", resultRefundData);
 
         // 받아온 환불정보가 있다면 환불정보를 추가해준다.
         // 사이즈에 있는 제품 수량을 환불한 수량만큼 추가해서 다시 업데이트해준다.

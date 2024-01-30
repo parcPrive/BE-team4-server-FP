@@ -100,6 +100,10 @@ public class Product {
 
     }
 
+    public void setClickCount(int productClickcount){
+        this.clickCount = productClickcount;
+    }
+
     public void testProduct(String productName, String productNumber, int productPrice, String gender, String productSeason, String productDetailImageBucket, String productDatailImage){
         this.productName = productName;
         this.productNumber = productNumber;

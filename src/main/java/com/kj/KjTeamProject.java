@@ -18,11 +18,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableFeignClients
 @SpringBootApplication
 @ImportAutoConfiguration({FeignAutoConfiguration.class})
-@EnableElasticsearchRepositories(
-		includeFilters = {
-				@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ElasticSearchClient.class),
-		}
-)
+//@EnableElasticsearchRepositories(
+//		includeFilters = {
+//				@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ProductDocument.class),
+//		}
+//)
 public class KjTeamProject {
 
 	public static void main(String[] args) {

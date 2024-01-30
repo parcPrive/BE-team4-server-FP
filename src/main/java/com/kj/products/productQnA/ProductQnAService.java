@@ -49,7 +49,7 @@ public class ProductQnAService {
     public ProductAdminQnAReturnDto insertProductAdminQnA(ProductAdminQnAInputDto productAdminQnAInputDto) {
         Optional<Product> findProduct =productRepository.findById(productAdminQnAInputDto.getProductId());
         Optional<Member> findMember =memberRepository.findByNickName(productAdminQnAInputDto.getAdminId());
-        Optional<ProductQnA> findParentProductQnA =productQnARepository.findById(productAdminQnAInputDto.getProductQnAId());
+        Optional<ProductQnA> findParentProductQnA = productQnARepository.findById(productAdminQnAInputDto.getProductQnAId());
         if(!findProduct.isPresent() || !findMember.isPresent() || !findParentProductQnA.isPresent()) new RuntimeException("무언가가 없다.");
         ProductQnA productQnA = new ProductQnA(productAdminQnAInputDto,findProduct.get(),findMember.get(), findParentProductQnA.get());
         ProductQnA insertProductAdminQnA =productQnARepository.save(productQnA);
