@@ -163,6 +163,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                 .join(product.productImages, productImage).fetchJoin()
                 .where(product.id.eq((long) productId))
                 .fetchOne();
+
         List<ProductSize> findProductSize = queryFactory.selectFrom(productSize1)
                         .where(productSize1.product.id.eq((long) productId))
                         .fetch();
@@ -213,17 +214,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                 )
                 .fetch();
 
-
         PageImpl<ProductQnA> productQnAPages = new PageImpl<>(productQnAList,productQnAPage,productQnAIds.getTotal());
-//        List<ProductQnAfind> productQnAList = new ArrayList<>();
-//        for(ProductQnA qq : qnAS){
-//            productQnAList.add(new ProductQnAfind(qq));
-//
-//        }
-        log.info("asdasdasdasdasdasdasdasd ===> {}",productQnAList);
-        log.info("프로덕트 아이디가 없다고??? ===>>> {}", findOneProduct);
+
         ProductFindOneDto result = new ProductFindOneDto(findOneProduct, findProductSize, productReviews, findProductTags,producLike, productQnAPages);
-        log.info("====================================================={}", result);
         return result;
     }
 

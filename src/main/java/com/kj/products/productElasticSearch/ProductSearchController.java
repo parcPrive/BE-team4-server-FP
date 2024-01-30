@@ -10,16 +10,14 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/product")
 public class ProductSearchController {
     private final ProductSearchService productSearchService;
 
-    @GetMapping("/categorysearch/{page}")
+    @GetMapping("/product/categorysearch/{page}")
     @ResponseBody
     public String productCategorySearch(
             @PathVariable int page,
             @ModelAttribute ProductCategorySearchCondition productCategorySearchCondition
-
     ){
         PageImpl<ProductListDto> findProducts = productSearchService.findProductByProductTag(page, productCategorySearchCondition);
         log.info("페이지 ===>>> {}", page);

@@ -59,20 +59,20 @@
                         <div>
                             <select name="mainProductCategoryId" id="maincategory">
                                 <option value="">메인카테고리선택</option>
-                                <option value="100">상의</option>
-                                <option value="200">하의</option>
-                                <option value="300">신발</option>
+                                <option value="100" onchange="productCategory(100)">상의</option>
+                                <option value="200" onchange="productCategory(200)">하의</option>
+                                <option value="300" onchange="productCategory(300)">신발</option>
                             </select>
                         </div>
                         <div>
                             <select name="subProductCategoryId" id="subcategory">
                                 <option>서브카테고리</option>
-                                <option value="400">123</option>
-                                <th:block th:each="productCategory:${productCategory}">
-                                    <th:block th:if="${productCategory.mainProductCategoryId} == 100">
-                                        <option th:value="${productCategory.subProductCategoryId}" th:text="${productCategory.subProductCategoryName}">상의</option>
-                                    </th:block>
-                                </th:block>
+<!--                                <option value="400">123</option>-->
+<!--                                <th:block th:each="productCategory:${productCategory}">-->
+<!--                                    <th:block th:if="${productCategory.mainProductCategoryId} == 100">-->
+<!--                                        <option th:value="${productCategory.subProductCategoryId}" th:text="${productCategory.subProductCategoryName}">상의</option>-->
+<!--                                    </th:block>-->
+<!--                                </th:block>-->
                             </select>
 
 
@@ -207,11 +207,31 @@
 
         $("#maincategory").on("change", function(e){
             console.log("여기의 값은==>>" + $(this).val());
+            const productMainCategoryId = $(this).val();
+            // $("#subcategory").remove()
+            $.ajax({
+                url: "/product/findsubcategory",
+                method: "GET",
+                data:{
+                    "productMainCategoryId": productMainCategoryId
+                },
+                success: function (data){
+                    $.each(data, function(index, item){
+                        $("#subcategory").append(`<option value="${item.id}">${item.subProductCategoryName}</option>`)
+                    })
+
+                    console.log(data)
+                }
+
+            })
         });
 
         $("#tagButton").on("click",function(e){
             $("#productTagAdd").append(`<input type="text" class="form-control" id="productTag4" placeholder="태그" name="productTag">`)
         })
+
+
+
 
 
 
