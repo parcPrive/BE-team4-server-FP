@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "LogMember")
 public class Log {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     /*@Column(name = "log_id")*/
     Long id;
     LocalDateTime loginDate;

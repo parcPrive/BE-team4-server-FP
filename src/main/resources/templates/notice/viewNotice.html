@@ -207,8 +207,8 @@
                                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" ></textarea>
                                     <button class="btn btn-outline-primary btn-comment mt-2">comment</button>
                                 </div> `;
-          $(this).next().next(".feed-list").html("");
-          $(this).next().next(".feed-list").append(tempHtml);
+          $(this).parent().find(".feed-list").html("");
+          $(this).parent().find(".feed-list").append(tempHtml);
           tempHtml="";
 
           return false;

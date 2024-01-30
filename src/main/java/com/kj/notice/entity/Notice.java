@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Notice {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String noticeTitle;
     private String noticeContent;

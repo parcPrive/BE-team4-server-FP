@@ -22,10 +22,9 @@ import java.util.List;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "noticeComment")
-@ToString
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String commentContent;
     private LocalDateTime commentDate;

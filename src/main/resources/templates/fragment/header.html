@@ -16,6 +16,9 @@
                 <li class="nav-item"><a href="/board/list.html" th:href="@{/member/login}" class="nav-link">login</a></li>
                 <li class="nav-item"><a th:href="@{/product/list/1}" class="nav-link">productList</a></li>
                 <li class="nav-item"><a th:href="@{/product/myorderlist/mok119}" class="nav-link">주문내역</a></li>
+                <li class="nav-item"><a href="" th:href="@{/cs/faq}" class="nav-link">FAQ</a></li>
+                <li class="nav-item"><a href="" th:href="@{/cs/notice/list}" class="nav-link">공지사항</a></li>
+                <li class="nav-item"><a href="" th:href="@{/cs/qna/list}" class="nav-link">1대1 QNA</a></li>
             </ul>
         </div>
         <div sec:authorize="isAuthenticated()">
@@ -28,6 +31,7 @@
                 <li class="nav-item"><a href="" th:href="@{/memberList/list}" class="nav-link">회원리스트</a></li>
                 <li class="nav-item"><a href="" th:href="@{/cs/faq}" class="nav-link">FAQ</a></li>
                 <li class="nav-item"><a href="" th:href="@{/cs/notice/list}" class="nav-link">공지사항</a></li>
+                <li class="nav-item"><a href="" th:href="@{/cs/qna/list}" class="nav-link">1대1 QNA</a></li>
                 <li class="nav-item"><a href="" th:href="@{/member/logout}" class="nav-link">logout</a></li>
             </ul>
         </div>

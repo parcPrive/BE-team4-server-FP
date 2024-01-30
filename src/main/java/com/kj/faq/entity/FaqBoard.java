@@ -25,7 +25,7 @@ import java.util.List;
 @DynamicUpdate
 public class FaqBoard {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "faqBoardId")
     private Long id;
     private String faqTitle;

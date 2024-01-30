@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mt-5 mb-5">QNA WRITE</h2>
+                <form action="" th:action="@{/cs/qna/insert}" method="post">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="qnaCategory" class="form-label">카테고리</label>
+                            <input type="text" class="form-control" id="qnaCategory" placeholder="카테고리" name="qnaCategory">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">제목</label>
+                        <input type="text" class="form-control" id="subject" placeholder="제목" name="qnaTitle">
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">CONTENT</label>
+                        <textarea type="text" class="form-control" id="content"
+                                  placeholder="내용" name="qnaContent"  rows="10"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">비공개 여부</label>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" name="qnaSecret" value="0">
+                            <label class="form-check-label" for="flexSwitchCheckChecked">비공개 여부</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qnaPassword" class="form-label">비밀 번호</label>
+                        <input type="password" class="form-control password" placeholder="password"
+                               id="qnaPassword" aria-label="password" aria-describedby="button-addon2" name="qnaPassword" disabled>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-5">
+                        <button class="btn btn-primary" id="btnJoinConfirm">저장</button>
+                        <a href="javascript:history.back();" class="btn btn-secondary">취소</a>
+                    </div>
+                </form>
+                <script>
+                    $("#flexSwitchCheckChecked").on("click",function(){
+                       $("#flexSwitchCheckChecked").val(1);
+                       $('#flexSwitchCheckChecked').toggleClass('active');
+
+                    if( $('#flexSwitchCheckChecked').hasClass('active') == true ){
+                        $('#qnaPassword').attr("disabled",false);
+                    }
+                    else{
+                        $('#qnaPassword').attr("disabled",true);
+                    }
+                    })
+                    ClassicEditor
+                        .create( document.querySelector( "#content" ),{
+                            ckfinder:{
+                                uploadUrl:"/cs/upload"
+                            }
+                        } )
+                        .catch( error => {
+                            console.error( error );
+                        });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

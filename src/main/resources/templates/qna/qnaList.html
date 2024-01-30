@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container mt-5">
+        <h2>1대1 QNA</h2>
+
+        <div class="table_wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">카테고리</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성일</th>
+                    <th scope="col">처리상태</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">공개여부</th>
+                </tr>
+                </thead>
+                <tbody id="resultList">
+                <th:block th:each="item,status:${qnaList}">
+                    <tr>
+                        <td class="" th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
+                        <td th:text="${item.qnaCategory}" ></td>
+                        <td><th:block th:if="${search}"><a href="" th:href="@{/cs/notice/searchView/{id}/{category}/{keyword}/{search}(id=${item.id},
+                            category=${category},keyword=${keyword},search=${search})}"
+                                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a></th:block>
+                            <th:block th:unless="${search}">
+                                <a href="" th:href="@{/cs/qna/view/{id}(id=${item.id})}"
+                                   th:text="${item.qnaTitle}">제목이 들어가겠죠....</a></th:block></td>
+                        <td th:text="${#temporals.format(item.qnaDate,'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${item.qnaStatus}" ></td>
+                        <td th:text="${item.writer.userName}" ></td>
+                        <td th:text="${item.qnaSecret == 0} ? '공개' : '비공개' " ></td>
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.id}">삭제</button></td>
+                            <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
+                        </th:block>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center mt-5">
+                    <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
+                        <a class="page-link" th:href="@{/cs/qna/list(page=${pagination.number - 1})}">Previous</a>
+                    </li>
+                    <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+                        <li class="page-item"
+                            th:classappend="${item==pagination.number?'active':''}"
+                            th:if="${item >= start and
+                                 item < end }">
+                            <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${item})}" th:text="${item + 1}">1</a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
+                        <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${pagination.number+1})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="container mt-5">
+            <form action="" th:action="@{/cs/qna/search}" method="get">
+                <div class="row">
+                    <div class="col-4" th:with="category=${param.category}">
+                        <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                            <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                            <option value="noticeTitle"   th:selected="${#strings.equals(category,'noticeTitle')  ? true : false}">제목</option>
+                            <option value="noticeCategory" th:selected="${#strings.equals(category,'noticeCategory')? true : false}">카테고리</option>
+                        </select>
+                    </div>
+                    <div class="col-6 ">
+                    <span class="keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+                    </div>
+                    <input type="hidden" name="search" value="true">
+                    <div class="col-2"><button class="btn btn-primary">검색</button></div>
+                </div>
+            </form>
+        </div>
+        <div class="mt-5 d-flex justify-content-center">
+                <a th:href="@{/cs/qna/insert}" class="btn btn-primary">글쓰기</a>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        //삭제 기능
+       $(".btnDelete").on("click",function(){
+           const $parent = $(this).parent().parent();
+           console.log($parent);
+           const loggedId = $(this).data("no");
+           console.log(loggedId);
+           $.ajax({
+               url:"/cs/notice/delete/"+loggedId,
+               data:{id:$(this).data("no")},
+               success:function(data){
+                    location.reload();
+               },
+               fail:function(){
+               }
+           });
+           return false;
+       });
+    </script>
+</div>
