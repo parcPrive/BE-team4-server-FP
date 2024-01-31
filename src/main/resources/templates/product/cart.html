@@ -59,7 +59,7 @@
             <td th:text="${productCart.productPrice}"}>$50.00</td>
             <td th:text="${productCart.productCount}">2</td>
             <td th:text="${productCart.productPrice} * ${productCart.productCount}" th:id="|productPrice${stat.count}|">$100.00</td>
-            <td><button id="aaa" th:text="${stat.count}" th:onclick="|removeItem(${stat.count})|">삭제</button></td>
+            <td><a class="btn btn-danger" id="aaa"  th:onclick="|removeItem(${stat.count})|">삭제</a></td>
         </tr>
         </block>
         </tbody>

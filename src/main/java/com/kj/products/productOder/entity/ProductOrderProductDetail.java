@@ -52,4 +52,8 @@ public class ProductOrderProductDetail {
         this.member = member;
         this.productPayment = productPayment;
     }
+
+    public void setProductPayment(ProductPayment productPayment){
+        this.productPayment = productPayment;
+    }
 }
