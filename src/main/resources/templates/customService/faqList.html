@@ -36,7 +36,7 @@
             <th:block th:each="item,status:${faqBoardList}">
                 <tr>
                     <td th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
-                    <td th:text="${item.faqCategory.bigFaqCategory.getValue()}" ></td>
+                    <td th:text="|${item.faqCategory.bigFaqCategory.getValue()} / (${item.faqCategory.smallFaqCategory.getValue()})|" ></td>
                     <td><a href="" th:href="@{/cs/view/{id}(id=${item.id})}"  th:text="${item.faqTitle}">제목이 들어가겠죠....</a></td>
                     <td th:text="${item.writer.role}" ></td>
                     <td th:text="${#temporals.format(item.faqDate,'yyyy-MM-dd HH:mm')}"></td>

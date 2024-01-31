@@ -48,7 +48,10 @@
                 <div class="view-footer border-top mt-1 align-items-center">
                     <li class="page-item">
                         <a class="btn btn-secondary" href="#" th:href="@{/cs/qna/list(page=0)}" >목록</a>
+                        <a class="btn btn-primary" href="#" th:href="@{/cs/qna/update/{id}(id=${qnaInfo.id})}" >글 수정</a>
                     </li>
+                </div>
+                <div class="text-start">
                     <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
                         <form class="answerInsert" th:action="@{/cs/qna/answer}" method="post">
                             <input type="hidden" name="qnaId" th:value="${qnaInfo.id}">
@@ -57,14 +60,11 @@
                             <input type="hidden" name="qnaPassword" th:value="${qnaInfo.qnaPassword}">
                             <input type="hidden" name="memberId" th:value="${#authentication.principal.loggedMember.id}">
                             <div class="form-group">
-                                <label for="commentContent">댓글:</label>
-                                <textarea class="form-control" id="commentContent" name="qnaContent" rows="4" placeholder="댓글을 입력하세요" required></textarea>
+                                <label for="commentContent" style="font-size: 20px">답변</label>
+                                <textarea class="form-control" id="commentContent" name="qnaContent" rows="4" placeholder="답변을 입력하세요" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary btnInsertComment">답변 작성</button>
                         </form>
-                    <li class="page-item">
-                        <a class="btn btn-secondary" href="#" th:href="@{/cs/qna/insert}" >답변</a>
-                    </li>
                     </th:block>
                 </div>
 

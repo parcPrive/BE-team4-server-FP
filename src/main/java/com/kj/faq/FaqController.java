@@ -45,16 +45,17 @@ public class FaqController {
 
     @GetMapping("/insertFaq")
     public String insertFaq(Model model){
-
+        List<FaqCategory> faqCategoryList = faqCategoryService.findByAllCategory();
+        model.addAttribute("faqCategoryList",faqCategoryList);
         return "/customService/insertFaq";
     }
 
     @Transactional
     @PostMapping("/insertFaq")
-    public String insertFaqProcess(@ModelAttribute FaqBoardDto faqBoardDto,@ModelAttribute FaqCategoryDto faqCategoryDto,
+    public String insertFaqProcess(@ModelAttribute FaqBoardDto faqBoardDto,@RequestParam Long faqCategoryId,
                                    @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        log.info("=={}",faqCategoryDto.getSmallFaqCategory());
-        FaqCategory faqCategory = faqCategoryService.findByFaqCateGoryId(faqCategoryDto);
+        log.info("=={}",faqCategoryId);
+        FaqCategory faqCategory = faqCategoryService.findByCategoryId(faqCategoryId);
         faqBoardService.insertFaqBoard(faqBoardDto,customUserDetails,faqCategory);
         return "redirect:/cs/faq";
     }
@@ -68,7 +69,7 @@ public class FaqController {
     @PostMapping("/insertFaqCategory")
     public String insertFaqCategoryProcess(Model model, FaqCategoryDto faqCategoryDto){
         faqCategoryService.insertCategory(faqCategoryDto);
-        return "/customService/insertFaqCategory";
+        return "redirect:/cs/insertFaqCategory";
     }
 
     @GetMapping("/faq")
@@ -108,15 +109,17 @@ public class FaqController {
 
     @GetMapping("/updateFaq/{id}")
     public String update(@PathVariable Long id, Model model) {
+        List<FaqCategory> faqCategoryList = faqCategoryService.findByAllCategory();
         FaqBoard faqBoardInfo = faqBoardService.findById(id);
+        model.addAttribute("faqCategoryList",faqCategoryList);
         model.addAttribute("faqBoardInfo",faqBoardInfo);
         return "/customService/updateFaq";
     }
     @Transactional
     @PostMapping("/updateFaq")
-    public String updateProcess(@RequestParam Long id,@ModelAttribute FaqBoardDto faqBoardDto,@ModelAttribute FaqCategoryDto faqCategoryDto,
+    public String updateProcess(@RequestParam Long id,@ModelAttribute FaqBoardDto faqBoardDto,@RequestParam Long faqCategoryId,
                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        FaqCategory faqCategory = faqCategoryService.findByFaqCateGoryId(faqCategoryDto);
+        FaqCategory faqCategory = faqCategoryService.findByCategoryId(faqCategoryId);
         faqBoardService.updateFaqBoard(faqBoardDto,faqCategory);
 
         return "redirect:/cs/view/"+id;
@@ -130,6 +133,19 @@ public class FaqController {
         return "redirect:/";
 
         }
+    }
+    @PostMapping("/deleteFaqCategory")
+    @ResponseBody
+    public Map<String,Object> deleteFaqCategory(@RequestParam(value = "id",required = false) Long id) {
+        boolean result = faqCategoryService.deleteCategory(id);
+
+        Map<String,Object> resultMap = new HashMap<>();
+        if (result){
+            resultMap.put("isDelete",true);
+        }else {
+            resultMap.put("isDelete",false) ;
+        }
+        return resultMap;
     }
     @PostMapping("/upload")
     @ResponseBody

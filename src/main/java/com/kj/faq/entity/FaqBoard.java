@@ -31,7 +31,7 @@ public class FaqBoard {
     private String faqTitle;
     private String faqContent;
     private LocalDateTime faqDate;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "faqCategoryId")
     private FaqCategory faqCategory;
     @ManyToOne(fetch = FetchType.EAGER)

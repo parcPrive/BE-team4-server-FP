@@ -12,25 +12,13 @@
                     <div class="row">
                         <div class="col">
                             <input type="hidden" name="id" th:value="${faqBoardInfo.id}">
-                            <label class="form-label" for="bigFaqCategory" name="bigFaqCategory">대분류</label>
-                            <select class="form-control bigFaqCategory" id="bigFaqCategory" name="bigFaqCategory">
-                                <option value="">대분류</option>
-                                <option value="FAQ001" th:selected="${faqBoardInfo.faqCategory.bigFaqCategory.getValue()} == '회원정보'">회원정보</option>
-                                <option value="FAQ002" th:selected="${faqBoardInfo.faqCategory.bigFaqCategory.getValue()} == '상품확인'">상품확인</option>
-                                <option value="FAQ003" th:selected="${faqBoardInfo.faqCategory.bigFaqCategory.getValue()} == '주문/결제'">주문/결제</option>
-                                <option value="FAQ004" th:selected="${faqBoardInfo.faqCategory.bigFaqCategory.getValue()} == '배송'">배송</option>
-                                <option value="FAQ005" th:selected="${faqBoardInfo.faqCategory.bigFaqCategory.getValue()} == '교환/취소(반품)'">교환/취소(반품)</option>
-                                <option value="FAQ006" th:selected="${faqBoardInfo.faqCategory.bigFaqCategory.getValue()} == '서비스'">서비스</option>
+                            <label class="form-label" for="faqCategoryId" name="faqCategory">카테고리</label>
+                            <select class="form-control faqCategory" id="faqCategoryId" name="faqCategoryId">
+                                <th:block th:each="item: ${faqCategoryList}">
+                                    <option th:value="${item.id}" th:text="|${item.bigFaqCategory.getValue()} -- ${item.smallFaqCategory.getValue()}|"
+                                    th:selected="${item.id} == ${faqBoardInfo.FaqCategory.id}">대분류</option>
+                                </th:block>
                             </select>
-                        </div>
-                        <div class="col ">
-                            <label class="form-label" for="smallFaqCategory" name="smallFaqCategory">소분류</label>
-                            <span class="FaqCategory">
-                    <select class="form-control" id="smallFaqCategory" name="smallFaqCategory">
-                        <option value="">소분류</option>
-
-                    </select>
-                    </span>
                         </div>
                     </div>
                     <div class="mb-3">
