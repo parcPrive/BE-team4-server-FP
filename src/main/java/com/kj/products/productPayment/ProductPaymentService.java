@@ -126,6 +126,8 @@ public class ProductPaymentService {
         log.info("전체!!!!!! ===>>> {}",findProductOrderInfo);
         log.info("getImpUid ===>>> {}",findProductOrderInfo.getProductPayment().getImpUid());
         log.info("getPrice ===>>> {}",findProductOrderInfo.getPrice());
+        log.info("getcount ===>>> {}",findProductOrderInfo.getProductCount());
+        log.info("단건 환불 토탈금액 ===>>> {}",findProductOrderInfo.getPrice() * findProductOrderInfo.getProductCount());
         ResponseGetData refundData =  new ResponseGetData();
         ResponseGetRefundDetail resultRefundData = refundData.getRefundDetail(paymentFeignClient.refund(findProductOrderInfo.getProductPayment().getImpUid(), findProductOrderInfo.getPrice() * findProductOrderInfo.getProductCount(), accessToken));
         log.info("환불 정보 ==>>>>{}", resultRefundData);
@@ -134,11 +136,16 @@ public class ProductPaymentService {
         // 사이즈에 있는 제품 수량을 환불한 수량만큼 추가해서 다시 업데이트해준다.
         // 그리고 주문내역에서 상품을 삭제한다.
         if(!resultRefundData.getImp_uid().isEmpty()){
-            ProductPayment inserRefundInfo = new ProductPayment(resultRefundData,findProductOrderInfo.getMember());
-            productPaymentRepository.save(inserRefundInfo);
-            ProductSize updataProductSize = productSizeRepository.findProductSizeByProductSizeId(findProductOrderInfo.getId());
+            ProductPayment insertRefundInfo = new ProductPayment(resultRefundData,findProductOrderInfo.getMember());
+            ProductPayment resultProductRefund = productPaymentRepository.save(insertRefundInfo);
+            log.info("겟아이디  ===>>> {}",findProductOrderInfo.getProductSize().getId());
+            ProductSize updataProductSize = productSizeRepository.findProductSizeByProductSizeId(findProductOrderInfo.getProductSize().getId());
             updataProductSize.setProductCount(updataProductSize.getProductCount() + findProductOrderInfo.getProductCount());
-            productOrderProductDetailRepository.deleteById(findProductOrderInfo.getId());
+            // 상품주문정보에 있는 결제정보를 바꿔준다. 왜? 환불한거랑 결제한거랑 알기위해서 어떤 상품을 결제했고 환불했는지 알려고 productPayment id를 바꿔준다.
+            Optional<ProductOrderProductDetail> findProductOrderDetail = productOrderProductDetailRepository.findById(findProductOrderInfo.getId());
+            if(findProductOrderDetail.isPresent()){
+                findProductOrderDetail.get().setProductPayment(resultProductRefund);
+            }
         }
         return resultRefundData;
 

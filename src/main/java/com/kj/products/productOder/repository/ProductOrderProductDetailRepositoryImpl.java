@@ -49,6 +49,7 @@ public class ProductOrderProductDetailRepositoryImpl implements ProductOrderProd
 
     }
 
+
     @Override
     public List<MyProductOrderDto> findProductOrdersByUserNickName(String userNickName) {
         List<ProductOrderProductDetail> findMyOrers = queryFactory.selectFrom(productOrderProductDetail)
@@ -56,13 +57,15 @@ public class ProductOrderProductDetailRepositoryImpl implements ProductOrderProd
                 .join(productSize1.product, product).fetchJoin()
                 .join(product.productImages, productImage).fetchJoin()
                 .join(productOrderProductDetail.productPayment, productPayment).fetchJoin()
-                .where(productOrderProductDetail.member.nickName.eq(userNickName),productImage.thubmnail.eq(1))
+                .where(productOrderProductDetail.member.nickName.eq(userNickName),productImage.thubmnail.eq(1),
+                        productOrderProductDetail.productPayment.status.eq("paid"))
                 .orderBy(productPayment.createdAt.desc())
                 .fetch();
         List<MyProductOrderDto> myProductOrders = new ArrayList<>();
         for(ProductOrderProductDetail findMyOrder : findMyOrers){
             myProductOrders.add(new MyProductOrderDto(findMyOrder));
         }
+
         return myProductOrders;
 
 
@@ -72,6 +75,7 @@ public class ProductOrderProductDetailRepositoryImpl implements ProductOrderProd
     public ProductOrderProductDetail findProductPriceNimpUidByProductOrderId(Long productOrderId) {
         return queryFactory.selectFrom(productOrderProductDetail)
                 .join(productOrderProductDetail.productPayment, productPayment).fetchJoin()
+                .join(productOrderProductDetail.productSize, productSize1).fetchJoin()
                 .where(productOrderProductDetail.id.eq(productOrderId))
                 .fetchOne();
 

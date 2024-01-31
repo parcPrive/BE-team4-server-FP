@@ -396,29 +396,38 @@ public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondo
     }
 
     public void productClickCount(int productId, HttpServletRequest req, HttpServletResponse res){
-        Cookie addCookie = null;
-        for(Cookie cookie : req.getCookies()){
-            Optional<Product> clickProduct = productRepository.findByProductId(productId);
-            if(clickProduct.isPresent()){
-                if(cookie.getName().equals("productClick")){ // 조호수 쿠키가 있는지 확인
-                    log.info("쿠키안에느ㅜㄴ?? ===> {}", cookie.getValue());
-                    if(!cookie.getValue().contains("[" + productId + "]")){  // 조회수 쿠키 안에 내가 누른 상품이 없다면 조회수 증가하는 로직
-                        clickProduct.get().setClickCount(clickProduct.get().getClickCount() + 1);//조회수 증가
-                        addCookie.setValue(cookie.getValue() + "[" + productId + "]");
-                        break;
-                    }
-                }else{
-                    clickProduct.get().setClickCount(clickProduct.get().getClickCount() + 1);//조회수 증가
-                    addCookie = new Cookie("productClick", "[" + productId + "]");
-                    break;
+        Cookie prevCookie = null;
+        Cookie[] cookies = req.getCookies();
+        Optional<Product> clickProduct = productRepository.findByProductId(productId);
+        if(cookies != null){
+            for(Cookie cookie : req.getCookies()){
+                if(cookie.getName().equals("productClick")){
+                    prevCookie = cookie;
                 }
             }
         }
-        Long toDayEnd=LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
-        Long toDayNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-        addCookie.setPath("/");
-        addCookie.setMaxAge((int) (toDayEnd  - toDayNow));
-        res.addCookie(addCookie);
+        if(prevCookie !=null){
+            if (!prevCookie.getValue().contains("[" + productId + "]")) {  // 조회수 쿠키 안에 내가 누른 상품이 없다면 조회수 증가하는 로직
+                clickProduct.get().setClickCount(clickProduct.get().getClickCount() + 1);//조회수 증가
+                log.info("쿠키==>> {}", prevCookie.getValue());
+                prevCookie.setValue(prevCookie.getValue() + "[" + productId + "]");
+                Long toDayEnd=LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
+                Long toDayNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+                prevCookie.setPath("/");
+                prevCookie.setMaxAge((int) (toDayEnd  - toDayNow));
+                res.addCookie(prevCookie);
+            }
+
+        } else{
+            clickProduct.get().setClickCount(clickProduct.get().getClickCount() + 1);//조회수 증가
+            Cookie newCookie = new Cookie("productClick", "[" + productId + "]");
+            Long toDayEnd=LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
+            Long toDayNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+            newCookie.setPath("/");
+            newCookie.setMaxAge((int) (toDayEnd  - toDayNow));
+            res.addCookie(newCookie);
+        }
+
     }
 
 }

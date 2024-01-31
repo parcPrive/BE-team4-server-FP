@@ -42,4 +42,10 @@ public class ProductSearchService {
 //        return  result;
 //
 //    }
+
+    public void elasticSearchSetting(){
+        String setting = """
+                
+                """;
+    }
 }
