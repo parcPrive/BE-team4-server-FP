@@ -14,13 +14,12 @@
                             <input type="hidden" name="id" th:value="${noticeInfo.id}">
                             <label class="form-label" for="noticeCategory" name="noticeCategory">대분류</label>
                             <select class="form-control noticeCategory" id="noticeCategory" name="noticeCategory">
-                                <option value="">대분류</option>
-                                <option value="FAQ001" th:selected="${noticeInfo.noticeCategory} == '회원정보'">회원정보</option>
-                                <option value="FAQ002" th:selected="${noticeInfo.noticeCategory} == '상품확인'">상품확인</option>
-                                <option value="FAQ003" th:selected="${noticeInfo.noticeCategory} == '주문/결제'">주문/결제</option>
-                                <option value="FAQ004" th:selected="${noticeInfo.noticeCategory} == '배송'">배송</option>
-                                <option value="FAQ005" th:selected="${noticeInfo.noticeCategory} == '교환/취소(반품)'">교환/취소(반품)</option>
-                                <option value="FAQ006" th:selected="${noticeInfo.noticeCategory} == '서비스'">서비스</option>
+                                <option value="회원정보" th:selected="${noticeInfo.noticeCategory} == '회원정보'">회원정보</option>
+                                <option value="상품확인" th:selected="${noticeInfo.noticeCategory} == '상품확인'">상품확인</option>
+                                <option value="주문/결제" th:selected="${noticeInfo.noticeCategory} == '주문/결제'">주문/결제</option>
+                                <option value="배송" th:selected="${noticeInfo.noticeCategory} == '배송'">배송</option>
+                                <option value="교환/취소(반품)" th:selected="${noticeInfo.noticeCategory} == '교환/취소(반품)'">교환/취소(반품)</option>
+                                <option value="서비스" th:selected="${noticeInfo.noticeCategory} == '서비스'">서비스</option>
                             </select>
                         </div>
                     </div>

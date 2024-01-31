@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -125,5 +127,17 @@ public class NoticeController {
         }else {
             return "redirect:/";
         }
+    }
+    @GetMapping("/deleteAll")
+    @ResponseBody
+    public Map<String, Object> deleteAll(@RequestParam(value = "id") List<Long> id) {
+        boolean isDelete = noticeService.deleteAllId(id);
+        Map<String, Object> resultMap = new HashMap<>();
+        if(isDelete){
+            resultMap.put("isDelete",true);
+        }else {
+            resultMap.put("isDelete",false);
+        }
+        return resultMap;
     }
 }

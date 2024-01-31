@@ -194,6 +194,16 @@ public class NoticeService {
         }
         return false;
     }
+    public boolean deleteAllId(List<Long> id) {
+        List<Notice> noticeList = noticeRepository.findAllById(id);
+        if (!noticeList.isEmpty()){
+            for (int i=0;i<noticeList.size();i++){
+                noticeRepository.delete(noticeList.get(i));
+            }
+            return true;
+        }
+        return true;
+    }
 
     public Page<Notice> searchList(String category, String keyword, int page) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "noticeDate"));

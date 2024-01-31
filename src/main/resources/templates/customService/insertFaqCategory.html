@@ -38,6 +38,7 @@
                     <th scope="col">번호</th>
                     <th scope="col">대분류</th>
                     <th scope="col">소분류</th>
+                    <th scope="col">삭제</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -46,6 +47,9 @@
                         <td th:text="${status.index+1}"></td>
                         <td th:text="${item.bigFaqCategory.getValue()}" ></td>
                         <td th:text="${item.smallFaqCategory.getValue()}" ></td>
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.id}">삭제</button></td>
+                        </th:block>
                     </tr>
                 </th:block>
                 </tbody>
@@ -93,6 +97,29 @@
                              </select> `)
                }
            })
+            $(".btnDelete").on("click",function(){
+          const $parent = $(this).parent().parent();
+          console.log($parent);
+          const loggedId = $(this).data("no");
+          console.log(loggedId);
+          $.ajax({
+              url:"/cs/deleteFaqCategory",
+              data:{id:$(this).data("no")},
+              method:"POST",
+              success:function(data){
+                if(data.isDelete){
+                alert("삭제되었습니다.")
+                location.reload();
+                }else{
+                alert("오류입니다.")
+                }
+
+              },
+              fail:function(){
+              }
+          });
+          return false;
+      });
 
         </script>
     </div>

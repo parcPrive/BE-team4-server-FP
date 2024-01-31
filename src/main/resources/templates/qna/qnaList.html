@@ -17,6 +17,8 @@
                     <th scope="col">처리상태</th>
                     <th scope="col">작성자</th>
                     <th scope="col">공개여부</th>
+                    <th scope="col">삭제</th>
+                    <th scope="col"><input type="checkbox" id="checkAll" ></th>
                 </tr>
                 </thead>
                 <tbody id="resultList">
@@ -24,12 +26,42 @@
                     <tr>
                         <td class="" th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
                         <td th:text="${item.qnaCategory}" ></td>
-                        <td><th:block th:if="${search}"><a href="" th:href="@{/cs/notice/searchView/{id}/{category}/{keyword}/{search}(id=${item.id},
-                            category=${category},keyword=${keyword},search=${search})}"
-                                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a></th:block>
+                        <td>
+                            <th:block th:if="${search}">
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <a href="" th:href="@{/cs/qna/searchView/{id}(id=${item.id})}"
+                                       th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                </th:block>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                    <th:block th:if="${item.qnaSecret} == 1">
+                                        <a href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+                                    <th:block th:if="${item.qnaSecret} != 1">
+                                        <a href="" th:href="@{/cs/qna/searchView/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+                                </th:block>
+
+                            </th:block>
                             <th:block th:unless="${search}">
-                                <a href="" th:href="@{/cs/qna/view/{id}(id=${item.id})}"
-                                   th:text="${item.qnaTitle}">제목이 들어가겠죠....</a></th:block></td>
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <a href="" th:href="@{/cs/qna/view/{id}(id=${item.id})}"
+                                       th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                </th:block>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                    <th:block th:if="${item.qnaSecret} == 1">
+                                        <a href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+                                    <th:block th:if="${item.qnaSecret} != 1">
+                                        <a href="" th:href="@{/cs/qna/view/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+
+                                </th:block>
+                            </th:block>
+                        </td>
                         <td th:text="${#temporals.format(item.qnaDate,'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${item.qnaStatus}" ></td>
                         <td th:text="${item.writer.userName}" ></td>
@@ -42,22 +74,41 @@
                 </th:block>
                 </tbody>
             </table>
-
+            <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center mt-5">
                     <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
-                        <a class="page-link" th:href="@{/cs/qna/list(page=${pagination.number - 1})}">Previous</a>
+                        <th:block th:if="${search}">
+                            <a class="page-link" href="#"
+                               th:href="@{/cs/qna/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number-1})}">Previous</a>
+                        </th:block>
+                        <th:block th:unless="${search}">
+                            <a class="page-link" th:href="@{/cs/qna/list(page=${pagination.number - 1})}">Previous</a>
+                        </th:block>
                     </li>
                     <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
                         <li class="page-item"
                             th:classappend="${item==pagination.number?'active':''}"
                             th:if="${item >= start and
                                  item < end }">
-                            <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${item})}" th:text="${item + 1}">1</a>
+                            <th:block th:if="${search}">
+                                <a class="page-link" href="#"
+                                   th:href="@{/cs/qna/search(category=${category},keyword=${keyword},search=${search},page=${item})}" th:text="${item + 1}">1</a>
+                            </th:block>
+                            <th:block th:unless="${search}">
+                                <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${item})}" th:text="${item + 1}">1</a>
+                            </th:block>
+
                         </li>
                     </th:block>
                     <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
-                        <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${pagination.number+1})}">Next</a>
+                        <th:block th:if="${search}">
+                            <a class="page-link" href="#"
+                               th:href="@{/cs/qna/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number+1})}">Next</a>
+                        </th:block>
+                        <th:block th:unless="${search}">
+                            <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${pagination.number+1})}">Next</a>
+                        </th:block>
                     </li>
                 </ul>
             </nav>
@@ -68,8 +119,9 @@
                     <div class="col-4" th:with="category=${param.category}">
                         <select class="form-select btnSearch" aria-label="Default select example" name="category">
                             <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
-                            <option value="noticeTitle"   th:selected="${#strings.equals(category,'noticeTitle')  ? true : false}">제목</option>
-                            <option value="noticeCategory" th:selected="${#strings.equals(category,'noticeCategory')? true : false}">카테고리</option>
+                            <option value="qnaTitle"   th:selected="${#strings.equals(category,'qnaTitle')  ? true : false}">제목</option>
+                            <option value="qnaCategory" th:selected="${#strings.equals(category,'qnaCategory')? true : false}">카테고리</option>
+                            <option value="qnaStatus" th:selected="${#strings.equals(category,'qnaStatus')? true : false}">처리상태</option>
                         </select>
                     </div>
                     <div class="col-6 ">
@@ -88,22 +140,84 @@
         </div>
     </div>
     <script th:inline="javascript">
-        //삭제 기능
-       $(".btnDelete").on("click",function(){
-           const $parent = $(this).parent().parent();
-           console.log($parent);
-           const loggedId = $(this).data("no");
-           console.log(loggedId);
-           $.ajax({
-               url:"/cs/notice/delete/"+loggedId,
-               data:{id:$(this).data("no")},
-               success:function(data){
-                    location.reload();
-               },
-               fail:function(){
+        // 검색 후 카테고리가 level이면 selcet를 유지
+           if($(".btnSearch").val()=="qnaStatus"){
+           $(".keyword").attr("type","hidden");
+           $(".keywordLevel").html(`<select class="form-select" name="keyword">
+                             <option value="답변대기">답변대기</option>
+                             <option value="답변완료">답변완료</option>
+                             </select> `)
+           }
+           //검색버튼 다양화
+           $(".btnSearch").on("change",function(){
+
+               if($(".btnSearch").val()=="qnaStatus"){
+                   $(".keyword").attr("type","hidden");
+                   $(".keywordLevel").html(`<select class="form-select " name="keyword">
+                             <option value="답변대기">답변대기</option>
+                             <option value="답변완료">답변완료</option>
+                             </select> `)
+               }else{
+                  $(".keywordLevel").html(`<input class="form-control keyword" type="text" name="keyword">`)
                }
-           });
-           return false;
-       });
+           })
+       //삭제 기능
+      $(".btnDelete").on("click",function(){
+          const $parent = $(this).parent().parent();
+          console.log($parent);
+          const loggedId = $(this).data("no");
+          console.log(loggedId);
+          $.ajax({
+              url:"/cs/qna/delete",
+              data:{id:$(this).data("no")},
+              method:"POST",
+              success:function(data){
+                if(data.isDelete){
+                alert("삭제되었습니다.")
+                location.reload();
+                }else{
+                alert("오류입니다.")
+                }
+
+              },
+              fail:function(){
+              }
+          });
+          return false;
+      });
+      $("#btnDeleteAll").on("click",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/cs/qna/deleteAll",
+                        method:"POST",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck
+                                },
+                        success:function(data){
+                            if(data.isDelete){
+                                alert("삭제되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+
+                        }
+                    })
+                    return false;
+                })
+        //체크박스 전체 선택 및 해체 기능
+                $("#checkAll").on("change",function(){
+                    if($("#checkAll").is(":checked")){
+                     $(".check").prop("checked",true);
+                    }else{
+                     $(".check").prop("checked",false);
+                    }
+                })
     </script>
 </div>

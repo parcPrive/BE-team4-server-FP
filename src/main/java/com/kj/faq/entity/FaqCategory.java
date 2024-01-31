@@ -1,10 +1,13 @@
 package com.kj.faq.entity;
 
+import com.kj.noticeComment.entity.Comment;
 import com.kj.utils.BigFaqCategory;
 import com.kj.utils.Role;
 import com.kj.utils.SmallFaqCategory;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +23,7 @@ public class FaqCategory {
     private BigFaqCategory bigFaqCategory;
     @Enumerated(EnumType.STRING)
     private SmallFaqCategory smallFaqCategory;
-
+    @OneToMany( mappedBy = "faqCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FaqBoard> faqBoards;
 
 }

@@ -16,6 +16,8 @@
                     <th scope="col">작성일</th>
                     <th scope="col">조회수</th>
                     <th scope="col">작성자</th>
+                    <th scope="col">삭제</th>
+                    <th scope="col"><input type="checkbox" id="checkAll" ></th>
                 </tr>
                 </thead>
                 <tbody id="resultList">
@@ -40,22 +42,43 @@
                 </th:block>
                 </tbody>
             </table>
-
+            <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center mt-5">
                     <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
-                        <a class="page-link" th:href="@{/cs/notice/list(page=${pagination.number - 1})}">Previous</a>
+                        <th:block th:if="${search}">
+                            <a class="page-link" href="#"
+                               th:href="@{/cs/notice/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number-1})}">Previous</a>
+                        </th:block>
+                        <th:block th:unless="${search}">
+                            <a class="page-link" th:href="@{/cs/notice/list(page=${pagination.number - 1})}">Previous</a>
+                        </th:block>
+
                     </li>
                     <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
                         <li class="page-item"
                             th:classappend="${item==pagination.number?'active':''}"
                             th:if="${item >= start and
                                  item < end }">
-                            <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${item})}" th:text="${item + 1}">1</a>
+                            <th:block th:if="${search}">
+                                <a class="page-link" href="#"
+                                   th:href="@{/cs/notice/search(category=${category},keyword=${keyword},search=${search},page=${item})}" th:text="${item + 1}">1</a>
+                            </th:block>
+                            <th:block th:unless="${search}">
+                                <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${item})}" th:text="${item + 1}">1</a>
+                            </th:block>
+
                         </li>
                     </th:block>
                     <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
-                        <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${pagination.number+1})}">Next</a>
+                        <th:block th:if="${search}">
+                            <a class="page-link" href="#"
+                               th:href="@{/cs/notice/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number+1})}">Next</a>
+                        </th:block>
+                        <th:block th:unless="${search}">
+                            <a class="page-link" href="#" th:href="@{/cs/notice/list(page=${pagination.number+1})}">Next</a>
+                        </th:block>
+
                     </li>
                 </ul>
             </nav>
@@ -105,5 +128,38 @@
                });
                return false;
            });
+           $("#btnDeleteAll").on("click",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/cs/notice/deleteAll",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck
+                                },
+                        success:function(data){
+                            if(data.isDelete){
+                                alert("삭제되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+
+                        }
+                    })
+                    return false;
+                })
+    //체크박스 전체 선택 및 해체 기능
+                $("#checkAll").on("change",function(){
+                    if($("#checkAll").is(":checked")){
+                     $(".check").prop("checked",true);
+                    }else{
+                     $(".check").prop("checked",false);
+                    }
+                })
 </script>
 </div>
