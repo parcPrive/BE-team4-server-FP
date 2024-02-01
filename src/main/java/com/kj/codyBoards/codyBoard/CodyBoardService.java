@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.kj.codyBoards.codyBoard.Repository.CodyBoardRepository;
 import com.kj.codyBoards.codyBoard.dto.CodyBoardInputDto;
+import com.kj.codyBoards.codyBoard.dto.CodyBoardListReturnDto;
+import com.kj.codyBoards.codyBoard.dto.CodyBoardSearchCondition;
 import com.kj.codyBoards.codyBoard.entiry.CodyBoard;
 import com.kj.config.S3Config;
 import com.kj.member.entity.Member;
@@ -11,16 +13,16 @@ import com.kj.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -89,5 +91,18 @@ public class CodyBoardService {
         }
         return codyImageUrls;
 
+    }
+
+    public PageImpl<CodyBoardListReturnDto> findListCodyBoard(int page, CodyBoardSearchCondition codyBoardSearchCondition) {
+        Pageable pageable = PageRequest.of(page -1, 12);
+
+        PageImpl<CodyBoardListReturnDto> codyBoardList = codyBoardRepository.findListCodyBoard(pageable,codyBoardSearchCondition);
+        return codyBoardList;
+    }
+
+    public CodyBoard findByCodyBoard(Long codyBoardId) {
+       return codyBoardRepository.findByCodyBoard(codyBoardId);
+
+//        return null;
     }
 }
