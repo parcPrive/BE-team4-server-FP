@@ -8,9 +8,7 @@ import com.kj.products.product.entity.ProductSize;
 import com.kj.products.product.entity.ProductTag;
 
 import com.kj.products.productElasticSearch.ProductCategorySearchCondition;
-import com.kj.products.productQnA.dto.ProductQnAfind;
 import com.kj.products.productQnA.entity.ProductQnA;
-import com.kj.products.productQnA.entity.QProductQnA;
 import com.kj.products.productReview.entity.ProductReview;
 
 import com.querydsl.core.QueryResults;

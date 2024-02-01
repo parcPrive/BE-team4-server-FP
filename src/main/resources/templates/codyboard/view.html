@@ -1,0 +1,147 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="main">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>게시판 게시글 보기</title>
+        <style>
+            /* 스타일링을 위한 CSS 코드 */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+            }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            .post {
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            .post-title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .post-info {
+                font-size: 14px;
+                color: #666;
+                margin-bottom: 10px;
+            }
+            .post-content {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+            .comment {
+                border-bottom: 1px solid #ccc;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            .comment-content {
+                font-size: 16px;
+            }
+            .reply {
+                margin-left: 20px;
+                border-left: 2px solid #ccc;
+                padding-left: 10px;
+            }
+            textarea {
+                width: 100%;
+                padding: 10px;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            .author {
+                font-weight: bold;
+            }
+            .date {
+                color: #666;
+                font-size: 14px;
+            }
+
+
+        </style>
+    </head>
+    <body>
+    <div class="container">
+        <!-- 게시글 내용을 담는 부분 -->
+        <div class="post">
+            <div class="post-title" th:text="${codyBoard.getCodyBoardTitle()}">게시글 제목</div>
+            <div class="post-info" th:text="|작성자: ${codyBoard.getMember().getUserName()} 작성일: ${codyBoard.getCreatedAt()}|">작성자: 닉네임 | 작성일: 2024-02-01</div>
+            <div>
+                <img th:src="${codyBoard.getCodyboardImage1()}" alt="이미지 1">
+                <img th:src="${codyBoard.getCodyboardImage2()}" alt="이미지 1">
+            </div>
+            <div class="post-content" th:text="${codyBoard.getContent()}">
+                게시글 내용이 여기에 들어갑니다. 이 부분에는 게시글의 내용이 표시됩니다.
+                실제 내용은 여기에 들어가게 됩니다. 필요에 따라 긴 내용을 표시할 수 있습니다.
+            </div>
+        </div>
+        <!-- 게시글 종료 -->
+        <textarea id="commentInput" placeholder="댓글을 작성해주세요..."></textarea>
+        <a class="btn btn-primary" id="commentInsertBtn" href="">댓글작성</a>
+
+        <!-- 댓글 -->
+        <div class="comments">
+            <div class="comment">
+                <div class="author">작성자1</div>
+                <div class="date">2024-02-01</div>
+                <div class="comment-content">
+                    이 부분에 첫 번째 댓글의 내용이 들어갑니다.
+                </div>
+            </div>
+
+            <!-- 대댓글 -->
+            <div class="comment reply">
+                <div class="author">작성자2</div>
+                <div class="date">2024-02-02</div>
+                <div class="comment-content">
+                    이 부분에 첫 번째 댓글에 대한 첫 번째 대댓글의 내용이 들어갑니다.
+                </div>
+            </div>
+
+            <!-- 대댓글 -->
+            <div class="comment reply">
+                <div class="author">작성자3</div>
+                <div class="date">2024-02-03</div>
+                <div class="comment-content">
+                    이 부분에 첫 번째 댓글에 대한 두 번째 대댓글의 내용이 들어갑니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+    <script>
+
+        $("#commentInsertBtn").on("click",function (e){
+            console.log("머가 들어올까요??" + $("#commentInput").val())
+            $.ajax({
+                url:"/codyboard/insertComment",
+                data:{
+                    "codyBoardId": $("#commentInput").val()
+                    // "userName":,
+                    // "content":
+
+                }
+            })
+        })
+    </script>
+
+
+</div>
+</html>
+
+
+
+
