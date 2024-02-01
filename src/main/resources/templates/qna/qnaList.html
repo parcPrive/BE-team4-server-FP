@@ -17,8 +17,10 @@
                     <th scope="col">처리상태</th>
                     <th scope="col">작성자</th>
                     <th scope="col">공개여부</th>
-                    <th scope="col">삭제</th>
-                    <th scope="col"><input type="checkbox" id="checkAll" ></th>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <th scope="col">삭제</th>
+                        <th scope="col"><input type="checkbox" id="checkAll" ></th>
+                    </th:block>
                 </tr>
                 </thead>
                 <tbody id="resultList">
@@ -74,7 +76,9 @@
                 </th:block>
                 </tbody>
             </table>
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
             <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
+            </th:block>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center mt-5">
                     <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">

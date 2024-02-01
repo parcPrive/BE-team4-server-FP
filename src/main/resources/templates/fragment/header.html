@@ -16,23 +16,45 @@
                 <li class="nav-item"><a href="/board/list.html" th:href="@{/member/login}" class="nav-link">login</a></li>
                 <li class="nav-item"><a th:href="@{/product/list/1}" class="nav-link">productList</a></li>
                 <li class="nav-item"><a th:href="@{/product/myorderlist/mok119}" class="nav-link">주문내역</a></li>
-                <li class="nav-item"><a href="" th:href="@{/cs/faq}" class="nav-link">FAQ</a></li>
-                <li class="nav-item"><a href="" th:href="@{/cs/notice/list}" class="nav-link">공지사항</a></li>
-                <li class="nav-item"><a href="" th:href="@{/cs/qna/list}" class="nav-link">1대1 QNA</a></li>
             </ul>
         </div>
         <div sec:authorize="isAuthenticated()">
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
                 <li class="nav-item"><a href="/board/list.html" th:href="@{/board/list02}" class="nav-link">board</a></li>
-                <li class="nav-item"><a href="/board/list.html" th:href="@{/member/mypage/{id}(id=${#authentication.principal.loggedMember.id})}" class="nav-link"
-                                        th:text="${#authentication.principal.loggedMember.userName}"
-                ></a></li>
                 <li class="nav-item"><a href="" th:href="@{/memberList/list}" class="nav-link">회원리스트</a></li>
-                <li class="nav-item"><a href="" th:href="@{/cs/faq}" class="nav-link">FAQ</a></li>
-                <li class="nav-item"><a href="" th:href="@{/cs/notice/list}" class="nav-link">공지사항</a></li>
-                <li class="nav-item"><a href="" th:href="@{/cs/qna/list}" class="nav-link">1대1 QNA</a></li>
-                <li class="nav-item"><a href="" th:href="@{/member/logout}" class="nav-link">logout</a></li>
+                <li class="nav-item">
+                <div class="dropdown nav-item" style="padding: 1rem, 0.5rem">
+                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class=""  style="color:#0d6efd">고객 센터</span>
+                    </a>
+                    <ul class="dropdown-menu text-small" style="">
+                        <li ><a href="" th:href="@{/cs/faq}" class="dropdown-item">FAQ</a></li>
+                        <li ><a href="" th:href="@{/cs/notice/list}" class="dropdown-item">공지사항</a></li>
+                        <li ><a href="" th:href="@{/cs/qna/list}" class="dropdown-item">1대1 QNA</a></li>
+                    </ul>
+                </div>
+                </li>
+                <li class="nav-item">
+                <div class="dropdown nav-item">
+                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                        <th:block th:if="${#authentication.principal.loggedMember.profileImageUrl==null}">
+                            <img src="/images/user.png" id="" alt="mdo" width="32" height="32" class="rounded-circle">
+                        </th:block>
+                        <th:block th:unless="${#authentication.principal.loggedMember.profileImageUrl==null}">
+                            <img th:src="@{|/upload/${#authentication.principal.loggedMember.profileImageUrl}|}" alt="mdo" width="32" height="32" class="rounded-circle">
+                        </th:block>
+                        <span class="" th:text="${#authentication.principal.loggedMember.userName}" style="color:#0d6efd"></span>
+                    </a>
+                    <ul class="dropdown-menu text-small" style="">
+                        <li><a class="dropdown-item" href="#">New project...</a></li>
+                        <li><a class="dropdown-item" href="#">문의 현황</a></li>
+                        <li><a class="dropdown-item" th:href="@{/member/mypage/{id}(id=${#authentication.principal.loggedMember.id})}">나의 페이지</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item"  th:href="@{/member/logout}">로그 아웃</a></li>
+                    </ul>
+                </div>
+                </li>
             </ul>
         </div>
     </header>

@@ -40,7 +40,7 @@ public class SecurityConfig{
                                 "/member/login", "/css/**", "/js/**", "/images/**", "/mail/**", "/product/**","/productpayment/**","/admin/**","/codyboard/**")
                         .permitAll()
                         .requestMatchers("/member/update", "/member/mypage").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**","/memberList/**").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated()
 
