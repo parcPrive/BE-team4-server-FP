@@ -4,6 +4,8 @@ import com.kj.codyBoards.codyBoard.dto.CodyBoardListReturnDto;
 import com.kj.codyBoards.codyBoard.dto.CodyBoardSearchCondition;
 import com.kj.codyBoards.codyBoard.entiry.CodyBoard;
 import com.kj.codyBoards.codyBoard.entiry.QCodyBoard;
+import com.kj.codyBoards.codyBoardComments.dto.CodyBoardCommentsViewDto;
+import com.kj.codyBoards.codyBoardComments.entity.QCodyBoardComment;
 import com.kj.member.entity.QMember;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.kj.codyBoards.codyBoard.entiry.QCodyBoard.codyBoard;
+import static com.kj.codyBoards.codyBoardComments.entity.QCodyBoardComment.codyBoardComment;
 import static com.kj.member.entity.QMember.member;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -59,9 +62,16 @@ public class CodyBoardRepositoryImpl implements CodyBoardRepositoryCustom{
     @Override
     public CodyBoard findByCodyBoard(Long codyBoardId) {
         CodyBoard codyBoard1 = queryFactory.selectFrom(codyBoard)
-                .where(codyBoard.id.eq(codyBoardId))
                 .join(codyBoard.member, member).fetchJoin()
+                .leftJoin(codyBoard.codyBoardComments,codyBoardComment).fetchJoin()
+                .leftJoin(codyBoardComment.parent).fetchJoin()
+                .where(codyBoard.id.eq(codyBoardId))
+                .orderBy(
+                        codyBoardComment.sortNum.desc()
+                        )
                 .fetchOne();
+//        CodyBoardCommentsViewDto aaa = new CodyBoardCommentsViewDto(codyBoard1);
+//        log.info("여기 한번볼까요?? ==>>> {}", aaa.getCodyBoardComment());
         return codyBoard1;
     }
 

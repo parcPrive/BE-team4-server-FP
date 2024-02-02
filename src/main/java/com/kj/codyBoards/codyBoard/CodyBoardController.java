@@ -4,6 +4,7 @@ import com.kj.codyBoards.codyBoard.dto.CodyBoardInputDto;
 import com.kj.codyBoards.codyBoard.dto.CodyBoardListReturnDto;
 import com.kj.codyBoards.codyBoard.dto.CodyBoardSearchCondition;
 import com.kj.codyBoards.codyBoard.entiry.CodyBoard;
+import com.kj.codyBoards.codyBoardComments.entity.CodyBoardComment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.math.raw.Mod;
@@ -57,6 +58,7 @@ public class CodyBoardController {
         return "/codyboard/list";
     }
 
+
     @GetMapping("/view")
     public String codyBoardView(
             @RequestParam Long codyBoardId,
@@ -67,4 +69,30 @@ public class CodyBoardController {
         model.addAttribute("codyBoard", codyBoard);
         return "/codyboard/view";
     }
+
+//    @GetMapping("/redisTest1")
+//    @ResponseBody
+//    public String aaa1(){
+//        log.info("여기");
+//        codyBoardService.redisSetTest();
+//        return "헤헤";
+//    }
+//    @GetMapping("/redisTest2")
+//    @ResponseBody
+//    public String aaa2(){
+//        codyBoardService.redisSetListTest();
+//        return "헤헤";
+//    }
+//    @GetMapping("/redisTest3")
+//    @ResponseBody
+//    public String aaa3(){
+//        codyBoardService.redisGetTest();
+//        return "헤헤";
+//    }
+//    @GetMapping("/redisTest4")
+//    @ResponseBody
+//    public String aaa4(){
+//        codyBoardService.redisGetListTest();
+//        return "헤헤";
+//    }
 }
