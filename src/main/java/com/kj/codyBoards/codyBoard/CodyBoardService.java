@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,7 @@ import java.util.*;
 public class CodyBoardService {
     private final CodyBoardRepository codyBoardRepository;
     private final MemberRepository memberRepository;
+//    private final RedisTemplate redisTemplate;
 
 
     private final S3Config s3Config;
@@ -105,4 +108,30 @@ public class CodyBoardService {
 
 //        return null;
     }
+
+//    public void redisSetTest(){
+//        ValueOperations<String, String> values = redisTemplate.opsForValue();
+//        values.set("mok","정현목");
+//    }
+//
+//    public void redisSetListTest(){
+//        CodyBoard codyBoards = codyBoardRepository.findByCodyBoard((long)1);
+//        ValueOperations<String, CodyBoard> values = redisTemplate.opsForValue();
+//        values.set("codyboard1",codyBoards);
+//    }
+//
+//    public void redisGetTest(){
+//        ValueOperations<String,String> values = redisTemplate.opsForValue();
+//        log.info("레디레디레디레디스스스");
+//        log.info("여기가 레디스 결과값 ===>>> {}",values.get("mok"));
+//        log.info("레디레디레디레디스스스");
+//    }
+//    public void redisGetListTest(){
+//        ValueOperations<String,CodyBoard> values = redisTemplate.opsForValue();
+//        log.info("레디레디레디레디스스스");
+//        log.info("여기가 레디스 결과값 ===>>> {}",values.get("codyboard1"));
+//        log.info("레디레디레디레디스스스");
+//    }
+
+
 }
