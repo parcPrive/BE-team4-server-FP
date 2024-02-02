@@ -27,6 +27,9 @@
                 </th:block>
                 <label class="form-check-label" for="check">아이디 기억</label>
             </div>
+            <span th:if="${error}">
+                    <p id="valid" class="alert alert-danger" th:text="${exception}"></p>
+            </span>
             <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
             <div class="d-flex justify-content-center w-100 py-2">
                 <a class="btn btn-primary form-label findid px-3" th:href="@{/mail/findId}">아이디 찾기</a>

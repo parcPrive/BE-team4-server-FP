@@ -3,8 +3,30 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/layout}">
 <div layout:fragment="content" class="main">
-    <div class="container mt-5">
-        <h2>공지사항</h2>
+    <div class="container">
+        <div class="row g-0 text-center">
+            <div class="col-sm-6 col-md-8">
+                <h2 class="text-start">공지사항</h2>
+            </div>
+            <div class="col-6 col-md-4">
+                <nav class="text-end" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-chevron p-3 rounded-3 justify-content-end">
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis" href="/">
+                                <i class="bi bi-house" width="16" height="16"></i>
+                                <span class="visually-hidden">홈</span>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis fw-semibold text-decoration-none" href="#">고객센터</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            공지사항
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
 
         <div class="table_wrap">
             <table class="table">
@@ -44,10 +66,33 @@
                 </th:block>
                 </tbody>
             </table>
-            </table>
+
+            <div class="d-flex justify-content-between">
+                <div class="mt-1 me-3">
             <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                 <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
             </th:block>
+                </div>
+                <div style="width: 50%">
+                    <form class="d-flex justify-content-between" action="" th:action="@{/cs/notice/search}" method="get">
+                            <div class="col-4" th:with="category=${param.category}">
+                                <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                                    <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                                    <option value="noticeTitle"   th:selected="${#strings.equals(category,'noticeTitle')  ? true : false}">제목</option>
+                                    <option value="noticeCategory" th:selected="${#strings.equals(category,'noticeCategory')? true : false}">카테고리</option>
+                                </select>
+                            </div>
+                            <div class="col-6 ms-2">
+                    <span class="keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+                            </div>
+                            <input type="hidden" name="search" value="true">
+                            <div class="ms-2"><button class="btn btn-primary">검색</button></div>
+                    </form>
+                </div>
+            </div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center mt-5">
                     <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
@@ -89,25 +134,7 @@
             </nav>
         </div>
         <div class="container mt-5">
-        <form action="" th:action="@{/cs/notice/search}" method="get">
-            <div class="row">
-                <div class="col-4" th:with="category=${param.category}">
-                    <select class="form-select btnSearch" aria-label="Default select example" name="category">
-                        <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
-                        <option value="noticeTitle"   th:selected="${#strings.equals(category,'noticeTitle')  ? true : false}">제목</option>
-                        <option value="noticeCategory" th:selected="${#strings.equals(category,'noticeCategory')? true : false}">카테고리</option>
-                    </select>
-                </div>
-                <div class="col-6 ">
-                    <span class="keywordLevel">
-                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
-                            th:value="${param.keyword}">
-                        </span>
-                </div>
-                <input type="hidden" name="search" value="true">
-                <div class="col-2"><button class="btn btn-primary">검색</button></div>
-            </div>
-        </form>
+
         </div>
         <div class="mt-5 d-flex justify-content-center">
             <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->

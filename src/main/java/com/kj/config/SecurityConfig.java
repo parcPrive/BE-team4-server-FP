@@ -12,7 +12,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -25,8 +27,6 @@ public class SecurityConfig{
     private final JwtUtil jwtUtil;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
         return configuration.getAuthenticationManager();
@@ -36,7 +36,7 @@ public class SecurityConfig{
         httpSecurity.
                 authorizeHttpRequests((auth) -> auth
 
-                        .requestMatchers("/", "/member/insert","/member/logout", "/member/nickNameCheck",
+                        .requestMatchers("/", "/member/insert","/member/logout", "/member/nickNameCheck","/member/idCheck",
                                 "/member/login", "/css/**", "/js/**", "/images/**", "/mail/**", "/product/**","/productpayment/**","/admin/**","/codyboard/**")
                         .permitAll()
                         .requestMatchers("/member/update", "/member/mypage").permitAll()
@@ -76,6 +76,8 @@ public class SecurityConfig{
                         .userInfoEndpoint(userInf ->userInf.userService(oAuth2DetailService)
                         )
                 )
+
+
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .csrf((csrf)->  csrf.disable());
 

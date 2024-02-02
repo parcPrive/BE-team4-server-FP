@@ -39,4 +39,9 @@ public interface CustomServiceQnaRepository extends JpaRepository<CustomServiceQ
             "c.qnaCategory like %:keyword% or " +
             "c.qnaStatus like %:keyword%)")
     Page<CustomServiceQna> findAllSearch(@Param("keyword")String keyword, Pageable pageable);
+
+    @Query("select c from CustomServiceQna c where c.writer.id = :id")
+    Page<CustomServiceQna> findByMemberId(@Param("id")Long id,Pageable pageable);
+
+    CustomServiceQna findByParentId(Long id);
 }

@@ -16,26 +16,25 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
 public class JoinDto {
     private Long id;
     @NotBlank(message = "비어있으면 안됩니다.")
     private String userId;
-    @NotBlank
+    @NotBlank(message = "비어있으면 안됩니다.")
     private String password;
-    @NotBlank
+    @NotBlank(message = "비어있으면 안됩니다.")
     private String userName;
-    @NotBlank
+    @NotBlank(message = "비어있으면 안됩니다.")
     private String nickName;
     private int gender;
     private String address;
     private String addressDetail;
     private String postCode;
-    @NotBlank
+    @NotBlank(message = "비어있으면 안됩니다.")
     @Email
     private String email;
-    @NotBlank
+    @NotBlank(message = "비어있으면 안됩니다.")
     private String mobile;
     @NotBlank(message = "빈값이면 안됩니다.")
     @Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$",message = "ㅇㅇㅇ")
@@ -59,7 +58,7 @@ public class JoinDto {
                 .phone(joinDto.getPhone())
                 .levels("0")
                 .registerDate(LocalDateTime.now())
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .build();
     }
 }

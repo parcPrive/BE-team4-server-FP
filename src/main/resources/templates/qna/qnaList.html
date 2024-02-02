@@ -3,8 +3,30 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/layout}">
 <div layout:fragment="content" class="main">
-    <div class="container mt-5">
-        <h2>1대1 QNA</h2>
+    <div class="container">
+        <div class="row g-0 text-center">
+            <div class="col-sm-6 col-md-8">
+                <h2 class="text-start">QnA</h2>
+            </div>
+            <div class="col-6 col-md-4">
+                <nav class="text-end" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-chevron p-3 rounded-3 justify-content-end">
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis" href="/">
+                                <i class="bi bi-house" width="16" height="16"></i>
+                                <span class="visually-hidden">홈</span>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis fw-semibold text-decoration-none" href="#">고객센터</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            QnA
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
 
         <div class="table_wrap">
             <table class="table">
@@ -65,9 +87,11 @@
                             </th:block>
                         </td>
                         <td th:text="${#temporals.format(item.qnaDate,'yyyy-MM-dd HH:mm')}"></td>
-                        <td th:text="${item.qnaStatus}" ></td>
-                        <td th:text="${item.writer.userName}" ></td>
-                        <td th:text="${item.qnaSecret == 0} ? '공개' : '비공개' " ></td>
+                        <td  th:text="${item.qnaStatus}" ></td>
+                        <td  th:text="${item.writer.userName}" ></td>
+
+                        <td th:if="${item.qnaSecret} == 0" ><i class="bi bi-unlock ms-4"></i></td>
+                        <td th:if="${item.qnaSecret} == 1" ><i class="bi bi-lock ms-4"></i></td>
                         <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                             <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.id}">삭제</button></td>
                             <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
@@ -76,9 +100,93 @@
                 </th:block>
                 </tbody>
             </table>
-            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-            <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
-            </th:block>
+            <div class="d-flex justify-content-between">
+                <div class="mt-1 me-3">
+                    <div class="modal fade" id="exampleModalScrollable" tabindex="-1" aria-labelledby="exampleModalScrollableTitle" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalScrollableTitle">QNA WRITE</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="" th:action="@{/cs/qna/insert}" method="post">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="mb-3">
+                                            <label for="qnaCategory" class="form-label">카테고리</label>
+                                            <select class="form-control qnaCategory" id="qnaCategory" name="qnaCategory">
+                                                <option value="회원정보" >회원정보</option>
+                                                <option value="상품확인" >상품확인</option>
+                                                <option value="주문/결제" >주문/결제</option>
+                                                <option value="배송" >배송</option>
+                                                <option value="교환/취소(반품)" >교환/취소(반품)</option>
+                                                <option value="서비스" >서비스</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="subject" class="form-label">제목</label>
+                                        <input type="text" class="form-control" id="subject" placeholder="제목" name="qnaTitle">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="content" class="form-label">CONTENT</label>
+                                        <textarea type="text" class="form-control" id="content"
+                                                  placeholder="내용" name="qnaContent"  rows="10"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="content" class="form-label">비공개 여부</label>
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" name="qnaSecret" value="0">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">비공개 여부</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="qnaPassword" class="form-label">비밀 번호</label>
+                                        <input type="password" class="form-control password" placeholder="password"
+                                               id="qnaPassword" aria-label="password" aria-describedby="button-addon2" name="qnaPassword" disabled>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                    <button class="btn btn-primary" id="btnJoinConfirm">저장</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <a th:href="@{/cs/qna/insert}">원래 글쓰기 </a>
+                    <!--th:href="@{/cs/qna/insert}"-->
+                    <button  data-bs-toggle="modal" data-bs-target="#exampleModalScrollable" class="btn btn-primary">글쓰기</button>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
+                    </th:block>
+                </div>
+                <div style="width: 50%">
+                    <form class="d-flex justify-content-between"  action="" th:action="@{/cs/qna/search}" method="get">
+                            <div class="col-4" th:with="category=${param.category}">
+                                <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                                    <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                                    <option value="qnaTitle"   th:selected="${#strings.equals(category,'qnaTitle')  ? true : false}">제목</option>
+                                    <option value="qnaCategory" th:selected="${#strings.equals(category,'qnaCategory')? true : false}">카테고리</option>
+                                    <option value="qnaStatus" th:selected="${#strings.equals(category,'qnaStatus')? true : false}">처리상태</option>
+                                </select>
+                            </div>
+                            <div class="col-6 ms-2">
+                    <span class="keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+                            </div>
+                            <input type="hidden" name="search" value="true">
+                            <div class="ms-2">
+                                <button class="btn btn-primary">검색</button>
+                            </div>
+                    </form>
+                </div>
+                </div>
+
+
+
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center mt-5">
                     <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
@@ -117,31 +225,7 @@
                 </ul>
             </nav>
         </div>
-        <div class="container mt-5">
-            <form action="" th:action="@{/cs/qna/search}" method="get">
-                <div class="row">
-                    <div class="col-4" th:with="category=${param.category}">
-                        <select class="form-select btnSearch" aria-label="Default select example" name="category">
-                            <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
-                            <option value="qnaTitle"   th:selected="${#strings.equals(category,'qnaTitle')  ? true : false}">제목</option>
-                            <option value="qnaCategory" th:selected="${#strings.equals(category,'qnaCategory')? true : false}">카테고리</option>
-                            <option value="qnaStatus" th:selected="${#strings.equals(category,'qnaStatus')? true : false}">처리상태</option>
-                        </select>
-                    </div>
-                    <div class="col-6 ">
-                    <span class="keywordLevel">
-                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
-                            th:value="${param.keyword}">
-                        </span>
-                    </div>
-                    <input type="hidden" name="search" value="true">
-                    <div class="col-2"><button class="btn btn-primary">검색</button></div>
-                </div>
-            </form>
-        </div>
-        <div class="mt-5 d-flex justify-content-center">
-                <a th:href="@{/cs/qna/insert}" class="btn btn-primary">글쓰기</a>
-        </div>
+
     </div>
     <script th:inline="javascript">
         // 검색 후 카테고리가 level이면 selcet를 유지
@@ -223,5 +307,25 @@
                      $(".check").prop("checked",false);
                     }
                 })
+        $("#flexSwitchCheckChecked").on("click",function(){
+                       $("#flexSwitchCheckChecked").val(1);
+                       $('#flexSwitchCheckChecked').toggleClass('active');
+
+                    if( $('#flexSwitchCheckChecked').hasClass('active') == true ){
+                        $('#qnaPassword').attr("disabled",false);
+                    }
+                    else{
+                        $('#qnaPassword').attr("disabled",true);
+                    }
+                    })
+                    ClassicEditor
+                        .create( document.querySelector( "#content" ),{
+                            ckfinder:{
+                                uploadUrl:"/cs/upload"
+                            }
+                        } )
+                        .catch( error => {
+                            console.error( error );
+                        });
     </script>
 </div>

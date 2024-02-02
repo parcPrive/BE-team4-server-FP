@@ -58,7 +58,7 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         if (optionalMember.isEmpty()){
             log.warn("회원이 존재하지 않음");
-            throw new IllegalArgumentException("회원이 존재하지 않음");
+            throw new UsernameNotFoundException("회원이 존재하지 않음");
         }
         Member member = optionalMember.get();
         Log logMember = LogDto.toEntity(logDto,member);
@@ -225,5 +225,16 @@ public class MemberService {
             new RuntimeException("없는회원");
         }
         return null;
+    }
+
+    public Integer findByUserId(String userId) {
+        int count = 0;
+        Optional<Member> findMember = memberRepository.findByUserId(userId);
+        if (findMember.isPresent()){
+            return  count = 1;
+        }else {
+            new RuntimeException("없는 회원입니다.");
+            return count =0;
+        }
     }
 }

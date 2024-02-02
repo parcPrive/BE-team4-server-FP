@@ -10,25 +10,26 @@
                 <form action="" th:action="@{/member/insert}" th:object="${joinDto}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="userId" class="form-label">userId</label>
-                        <input type="text" class="form-control" id="userId" placeholder="title" name="userId"  th:field="*{userId}">
+                        <input type="text" class="form-control" id="userId" placeholder="title" name="userId"  th:field="*{userId}" required>
+                        <button class="btn btn-primary" id="btnIDCheck" >아이디 중복 확인</button>
                         <div class="error" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">
                             오류 메세지...</div>
                         </div>
                     <div class="mb-3">
                         <label for="userId" class="form-label">password</label>
                         <div class="input-group mb-3">
-                            <input type="password" class="form-control password" placeholder="password" id="password" aria-label="password" aria-describedby="button-addon2" name="password">
+                            <input type="password" class="form-control password" placeholder="password" id="password" aria-label="password" aria-describedby="button-addon2" name="password" th:field="*{password}" required>
                             <button class="btn btn-outline-secondary btnEyes" type="button" id="btnEyes"><i class="bi bi-eye-fill"></i></button>
-                            <div class="error" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">
+                            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
                                 오류 메세지...</div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="userId" class="form-label">password check</label>
                         <div class="input-group mb-3">
-                            <input type="password" class="form-control password" placeholder="password" id="password02" aria-label="password" aria-describedby="button-addon2" name="password02">
-                            <button class="btn btn-outline-secondary btnEyes" type="button" id="btnEyes02"><i class="bi bi-eye-fill"></i></button>
-                            <div class="error" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">
+                            <input type="password" class="form-control password02" placeholder="password" id="password02" aria-label="password" aria-describedby="button-addon2" name="password02" required>
+                            <button class="btn btn-outline-secondary btnEyes02" type="button" id="btnEyes02"><i class="bi bi-eye-fill"></i></button>
+                            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
                                 오류 메세지...</div>
                         </div>
                         <div class="invalid-feedback" id="invalid-feedbackPW02">글자 써보기</div>
@@ -36,18 +37,24 @@
 
                     <div class="mb-3">
                         <label for="userName" class="form-label">userName</label>
-                        <input type="text" class="form-control" id="userName" placeholder="name" name="userName">
+                        <input type="text" class="form-control" id="userName" placeholder="name" name="userName" th:field="*{userName}" required>
+                        <div class="error" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">
+                            오류 메세지...</div>
                     </div>
                     <div class="mb-3">
                         <label for="nickName" class="form-label">nickName</label>
-                        <input type="text" class="form-control" id="nickName" placeholder="nickName" name="nickName">
+                        <input type="text" class="form-control" id="nickName" placeholder="nickName" name="nickName" th:field="*{nickName}" required>
                         <button class="btn btn-primary" id="btnNickNameCheck">닉네임 중복확인</button>
+                        <div class="error" th:if="${#fields.hasErrors('nickName')}" th:errors="*{nickName}">
+                            오류 메세지...</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">email</label>
                         <input type="text" class="form-control" id="email" placeholder="email"
-                               name="email">
+                               name="email" th:field="*{email}" required>
+                        <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                            오류 메세지...</div>
                     </div>
                     <div class="mb-3">
                         <button class="btn btn-primary" id="btnSend">인증번호 받기</button>
@@ -122,15 +129,28 @@
                         $(this).find('i').attr("class","bi bi-eye-fill")
                     }
                 });
+                //비밀번호 보기 or 감추기
+                $(".btnEyes02").on("click",function(){
+                    $('#password02').toggleClass('active');
+                    if( $('#password02').hasClass('active') == true ){
+                        $('#password02').attr("type","text")
+                        $(this).find('i').attr("class","bi bi-eye-slash")
+                    }
+                    else{
+                        $('#password02').attr("type","password")
+                        $(this).find('i').attr("class","bi bi-eye-fill")
+                    }
+                });
                 //비밀번호 일치 불일치
                 $("#password02").on("keyup", function () {    //id는 # , class는 .
                     if ($("#password").val() !== $("#password02").val()) {
                     console.log("test")
                     $("#invalid-feedbackPW02").show();
                     $("#invalid-feedbackPW02").text("password가 맞지 않습니다.");
+                    $("#password02").addClass("is-invalid")
                     } else {
-                     $("#userPW02").removeClass("is-invalid")
-   		             $("#userPW02").addClass("is-valid")
+                     $("#password02").removeClass("is-invalid")
+   		             $("#password02").addClass("is-valid")
                      $("#invalid-feedbackPW02").hide();
                     }
                 });
@@ -207,6 +227,41 @@
                   });
                   return false;
               });
+              //아이디 중복확인
+         $("#btnIDCheck").on("click", function(){
+    	  $.ajax({
+    		  url:"/member/idCheck",
+    				  data:{userId:$("#userId").val()},
+    				  //method:"get",
+    				  success : function(data){
+    						  if(data.count>0){
+    						  console.log(data.count);
+        						  alert("쓸 수 없는 아이디입니다.");
+        						  $("#userId").val("");
+        						  $("#userId").focus();
+        						  $("#userId").addClass("is-invalid")
+        					  }else{
+        						  if($("#userId").val()!=""){
+        						  const useID = confirm("쓸 수 있는 아이디입니다. 사용하시겠습니까?");
+        						  if(useID){
+        							$("#userId").removeClass("is-invalid")
+            		    	        $("#userId").addClass("is-valid")
+          					  		$("#userId").attr("readonly",false);
+          					  		$("#btnIDCheck").attr("disabled",true);
+          					  		isIDCheck = true;
+          					  		}
+        						  }else{
+        							  alert("공란입니다. 다시입력해주세여");
+        							  $("#userId").addClass("is-invalid")
+        							  $("#userId").focus();
+        						  }
+        					  }
+    				  },
+    				  complete : function(data){
+    				  }
+    	  });
+    	  return false;
+      });
 
 
 

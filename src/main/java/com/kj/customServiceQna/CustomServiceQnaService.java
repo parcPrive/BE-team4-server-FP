@@ -118,4 +118,14 @@ public class CustomServiceQnaService {
         }
         return true;
     }
+
+    public Page<CustomServiceQna> memberQnaList(Long id,int page) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "qnaDate"));
+        Page<CustomServiceQna> qnaList = customServiceQnaRepository.findByMemberId(id,pageable);
+        return qnaList;
+    }
+    public CustomServiceQna memberAnswerInfo(Long id){
+       CustomServiceQna answer = customServiceQnaRepository.findByParentId(id);
+       return  answer;
+    }
 }

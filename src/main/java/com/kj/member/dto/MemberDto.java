@@ -1,6 +1,7 @@
 package com.kj.member.dto;
 
 import com.kj.member.entity.Member;
+import com.kj.utils.Mobile;
 import com.kj.utils.Role;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -46,7 +47,7 @@ public class MemberDto {
                 .addressDetail(memberDto.getAddressDetail())
                 .postCode(memberDto.getPostCode())
                 .email(memberDto.getEmail())
-                //.mobile(memberDto.getMobile())
+                .mobile(Mobile.valueOf(memberDto.getMobile()))
                 .phone(memberDto.getPhone())
                 .profileImageUrl(memberDto.profileImageUrl)
                 .registerDate(memberDto.getRegisterDate())
@@ -85,7 +86,8 @@ public class MemberDto {
         memberDto.setAddressDetail(member.getAddressDetail());
         memberDto.setPostCode(member.getPostCode());
         memberDto.setEmail(member.getEmail());
-        //memberDto.setMobile(member.getMobile());
+        memberDto.setMobile(member.getMobile().getValue());
+        memberDto.setRole(member.getRole().getValue());
         memberDto.setPhone(member.getPhone());
         memberDto.setProfileImageUrl(member.getProfileImageUrl());
         memberDto.setRegisterDate(member.getRegisterDate());
