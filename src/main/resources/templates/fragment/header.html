@@ -49,7 +49,7 @@
                     </a>
                     <ul class="dropdown-menu text-small" style="">
                         <li><a class="dropdown-item" href="#">New project...</a></li>
-                        <li><a class="dropdown-item" href="#">문의 현황</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cs/qna/member}">문의 현황</a></li>
                         <li><a class="dropdown-item" th:href="@{/member/mypage/{id}(id=${#authentication.principal.loggedMember.id})}">나의 페이지</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item"  th:href="@{/member/logout}">로그 아웃</a></li>

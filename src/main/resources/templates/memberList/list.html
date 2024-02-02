@@ -56,11 +56,11 @@
                     <td >
                         <input class="levelId" type="hidden" name=" id" th:value="${item.id}">
                         <select class="btn btn-secondary level" name="level" >
-                            <option value="0" >일반</option>
-                            <option value="1" >실버</option>
-                            <option value="2">골드</option>
-                            <option value="3">플레티넘</option>
-                            <option value="4">다이아</option>
+                            <option value="0" th:selected="${item.levels} == '0'" selected>일반</option>
+                            <option value="1" th:selected="${item.levels} == '1'" selected>실버</option>
+                            <option value="2" th:selected="${item.levels} == '2'" selected>골드</option>
+                            <option value="3" th:selected="${item.levels} == '3'" selected>플레티넘</option>
+                            <option value="4" th:selected="${item.levels} == '4'" selected>다이아</option>
                         </select>
                     </td>
                     <!--<th:block th:if="${item.levels}==0"><td>일반</td></th:block>-->
@@ -72,6 +72,9 @@
                 </th:block>
                 </tbody>
             </table>
+        </form>
+        <div class="d-flex justify-content-between">
+            <div class="mt-1 me-3">
             <button class="btn btn-dark btnBlackAll" id="btnBlackAll">블랙</button>
             <select class="btn btn-secondary btnLevel" name="allLevel">
                 <option value="unlevel" selected>회원등급</option>
@@ -82,8 +85,28 @@
                 <option value="4">다이아</option>
             </select>
             <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
-
-        </form>
+            </div>
+            <div style="width: 50%">
+                <form class="d-flex justify-content-between" action="" th:action="@{/memberList/search}" method="get">
+                        <div class="col-4" th:with="category=${param.category}">
+                            <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                                <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                                <option value="userId"   th:selected="${#strings.equals(category,'userId')  ? true : false}">아이디</option>
+                                <option value="userName" th:selected="${#strings.equals(category,'userName')? true : false}">이름</option>
+                                <option value="nickName" th:selected="${#strings.equals(category,'nickName')? true : false}">닉네임</option>
+                                <option value="level"    th:selected="${#strings.equals(category,'level')   ? true : false}">등급</option>
+                            </select>
+                        </div>
+                        <div class="col-6 ms-2">
+                    <span class="keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+                        </div>
+                        <input type="hidden" name="search" value="true">
+                        <div class="col-2 ms-2"><button class="btn btn-primary">검색</button></div>
+                </form>
+            </div>
     </div>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-5">
@@ -126,28 +149,7 @@
         </ul>
     </nav>
 
-    <div class="container mt-5">
-        <form action="" th:action="@{/memberList/search}" method="get">
-            <div class="row">
-                <div class="col-4" th:with="category=${param.category}">
-                    <select class="form-select btnSearch" aria-label="Default select example" name="category">
-                        <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
-                        <option value="userId"   th:selected="${#strings.equals(category,'userId')  ? true : false}">아이디</option>
-                        <option value="userName" th:selected="${#strings.equals(category,'userName')? true : false}">이름</option>
-                        <option value="nickName" th:selected="${#strings.equals(category,'nickName')? true : false}">닉네임</option>
-                        <option value="level"    th:selected="${#strings.equals(category,'level')   ? true : false}">등급</option>
-                    </select>
-                </div>
-                <div class="col-6 ">
-                    <span class="keywordLevel">
-                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
-                            th:value="${param.keyword}">
-                        </span>
-                </div>
-                <input type="hidden" name="search" value="true">
-                <div class="col-2"><button class="btn btn-primary">검색</button></div>
-            </div>
-        </form>
+
         <script>
             // 검색 후 카테고리가 level이면 selcet를 유지
             if($(".btnSearch").val()=="level"){

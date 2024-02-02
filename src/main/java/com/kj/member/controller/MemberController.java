@@ -11,11 +11,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,13 +33,17 @@ public class MemberController {
 
     private int paginationSize=5;
     @GetMapping("/login")
-    public String login(Model model, @CookieValue(value = "cookieID", required = false)Cookie cookie){
+    public String login(Model model, @CookieValue(value = "cookieID", required = false)Cookie cookie,@RequestParam(value = "error", required = false) String error,
+                        @RequestParam(value = "exception", required = false) String exception
+                        ){
         model.addAttribute("loginDto",new LoginDto());
          if (cookie!=null){
             String userId = cookie.getValue();
             model.addAttribute("userId",userId);
             log.info("==={}",userId);
         }
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
         return "/member/login";
     }
     @PostMapping("/login")
@@ -59,19 +66,23 @@ public class MemberController {
 
     @PostMapping("/insert")
     public String joinProcess(@Valid @ModelAttribute JoinDto joinDto,
-                              BindingResult bindingResult , Model model){
+                              BindingResult bindingResult , Model model, RedirectAttributes redirectAttributes){
         if (bindingResult.hasErrors()){
             model.addAttribute("joinDto",joinDto);
             return "member/insert";
         }
         memberService.insertMember(joinDto);
-        return "/member/login";
+        ModalDto modalDto = ModalDto.builder()
+                .isState("success")
+                .msg("회원이 되었습니다. 축하합니다.")
+                .build();
+        redirectAttributes.addFlashAttribute("modalDto",modalDto);
+        return "redirect:/member/login";
     }
 
     @GetMapping("/mypage/{id}")
     public String mypage(@PathVariable Long id, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
         log.info("=={}",id);
-
         MemberDto memberInfo = memberService.findByMemberId(id,customUserDetails);
         log.info("=={}",memberInfo.getUserId());
         log.info("=={}",memberInfo.getProfileImageUrl());
@@ -85,16 +96,15 @@ public class MemberController {
         model.addAttribute("memberInfo",memberInfo);
         return "/member/update";
     }
+    @Transactional
     @PostMapping("/update")
     public String updateProcess(@ModelAttribute MemberDto memberDto, Model model,
                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
-
-        Member member = memberService.updateMember(memberDto);
-        MemberDto memberInfo = MemberDto.toDto(member);
+        log.info("=={}",memberDto.getId());
+        Member memberInfo = memberService.updateMember(memberDto);
         //계정 이름 변환
         customUserDetails.getLoggedMember().update(memberDto);
-        model.addAttribute("memberInfo",memberInfo);
-        return "/member/mypage";
+        return "redirect:/";
     }
 
     @GetMapping("/delete")
@@ -142,6 +152,15 @@ public class MemberController {
         boolean nickNameCheck = memberService.findByNickName(nickName);
         log.info("==={}",nickNameCheck);
         resultMap.put("nickNameCheck",nickNameCheck);
+        return resultMap;
+    }
+    @ResponseBody
+    @GetMapping("/idCheck")
+    public Map<String,Object> idCheck(String userId){
+        log.info("유저아이디",userId);
+        Map<String,Object> resultMap = new HashMap<>();
+        Integer count = memberService.findByUserId(userId);
+        resultMap.put("count",count);
         return resultMap;
     }
 }

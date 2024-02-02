@@ -152,4 +152,32 @@ public class CustomServiceQnaController {
         }
         return resultMap;
     }
+    @GetMapping("/member")
+    public String qnaMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page,
+                            @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        Page<CustomServiceQna> pagination = customServiceQnaService.memberQnaList(customUserDetails.getLoggedMember().getId(),page);
+        List<CustomServiceQna> qnaMemberList = pagination.getContent();
+
+        CustomServiceQna answer = customServiceQnaService.memberAnswerInfo(customUserDetails.getLoggedMember().getId());
+        int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
+        int end =  start + paginationSize;
+
+        model.addAttribute("start",start);
+        model.addAttribute("end",end);
+        model.addAttribute("pagination",pagination);
+        model.addAttribute("qnaMemberList",qnaMemberList);
+        model.addAttribute("answer",answer);
+        return "/member/qna";
+    }
+
+    @PostMapping("/api/member")
+    @ResponseBody
+    public Map<String,Object> answerMember(@RequestParam(value = "id") Long id){
+
+        Map<String,Object> resultMap = new HashMap<>();
+        CustomServiceQna answer = customServiceQnaService.memberAnswerInfo(id);
+        resultMap.put("answer",answer);
+        return resultMap;
+    }
+
 }

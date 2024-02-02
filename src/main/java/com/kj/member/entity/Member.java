@@ -70,7 +70,12 @@ public class Member {
 
     public Member update(MemberDto memberDto){
         this.email = memberDto.getEmail();
-        this.userName = memberDto.getUserName();
+        this.nickName = memberDto.getNickName();
+        this.address = memberDto.getAddress();
+        this.addressDetail = memberDto.getAddressDetail();
+        this.postCode = memberDto.getPostCode();
+        this.phone = memberDto.getPhone();
+        this.mobile = Mobile.valueOf(memberDto.getMobile());
         return this;
     }
 

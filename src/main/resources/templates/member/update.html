@@ -11,7 +11,6 @@
         <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
             <form action="" th:action="@{/member/update}" method="post">
         </th:block>
-
             <table class="table">
                 <tbody>
                 <tr>
@@ -24,13 +23,60 @@
                 <tr>
                     <th scope="row">USER NAME</th>
                     <td>
-                        <input class="form-control" th:type="text" name="userName" th:value="${memberInfo.userName}">
+                        <input class="form-control" th:type="text" name="userName" th:value="${memberInfo.userName}" readonly>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">EMAIL</th>
                     <td>
                         <input class="form-control" th:type="text" name="email" th:value="${memberInfo.email}">
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">NICK NAME</th>
+                    <td>
+                        <input class="form-control" th:type="text" name="nickName" th:value="${memberInfo.nickName}">
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">POSTCODE</th>
+                    <td>
+                        <input class="form-control" th:type="text" id="postCode" name="postCode" th:value="${memberInfo.postCode}">
+                        <div>
+                            <button class="btn btn-primary mt-3" id="btnPostcode">우편번호 확인</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">ADDRESS</th>
+                    <td>
+                        <input class="form-control" th:type="text" id="address" name="address" th:value="${memberInfo.address}">
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">ADDRESS DETAIL</th>
+                    <td>
+                        <input class="form-control" th:type="text" id="addressDetail" name="addressDetail" th:value="${memberInfo.addressDetail}">
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">MOBILE</th>
+                    <td>
+                        <select id="mobile" class="form-control" name="mobile" >
+                            <option id="mobile" th:selected="${memberInfo.mobile} == 'LGU+'" value="LG">LGU+</option>
+                            <option id="mobile" th:selected="${memberInfo.mobile} == 'SKT'" value="SKT">SKT</option>
+                            <option id="mobile" th:selected="${memberInfo.mobile} == 'KT'" value="KT" >KT</option>
+                            <option id="mobile" th:selected="${memberInfo.mobile} == '알뜰폰 LG'" value="ALTTEUL_LG" >알뜰폰 LG</option>
+                            <option id="mobile" th:selected="${memberInfo.mobile} == '알뜰폰 SKT'" value="ALTTEUL_SKT" >알뜰폰 SKT</option>
+                            <option id="mobile" th:selected="${memberInfo.mobile} == '알뜰폰 KT'"value="ALTTEUL_KT" >알뜰폰 KT</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">PHONE</th>
+                    <td>
+                        <input class="form-control" th:type="text" name="phone" th:value="${memberInfo.phone}">
                     </td>
                 </tr>
                 </tbody>
@@ -41,5 +87,39 @@
             </div>
 
         </form>
+        <script>
+            // 우편주소
+              function postcode() {
+                new daum.Postcode({
+                  oncomplete: function (data) {
+
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    const roadAddr = data.roadAddress; // 도로명 주소 변수
+                    const extraRoadAddr = ""; // 참고 항목 변수
+
+
+                    document.querySelector("#postCode").value = data.zonecode;
+                    document.querySelector("#address").value = roadAddr;
+
+                  },
+                }).open();
+              }
+
+              $("#btnPostcode").on("click", function () {
+                postcode();
+                return false;
+              });
+              $("#postCode").on("click",function(){
+                  $("#postCode").removeClass("is-invalid")
+                  $("#postCode").addClass("is-valid")
+                  $("#invalid-feedbackPost").hide();
+                  postcode();
+                  return false;
+              })
+               $("#address").on("click",function(){
+                  postcode();
+                  return false;
+              })
+        </script>
     </div>
 </div>
