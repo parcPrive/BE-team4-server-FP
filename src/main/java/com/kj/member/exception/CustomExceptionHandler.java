@@ -80,12 +80,13 @@ public class CustomExceptionHandler {
         model.addAttribute("exception",response.getErrorMessage());
         return "/member/login";
     }
-    @ExceptionHandler(RuntimeException.class)
-    public String anonymousException(RuntimeException e) {
-        ErrorDto response = ErrorDto.builder()
-                .errorCode(ErrorCode.INTERNAL_SERVER_ERROR)
-                .errorMessage(ErrorCode.INTERNAL_SERVER_ERROR.getMessage())
-                .build();
-        return "/errors/error";
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public String anonymousException(RuntimeException e,Model model) {
+//        ErrorDto response = ErrorDto.builder()
+//                .errorCode(ErrorCode.INTERNAL_SERVER_ERROR)
+//                .errorMessage(ErrorCode.INTERNAL_SERVER_ERROR.getMessage())
+//                .build();
+//        model.addAttribute("error",response);
+//        return "/error/error";
+//    }
 }

@@ -13,6 +13,8 @@ import com.kj.products.product.dto.*;
 import com.kj.products.productCart.ProductCartService;
 import com.kj.products.productCart.dto.ProductCartInsertDto;
 import com.kj.products.productCart.dto.ProductCartListDto;
+import com.kj.products.productElasticSearch.ProductSearchService;
+import com.kj.products.productElasticSearch.dto.ESProductReturnDto;
 import com.kj.products.productElasticSearch.entity.ProductDocument;
 import com.kj.products.productOder.ProductOderservice;
 import com.kj.products.productOder.dto.ProductCartOrderDto;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +37,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
+
+import static org.springframework.util.StringUtils.hasText;
 
 
 @Controller
@@ -45,6 +50,7 @@ public class ProductController {
     private final ProductCategoryService productCategoryService;
     private final ProductCartService productCartService;
     private final ProductOderservice productOderservice;
+    private final ProductSearchService productSearchService;
 
     private final ClientConf client;
 // ================상품 등록 관련========================
@@ -119,13 +125,20 @@ public class ProductController {
             @PathVariable int page,
             @ModelAttribute ProductSearchCondotion productSearchCondotion,
             Model model
-    ){
+    ) throws IOException {
+//        StringUtils.isEmpty();
         log.info("page ==>>> {}", page);
         log.info("productSeach ==>> {}", productSearchCondotion);
+        if(hasText(productSearchCondotion.getCategory())){ // 검색 시도
+            log.info("ㅎㅎㅎ");
+            if(productSearchCondotion.getCategory().equals("all") && productSearchCondotion.getCategory() != null){
+                List<ESProductReturnDto> searchResult = productSearchService.elasticTest(productSearchCondotion.getSearchWord());
+                log.info("엘라스틱 결과 ===>> {}", searchResult);
+            }
+        }
         PageImpl<ProductListDto> productList =  productService.findListProductPage(page, productSearchCondotion);
         int productListPage = productList.getTotalPages();
         List<ProductListDto> products = productList.getContent();
-
 
         model.addAttribute("products", productList);
         model.addAttribute("productListPage", productListPage);
@@ -247,33 +260,6 @@ public class ProductController {
         return "/product/insert";
     }
 
-//    @GetMapping("/search1")
-//    @ResponseBody
-//    public String search() {
-//        return productElasticSearchClient.getSearchData();
-//    }
-//
-//    @GetMapping("/search2")
-//    @ResponseBody
-//    public String search2(){
-//        log.info("여디!!!");
-//        String aaa = """
-//                {
-//                    "query":{
-//                        "match": {
-//                            "product_name": "123"
-//                        }
-//                    }
-//                }
-//                """;
-////        SearchResponse<ProductDocument> response =  productElasticSearchClient.getSearchName(aaa);
-//
-//        String response =  productElasticSearchClient.getSearchName(aaa);
-//        log.info("검색결과 ====>>> {}", productElasticSearchClient.getSearchName(aaa));
-//
-//        return response;
-//
-//    }
 
     @GetMapping("/search3")
     @ResponseBody
@@ -294,17 +280,17 @@ public class ProductController {
 //                .withJson(input));
 //        IndexResponse response = client.client.index(requerst);
 //        log.info("여기로 ?? ===>>> {}", response.index());
-        int aa = 123;
+        String aa = "반";
 
         SearchResponse<ProductDocument> search = client.client.search(s -> s
-                        .index("myproduct05")
+                        .index("myproduct09")
                         .query(q -> q
                                 .term(t -> t
                                         .field("product_name")
                                         .value(v -> v.stringValue(String.valueOf(aa)))
-
                                 )),
                 ProductDocument.class);
+//        client.client.
         List<ProductDocument> result = new ArrayList<>();
         Long total = search.hits().total().value(); // 총갯수
         List<Hit<ProductDocument>> hits =  search.hits().hits();
