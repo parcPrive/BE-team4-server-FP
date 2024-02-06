@@ -36,5 +36,9 @@ public class ProductDocument {
 //    @Field(name ="createdat", type = FieldType.Date)
     private String createdat;
 
+    private String main_product_category_name;
+
+    private String sub_product_category_name;
+
 
 }

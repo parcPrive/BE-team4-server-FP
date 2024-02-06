@@ -208,10 +208,8 @@ public class ProductService {
         Product findProduct = productRepository.findByProductId(no).orElseThrow( () -> new RuntimeException("asd"));
         ProductUpdateDto result = new ProductUpdateDto(findProduct);
             log.info("productUpdateDto -=======>>>>> {}", result);
-
         return result;
     }
-
 
 
     @Transactional
@@ -363,22 +361,34 @@ public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondo
         Optional<ProductCategory> findProductCategory = productCategoryRepository.findById(productInputDto.getSubProductCategoryId());
         if(findProductCategory.isPresent()) {
             for(int i = 0; i < 100; i++){
-                productInputDto.setProductName("반팔" + i);
-                productInputDto.setProductPrice(123 + i);
-                productInputDto.setProductDetailImage("<p>123<img src=\"https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg\" width=\"150\" height=\"150\"></p>");
-                productInputDto.setProductDetailImageBucket("123");
-                Product insertProduct = new Product(productInputDto, findProductCategory.get());
-                Product result = productRepository.save(insertProduct);
-                insertProductSize(productInputDto,result);
+                if(i % 2 == 0){
+                    productInputDto.setProductName("반팔" + i);
+                    productInputDto.setProductPrice(123 + i);
+                    productInputDto.setProductDetailImage("<p>123<img src=\"https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg\" width=\"150\" height=\"150\"></p>");
+                    productInputDto.setProductDetailImageBucket("123");
+                    Product insertProduct = new Product(productInputDto, findProductCategory.get());
+                    Product result = productRepository.save(insertProduct);
+                    insertProductSize(productInputDto,result);
+                    insertProductTag(productInputDto.getProductTag(),result);
+                    List<ProductImage> insertProductImages = new ArrayList<>();
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 1, "asdasd", result));
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 0, "asdasd", result));
+                    productImageRepository.saveAll(insertProductImages);
+                }else{
+                    productInputDto.setProductName("바지" + i);
+                    productInputDto.setProductPrice(123 + i);
+                    productInputDto.setProductDetailImage("<p>123<img src=\"https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg\" width=\"150\" height=\"150\"></p>");
+                    productInputDto.setProductDetailImageBucket("123");
+                    Product insertProduct = new Product(productInputDto, findProductCategory.get());
+                    Product result = productRepository.save(insertProduct);
+                    insertProductSize(productInputDto,result);
+                    insertProductTag(productInputDto.getProductTag(),result);
+                    List<ProductImage> insertProductImages = new ArrayList<>();
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 1, "asdasd", result));
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 0, "asdasd", result));
+                    productImageRepository.saveAll(insertProductImages);
 
-                List<ProductImage> insertProductImages = new ArrayList<>();
-                insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 1, "asdasd", result));
-                insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 0, "asdasd", result));
-
-                productImageRepository.saveAll(insertProductImages);
-
-                insertProductTag(productInputDto.getProductTag(),result);
-
+                }
             }
         }
     }
