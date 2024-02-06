@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class JoinDto {
     private Long id;
     @NotBlank(message = "비어있으면 안됩니다.")
+    @Pattern(regexp = "^[a-z][a-z0-9_.]{4,19}$",message = "형식에 맞지 않습니다.")
     private String userId;
     @NotBlank(message = "비어있으면 안됩니다.")
     private String password;
@@ -28,8 +29,11 @@ public class JoinDto {
     @NotBlank(message = "비어있으면 안됩니다.")
     private String nickName;
     private int gender;
+    @NotBlank(message = "비어있으면 안됩니다.")
     private String address;
+    @NotBlank(message = "비어있으면 안됩니다.")
     private String addressDetail;
+    @NotBlank(message = "비어있으면 안됩니다.")
     private String postCode;
     @NotBlank(message = "비어있으면 안됩니다.")
     @Email
@@ -37,7 +41,7 @@ public class JoinDto {
     @NotBlank(message = "비어있으면 안됩니다.")
     private String mobile;
     @NotBlank(message = "빈값이면 안됩니다.")
-    @Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$",message = "ㅇㅇㅇ")
+    @Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$",message = "형식에 맞지 않습니다.")
     private String phone;
     private LocalDateTime registerDate;
 

@@ -55,7 +55,7 @@ public class MemberService {
     @Transactional
     public void login(String userId, String password, HttpServletResponse response, String check , LogDto logDto){
         //아이디 체크
-        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
+        Optional<Member> optionalMember = memberRepository.findByUserIdNotDelete(userId);
         if (optionalMember.isEmpty()){
             log.warn("회원이 존재하지 않음");
             throw new UsernameNotFoundException("회원이 존재하지 않음");
@@ -67,7 +67,7 @@ public class MemberService {
         // PW 체크하고
         if (!bCryptPasswordEncoder.matches(password,member.getPassword())){
             log.warn("비밀번호가 일치하지 않습니다.");
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new UsernameNotFoundException("회원이 존재하지 않음");
         }
         /*토큰을 쿠키로 발급 및 응답에 추가*/
         //성공시 토큰 생성
@@ -207,7 +207,7 @@ public class MemberService {
 
 
 
-    public boolean findByNickName(String nickName) {
+    public Boolean findByNickName(String nickName) {
         Optional<Member> findMember = memberRepository.findByNickName(nickName);
         if (findMember.isPresent()){
             return true;

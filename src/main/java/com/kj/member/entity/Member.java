@@ -9,13 +9,11 @@ import com.kj.member.dto.MemberDto;
 import com.kj.member.dto.UpdateMemberDto;
 
 import com.kj.notice.entity.Notice;
+import com.kj.products.productPayment.entity.ProductPayment;
 import com.kj.utils.Mobile;
 import com.kj.utils.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -35,9 +33,11 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String userId;
     private String password;
     private String userName;
+    @Column(unique = true)
     private String nickName;
     private int gender;
     private String address;
@@ -66,6 +66,8 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType .REMOVE)
     @JsonIgnore
     List<DeleteMember> deleteMemberList = new ArrayList<>();
+    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+    List<ProductPayment> paymentList = new ArrayList<>();
 
 
     public Member update(MemberDto memberDto){

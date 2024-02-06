@@ -24,10 +24,12 @@
                     <span class="FaqCategory">
                     <select class="form-control" id="smallFaqCategory" name="smallFaqCategory">
                         <option value="">소분류</option>
-
                     </select>
                     </span>
                 </div>
+                <span th:if="${error}">
+                    <p id="valid" class="alert alert-danger" th:text="${exception}"></p>
+                </span>
             </div>
             <div class="d-flex justify-content-center mt-5">
                 <button class="btn btn-primary" id="btnCategory">저장</button>

@@ -154,7 +154,7 @@
                             </div>
                         </div>
                     </div>
-                    <a th:href="@{/cs/qna/insert}">원래 글쓰기 </a>
+                    <!--<a th:href="@{/cs/qna/insert}">원래 글쓰기 </a>-->
                     <!--th:href="@{/cs/qna/insert}"-->
                     <button  data-bs-toggle="modal" data-bs-target="#exampleModalScrollable" class="btn btn-primary">글쓰기</button>
                     <th:block sec:authorize="hasRole('ROLE_ADMIN')">
@@ -227,7 +227,9 @@
         </div>
 
     </div>
+
     <script th:inline="javascript">
+
         // 검색 후 카테고리가 level이면 selcet를 유지
            if($(".btnSearch").val()=="qnaStatus"){
            $(".keyword").attr("type","hidden");
