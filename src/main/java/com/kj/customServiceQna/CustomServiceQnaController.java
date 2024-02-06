@@ -29,18 +29,20 @@ public class CustomServiceQnaController {
     private final CustomServiceQnaService customServiceQnaService;
     private int paginationSize=10;
     @GetMapping("/check/{id}")
-    public String checkQna(@PathVariable Long id, Model model){
+    public String checkQna(@PathVariable Long id, Model model,@RequestParam(value = "error", required = false) String error,
+                           @RequestParam(value = "exception", required = false) String exception){
         model.addAttribute("id",id);
+        model.addAttribute("error",error);
+        model.addAttribute("exception",exception);
         return "/qna/checkQna";
     }
     @PostMapping("/check")
     public String checkQna(@RequestParam(required = false) Long id, @RequestParam String qnaPassword, Model model){
-        Boolean result = customServiceQnaService.qnaLogin(id,qnaPassword);
-        if(result){
+        Boolean result= customServiceQnaService.qnaLogin(id,qnaPassword);
+        if(result) {
             return "redirect:/cs/qna/view/"+id;
-        }else {
-            return "redirect:/cs/qna/check/"+id;
         }
+       return null;
     }
     @GetMapping("/insert")
     public String insertQna(){
@@ -60,7 +62,9 @@ public class CustomServiceQnaController {
     }
 
     @GetMapping("/list")
-    public String qnaList(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page){
+    public String qnaList(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page,
+            @RequestParam(value = "error", required = false) String error,
+                          @RequestParam(value = "exception", required = false) String exception){
         Page<CustomServiceQna> pagination = customServiceQnaService.qnaList(page);
         List<CustomServiceQna> qnaList = pagination.getContent();
         int start = (int)(Math.floor((double) pagination.getNumber() / paginationSize)*paginationSize);
@@ -70,6 +74,8 @@ public class CustomServiceQnaController {
         model.addAttribute("end",end);
         model.addAttribute("pagination",pagination);
         model.addAttribute("qnaList",qnaList);
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
         return "/qna/qnaList";
     }
     @GetMapping("/update")

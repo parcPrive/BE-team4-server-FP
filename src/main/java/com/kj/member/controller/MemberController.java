@@ -59,8 +59,11 @@ public class MemberController {
     }
 
     @GetMapping("/insert")
-    public String join(Model model){
+    public String join(Model model,@RequestParam(value = "error", required = false) String error,
+                       @RequestParam(value = "exception", required = false) String exception){
         model.addAttribute("joinDto",new JoinDto());
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
         return "/member/insert";
     }
 
@@ -107,23 +110,10 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/delete")
+   /* @GetMapping("/delete")
     public String delete(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         return "/member/delete";
-    }
-
-    /*@PostMapping("/delete")
-    public String deleteProcess(@RequestParam String password, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        log.info("=={}",customUserDetails.getLoggedMember().getId());
-        log.info("=={}",password);
-       boolean result = memberService.deleteMember(customUserDetails.getLoggedMember().getId(), password);
-       if (result) {
-            return "redirect:/member/logout";
-        } else {
-            //model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다.");
-            return "/member/join";
-        }
     }*/
 
     @PostMapping("/delete")
@@ -147,8 +137,8 @@ public class MemberController {
 
     @ResponseBody
     @GetMapping("/nickNameCheck")
-    public Map<String,Boolean> nickNameCheck(String nickName){
-        Map<String,Boolean> resultMap = new HashMap<>();
+    public Map<String,Object> nickNameCheck(String nickName){
+        Map<String,Object> resultMap = new HashMap<>();
         boolean nickNameCheck = memberService.findByNickName(nickName);
         log.info("==={}",nickNameCheck);
         resultMap.put("nickNameCheck",nickNameCheck);

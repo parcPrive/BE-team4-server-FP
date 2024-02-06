@@ -57,14 +57,13 @@ public class CustomServiceQnaService {
     }
 
 
-    public boolean qnaLogin(Long id, String qnaPassword) {
+    public Boolean qnaLogin(Long id, String qnaPassword) {
         CustomServiceQna qna = customServiceQnaRepository.findById(id)
                 .orElseThrow(()->new RuntimeException("존재x"));
-       if(bCryptPasswordEncoder.matches(qnaPassword,qna.getQnaPassword())){
-
-           return true;
+       if(!bCryptPasswordEncoder.matches(qnaPassword,qna.getQnaPassword())){
+           throw new IllegalArgumentException(Long.toString(id));
        }else {
-           return false;
+           return true;
        }
     }
 

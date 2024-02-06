@@ -51,7 +51,7 @@
                     <td th:text="${item.userName}" ></td>
                     <td th:text="${item.nickName}"></td>
                     <td th:text="${#temporals.format(item.registerDate,'yyyy-MM-dd HH:mm')}"></td>
-                    <td>구매한 금액</td>
+                    <td >구매한 금액</td> <!--th:text="${item.paymentList.productTotalPrice}"-->
                     <td th:text="${item.role}">권한</td>
                     <td >
                         <input class="levelId" type="hidden" name=" id" th:value="${item.id}">
