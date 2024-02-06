@@ -81,6 +81,7 @@ public class CustomExceptionHandler {
         model.addAttribute("exception",response.getErrorMessage());
         return "/member/login";
     }
+
     @ExceptionHandler(FaqCategoryException.class)
     public String  duplication(FaqCategoryException e, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         ErrorDto response = ErrorDto.builder()
@@ -100,4 +101,15 @@ public class CustomExceptionHandler {
         model.addAttribute("error",response);
         return "/error/error";
     }*/
+
+//    @ExceptionHandler(RuntimeException.class)
+//    public String anonymousException(RuntimeException e,Model model) {
+//        ErrorDto response = ErrorDto.builder()
+//                .errorCode(ErrorCode.INTERNAL_SERVER_ERROR)
+//                .errorMessage(ErrorCode.INTERNAL_SERVER_ERROR.getMessage())
+//                .build();
+//        model.addAttribute("error",response);
+//        return "/error/error";
+//    }
+
 }
