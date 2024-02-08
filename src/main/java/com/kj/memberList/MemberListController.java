@@ -6,6 +6,7 @@ import com.kj.log.LogService;
 import com.kj.log.entity.Log;
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
+import com.kj.products.productPayment.ProductPaymentService;
 import com.kj.utils.BigFaqCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +28,14 @@ public class MemberListController {
     private final MemberListService memberListService;
     private final DeleteMemberService deleteMemberService;
     private final LogService logService;
+    private final ProductPaymentService productPaymentService;
     private int paginationSize=5;
 
     @GetMapping("/list")
     public String listMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
         Page<Member> pagination = memberListService.findAllPageMember(page);
         List<Member> memberSize = memberListService.findAllPageMember();
+        memberListService.pay();
         List<Log> logList = logService.findByLog();
         List<Member> registerDateList = memberListService.findByRegisterDate();
         List<Member> memberList = pagination.getContent();

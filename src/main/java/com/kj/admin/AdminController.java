@@ -13,34 +13,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/admin")
 @Slf4j
 @RequiredArgsConstructor
 public class AdminController {
     private final MemberService memberService;
 
-    @GetMapping("/admin")
-    @ResponseBody
-    public String test(){
-        return "admin";
-    }
-    @GetMapping("/admin/mypage/{id}")
+    @GetMapping("/mypage/{id}")
     public String mypage(@PathVariable Long id, Model model){
         log.info("=={}",id);
-
         MemberDto memberInfo = memberService.findByAdminMemberId(id);
         log.info("=={}",memberInfo.getUserId());
         log.info("=={}",memberInfo.getProfileImageUrl());
         model.addAttribute("memberInfo",memberInfo);
         return "/member/mypage";
     }
-    @GetMapping("/admin/update/{id}")
+    @GetMapping("/update/{id}")
     public String update(@PathVariable Long id, Model model){
         log.info("=={}","ㅇㅇㅇ");
         MemberDto memberInfo = memberService.findByAdminMemberId(id);
         model.addAttribute("memberInfo",memberInfo);
         return "/member/update";
     }
-    @PostMapping("/admin/update")
+    @PostMapping("/update")
     public String updateProcess(@ModelAttribute MemberDto memberDto, Model model,
                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
 

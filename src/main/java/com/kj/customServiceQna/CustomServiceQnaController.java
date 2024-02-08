@@ -36,14 +36,27 @@ public class CustomServiceQnaController {
         model.addAttribute("exception",exception);
         return "/qna/checkQna";
     }
-    @PostMapping("/check")
+    /*@PostMapping("/check")
     public String checkQna(@RequestParam(required = false) Long id, @RequestParam String qnaPassword, Model model){
         Boolean result= customServiceQnaService.qnaLogin(id,qnaPassword);
         if(result) {
             return "redirect:/cs/qna/view/"+id;
         }
        return null;
+    }*/
+    @PostMapping("/check")
+    @ResponseBody
+    public Map<String, Object> checkQnaAjax(Long id, String qnaPassword, Model model){
+        Boolean result= customServiceQnaService.qnaLogin(id,qnaPassword);
+        log.info("id==",id);
+        log.info("qnaPassword",qnaPassword);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("isCheck",result);
+        resultMap.put("id",id);
+        return resultMap;
     }
+
+
     @GetMapping("/insert")
     public String insertQna(){
         return "/qna/insertQna";

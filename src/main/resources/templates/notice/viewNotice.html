@@ -97,8 +97,8 @@
                     <h2>댓글 목록</h2>
                     <th:block th:each="item,status:${commentList}">
                         <th:block th:if="${item.depth}== '0'"><ul class="list-group depth-list"></th:block>
-                        <th:block th:if="${item.depth}== '1'"><ul class="list-group ms-3 depth-list depth1"></th:block>
-                        <th:block th:if="${item.depth}== '2'"><ul class="list-group ms-4 depth-list depth2"></th:block>
+                        <th:block th:if="${item.depth}== '1'"><ul class="list-group ms-2 depth-list depth1"></th:block>
+                        <th:block th:if="${item.depth}== '2'"><ul class="list-group ms-3 depth-list depth2"></th:block>
                         <th:block th:if="${item.depth}== '3'"><ul class="list-group ms-4 depth-list depth3"></th:block>
                         <th:block th:if="${item.depth}== '4'"><ul class="list-group ms-5 depth-list depth4"></th:block>
                         <li class="list-group-item">
@@ -225,6 +225,7 @@
                 console.log(commentId);
                 let sonHtml="";
                 const commentList = $(this).parent().parent().parent().find(".son-list")
+                console.log(commentList);
                 depth += 1;
                 $.ajax({
                     url :"/cs/comment/insertReply",
@@ -239,6 +240,8 @@
                         console.log(response);
                         let date = new Date
                             if(response.insert == "ok"){
+                             alert("댓글등록");
+                             location.reload();
                             function getFullYmdStr(){
                                 //년월일시분초 문자열 생성
                                 var d = new Date();
@@ -260,11 +263,8 @@
                             </div>
                                 </li>
                                 `
-
-
                                 commentList.append(sonHtml);
                             }
-                            console.log("하이")
                         },
                        fail:function(data){
                        }
