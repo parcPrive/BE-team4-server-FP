@@ -1,5 +1,9 @@
 package com.kj.products.productElasticSearch;
 
+import co.elastic.clients.elasticsearch._types.FieldSort;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
@@ -20,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -52,25 +57,46 @@ public class ProductSearchService {
 //
 //    }
 
-    public List<ESProductReturnDto> elasticTest(String searchWord) throws IOException, java.io.IOException {
+    public Map<String, Object> elasticTest(String searchWord, int page) throws IOException, java.io.IOException {
         SearchResponse<ProductDocument> search = client.client.search(s -> s
                 .index("myproduct09")
+                        .sort(SortOptions.of(builder -> {
+                            FieldSort fieldSort = new FieldSort.Builder().field("product_id").order(SortOrder.Desc).build();
+                            return builder.field(fieldSort);
+                        }))
                 .query(q -> q
                         .term(t -> t
                                 .field("product_name")
                                 .value(v -> v.stringValue(String.valueOf(searchWord))))
-                ),ProductDocument.class);
+                )
+                        .from((page-1)*12)
+                        .size(12)
+                ,ProductDocument.class);
         List<ESProductReturnDto> productList = new ArrayList<>();
         List<Hit<ProductDocument>> elaResult = search.hits().hits();
         for(Hit<ProductDocument> hit : elaResult){
             productList.add(new ESProductReturnDto(hit.source()));
         }
-//        long l = Mat   search.hits().total().value() / 12;
+        int toTalPage = (int) Math.ceil((double)search.hits().total().value() / 12);
+
         Map<String, Object> result = new HashMap<>();
         result.put("productList", productList);
-//        result.put()
+        result.put("page", toTalPage);
 
-        return productList;
+        return result;
+    }
+
+    public void productListMain(int page) throws java.io.IOException {
+        SearchResponse<ProductDocument> search = client.client.search(s -> s
+                .query(q -> q
+                        .matchAll(new MatchAllQuery.Builder().build())
+                )
+                        .from((page-1) * 12)
+                        .size(12)
+        ,ProductDocument.class);
+        List<Hit<ProductDocument>> elaSearch = search.hits().hits();
+
+
     }
 
 
