@@ -129,19 +129,25 @@ public class ProductController {
 //        StringUtils.isEmpty();
         log.info("page ==>>> {}", page);
         log.info("productSeach ==>> {}", productSearchCondotion);
-        if(hasText(productSearchCondotion.getCategory())){ // 검색 시도
-            log.info("ㅎㅎㅎ");
-            if(productSearchCondotion.getCategory().equals("all") && productSearchCondotion.getCategory() != null){
-                List<ESProductReturnDto> searchResult = productSearchService.elasticTest(productSearchCondotion.getSearchWord());
-                log.info("엘라스틱 결과 ===>> {}", searchResult);
+        if(hasText(productSearchCondotion.getCategory())) { // 검색 시도
+            if (productSearchCondotion.getCategory().equals("all")) {
+                Map<String, Object> searchResult = productSearchService.elasticTest(productSearchCondotion.getSearchWord(), page);
+                log.info("엘라스틱 결과 ===>> {}", searchResult.get("productList"));
+                log.info("엘라스틱 결과 ===>> {}", searchResult.get("page"));
+                model.addAttribute("products", searchResult.get("productList"));
+                model.addAttribute("page", searchResult.get("page"));
+                return "/product/eslist";
+
             }
         }
-        PageImpl<ProductListDto> productList =  productService.findListProductPage(page, productSearchCondotion);
-        int productListPage = productList.getTotalPages();
-        List<ProductListDto> products = productList.getContent();
 
-        model.addAttribute("products", productList);
-        model.addAttribute("productListPage", productListPage);
+
+            PageImpl<ProductListDto> productList =  productService.findListProductPage(page, productSearchCondotion);
+            int productListPage = productList.getTotalPages();
+
+            model.addAttribute("products", productList);
+            model.addAttribute("productListPage", productListPage);
+
         return "/product/list";
     }
 
