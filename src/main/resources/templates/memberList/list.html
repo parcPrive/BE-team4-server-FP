@@ -51,7 +51,14 @@
                     <td th:text="${item.userName}" ></td>
                     <td th:text="${item.nickName}"></td>
                     <td th:text="${#temporals.format(item.registerDate,'yyyy-MM-dd HH:mm')}"></td>
-                    <td >구매한 금액</td> <!--th:text="${item.paymentList.productTotalPrice}"-->
+                    <th:block th:if="${item.paymentList.size()} == 0">
+                        <td>0</td>
+                    </th:block>
+                    <th:block th:if="${item.paymentList.size()} != 0">
+                        <td th:text="${#aggregates.sum(item.paymentList.?[status=='paid'].![productTotalPrice])
+                         - #aggregates.sum(item.paymentList.?[status=='cancelled'].![productTotalPrice])}" >구매한 금액</td>
+                    <!--<td th:text="${item.paymentList.productTotalPrice}" >구매한 금액</td>--> <!--th:text="${item.paymentList.productTotalPrice}"-->
+                    </th:block>
                     <td th:text="${item.role}">권한</td>
                     <td >
                         <input class="levelId" type="hidden" name=" id" th:value="${item.id}">

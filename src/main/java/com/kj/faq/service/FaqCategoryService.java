@@ -5,6 +5,7 @@ import com.kj.customServiceQna.entity.CustomServiceQna;
 import com.kj.faq.dto.FaqCategoryDto;
 import com.kj.faq.entity.FaqCategory;
 import com.kj.faq.repository.FaqCategoryRepository;
+import com.kj.member.dto.ModalDto;
 import com.kj.member.exception.FaqCategoryException;
 import com.kj.utils.BigFaqCategory;
 import com.kj.utils.SmallFaqCategory;
@@ -20,12 +21,16 @@ public class FaqCategoryService {
     private  final FaqCategoryRepository faqCategoryRepository;
 
     public void insertCategory(FaqCategoryDto faqCategoryDto) {
+        if (faqCategoryDto.getSmallFaqCategory()=="" || faqCategoryDto.getBigFaqCategory()==""){
+            throw  new FaqCategoryException(ErrorCode. INVALID_REQUEST_CATEGORY);
+        }else {
         Optional<FaqCategory> checkFaqCategory = faqCategoryRepository.findBySmallFaqCategory(SmallFaqCategory.valueOf(faqCategoryDto.getSmallFaqCategory()));
-        if(checkFaqCategory.isPresent()){
-            throw new FaqCategoryException(ErrorCode.DUPLICATE_MEMBER);
-        }
+        if(!checkFaqCategory.isPresent()){
         FaqCategory insertCategory = FaqCategoryDto.toEntity(faqCategoryDto);
         faqCategoryRepository.save(insertCategory);
+        }
+        throw  new FaqCategoryException(ErrorCode.DUPLICATE_CATEGORY);
+        }
     }
 
 

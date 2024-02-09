@@ -58,7 +58,7 @@
                                 </th:block>
                                 <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
                                     <th:block th:if="${item.qnaSecret} == 1">
-                                        <a href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
+                                        <a class="check" th:data-no="${item.id}" href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
                                            th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
                                     </th:block>
                                     <th:block th:if="${item.qnaSecret} != 1">
@@ -75,7 +75,7 @@
                                 </th:block>
                                 <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
                                     <th:block th:if="${item.qnaSecret} == 1">
-                                        <a href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
+                                        <a class="check" th:data-no="${item.id}"  href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
                                            th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
                                     </th:block>
                                     <th:block th:if="${item.qnaSecret} != 1">
@@ -225,11 +225,68 @@
                 </ul>
             </nav>
         </div>
-
+    </div>
+    <!--모달-->
+    <div class="modal fade" id="qnaStaticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLiveLabel">게시글 비밀번호 확인</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="/cs/qna/check" >
+                    <div class="modal-body">
+                        <div class="mb-3 ">
+                            <h3  class="text-center">비밀번호를 입력해주세요</h3>
+                            <input type="hidden" class="form-control" placeholder="id" id="id"
+                                   name="qnaId"  readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">password</label>
+                            <input type="password" class="form-control" placeholder="password" id="password"
+                                   name="checkPassword">
+                        </div>
+                        <div class="invalid-feedback">
+                            <p class="alert alert-danger" >패스워드 확인해 주세요.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" id="btnCheck">확인</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script th:inline="javascript">
-
+            $(".check").on("click",function(){
+                let qnaId = $(this).data("no");
+                console.log(qnaId);
+                $("#id").val(qnaId);
+                const qnaModal = new bootstrap.Modal("#qnaStaticBackdropLive");
+                qnaModal.show();
+                return false;
+            })
+            $("#btnCheck").on("click",function(e){
+                $.ajax({
+                    url:"/cs/qna/check",
+                    method:"post",
+                    data: {
+                        id:$("input[name='qnaId']").val(),
+                        qnaPassword:$("input[name='checkPassword']").val()
+                    },
+                    success:function(data){
+                    console.log(data.isCheck);
+                        if(data.isCheck) {
+                            location.href="/cs/qna/view/"+data.id;
+                        } else {
+                            $(".invalid-feedback").show();
+                        }
+                    }
+                });
+                return false;
+            })
         // 검색 후 카테고리가 level이면 selcet를 유지
            if($(".btnSearch").val()=="qnaStatus"){
            $(".keyword").attr("type","hidden");
@@ -309,17 +366,6 @@
                      $(".check").prop("checked",false);
                     }
                 })
-        $("#flexSwitchCheckChecked").on("click",function(){
-                       $("#flexSwitchCheckChecked").val(1);
-                       $('#flexSwitchCheckChecked').toggleClass('active');
-
-                    if( $('#flexSwitchCheckChecked').hasClass('active') == true ){
-                        $('#qnaPassword').attr("disabled",false);
-                    }
-                    else{
-                        $('#qnaPassword').attr("disabled",true);
-                    }
-                    })
                     ClassicEditor
                         .create( document.querySelector( "#content" ),{
                             ckfinder:{

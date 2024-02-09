@@ -46,7 +46,6 @@ public class SecurityConfig{
 
                 )
 
-
                 //베이직 인증 방식 disable
                 .httpBasic((auth)->auth.disable())
                 //세션설정 NEVER가 아닌 STATELESS로 해주면 세션이 유지되지 않아 oAuth2User가 null이 된다.
@@ -76,7 +75,6 @@ public class SecurityConfig{
                         .userInfoEndpoint(userInf ->userInf.userService(oAuth2DetailService)
                         )
                 )
-
 
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .csrf((csrf)->  csrf.disable());

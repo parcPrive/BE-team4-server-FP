@@ -1,6 +1,7 @@
 package com.kj.member.exception;
 
 import com.kj.code.ErrorCode;
+import com.kj.faq.entity.FaqCategory;
 import com.kj.member.dto.ErrorDto;
 import com.kj.member.dto.JoinDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @ControllerAdvice
 @Slf4j
@@ -66,9 +69,10 @@ public class CustomExceptionHandler {
                 .errorMessage(ErrorCode.NOT_FAILPASSWORD.getMessage())
                 .build();
         Long id = Long.parseLong(e.getMessage());
-        model.addAttribute("error",response);
-        model.addAttribute("exception",response.getErrorMessage());
-        return "redirect:/cs/qna/check/"+id;
+        log.info("error==","들어왔나?");
+        redirectAttributes.addAttribute("error",response);
+        redirectAttributes.addAttribute("exception",response.getErrorMessage());
+        return "redirect:/cs/qna/list/";
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -85,11 +89,11 @@ public class CustomExceptionHandler {
     @ExceptionHandler(FaqCategoryException.class)
     public String  duplication(FaqCategoryException e, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         ErrorDto response = ErrorDto.builder()
-                .errorCode(ErrorCode.NOT_FOUND)
-                .errorMessage(ErrorCode.NOT_FOUND.getMessage())
+                .errorCode(e.getErrorCode())
+                .errorMessage(e.getErrorCode().getMessage())
                 .build();
-        model.addAttribute("error",response);
-        model.addAttribute("exception",response.getErrorMessage());
+        redirectAttributes.addAttribute("error",response);
+        redirectAttributes.addAttribute("exception",response.getErrorMessage());
         return "redirect:/cs/insertFaqCategory";
     }
     /*@ExceptionHandler(RuntimeException.class)
@@ -101,15 +105,5 @@ public class CustomExceptionHandler {
         model.addAttribute("error",response);
         return "/error/error";
     }*/
-
-//    @ExceptionHandler(RuntimeException.class)
-//    public String anonymousException(RuntimeException e,Model model) {
-//        ErrorDto response = ErrorDto.builder()
-//                .errorCode(ErrorCode.INTERNAL_SERVER_ERROR)
-//                .errorMessage(ErrorCode.INTERNAL_SERVER_ERROR.getMessage())
-//                .build();
-//        model.addAttribute("error",response);
-//        return "/error/error";
-//    }
 
 }

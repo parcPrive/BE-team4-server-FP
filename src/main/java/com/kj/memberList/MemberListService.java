@@ -6,6 +6,9 @@ import com.kj.deleteMember.repository.DeleteMemberRepository;
 import com.kj.jwt.JwtUtil;
 import com.kj.member.entity.Member;
 import com.kj.member.repository.MemberRepository;
+import com.kj.products.productPayment.entity.ProductPayment;
+import com.kj.products.productPayment.repository.ProductPaymentRepository;
+import com.kj.products.productPayment.repository.ProductPaymentRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,15 +33,38 @@ import java.util.Optional;
 public class MemberListService {
     private final MemberRepository memberRepository;
     private final DeleteMemberRepository deleteMemberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtUtil jwtUtil;
+    private final ProductPaymentRepository productPaymentRepository;
+
 
     public Page<Member> findAllPageMember(int page) {
         Pageable pageable = PageRequest.of(page,5, Sort.by(Sort.Direction.DESC,"registerDate"));
         Page<Member> memberList = memberRepository.findByAll(pageable);
         return memberList;
     }
+
+    @Transactional
+    public void pay() {
+        List<Member> memberList = memberRepository.findByAllSize();
+        for (Member member : memberList) {
+            if (member.getPaymentList().size() > 0) {
+                int sum = productPaymentRepository.sumProductPaidPriceByUserNickName(member.getNickName()) -
+                productPaymentRepository.sumProductRefundPriceByUserNickName(member.getNickName());
+                log.info("합계=={}", sum);
+                if (sum > 0 && sum <= 1000) {
+                    member.updateLevel("1");
+                } else if (sum > 1000 && sum <= 2000) {
+                    member.updateLevel("2");
+                } else if (sum > 2000 && sum <= 3000) {
+                    member.updateLevel("3");
+                } else if (sum > 3000 && sum <= 4000) {
+                    member.updateLevel("4");
+                }
+            } else {
+                member.updateLevel("0");
+            }
+        }
+    }
+
     public List<Member> findAllPageMember() {
         List<Member> memberList = memberRepository.findByAllSize();
         return memberList;

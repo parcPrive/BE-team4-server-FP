@@ -66,7 +66,8 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType .REMOVE)
     @JsonIgnore
     List<DeleteMember> deleteMemberList = new ArrayList<>();
-    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member",fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @JsonIgnore
     List<ProductPayment> paymentList = new ArrayList<>();
 
 
@@ -80,19 +81,15 @@ public class Member {
         this.mobile = Mobile.valueOf(memberDto.getMobile());
         return this;
     }
-
     public Member updateLevel(String levels){
 
         this.levels = levels;
         return this;
     }
-
-
     public void updatePassword(String password) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         this.password = bCryptPasswordEncoder.encode(password);
     }
-
     public Member updateProfile(String profileImageUrl){
         this.profileImageUrl = profileImageUrl;
         return this;

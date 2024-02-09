@@ -9,6 +9,7 @@ import com.kj.faq.service.FaqBoardService;
 import com.kj.faq.service.FaqCategoryService;
 import com.kj.log.entity.Log;
 import com.kj.member.dto.CustomUserDetails;
+import com.kj.member.dto.ModalDto;
 import com.kj.member.entity.Member;
 import com.kj.utils.BigFaqCategory;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,8 +72,9 @@ public class FaqController {
         return "/customService/insertFaqCategory";
     }
     @PostMapping("/insertFaqCategory")
-    public String insertFaqCategoryProcess(Model model, FaqCategoryDto faqCategoryDto){
+    public String insertFaqCategoryProcess(Model model, FaqCategoryDto faqCategoryDto, RedirectAttributes redirectAttributes){
         faqCategoryService.insertCategory(faqCategoryDto);
+        /*redirectAttributes.addFlashAttribute("modalDto",modalDto);*/
         return "redirect:/cs/insertFaqCategory";
     }
 
