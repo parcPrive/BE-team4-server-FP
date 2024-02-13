@@ -32,23 +32,25 @@
             </span>
             <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
             <div class="d-flex justify-content-center w-100 py-2">
-                <a class="btn btn-primary form-label findid px-3" th:href="@{/mail/findId}">아이디 찾기</a>
-                <a class=" btn btn-primary form-label findpw px-3" th:href="@{/mail/findPw}">비밀번호 찾기</a>
+                <a class="btn btn-primary form-label findid px-3 " th:href="@{/mail/findId}">아이디 찾기</a>
+                <a class=" btn btn-primary form-label findpw px-3 ms-1" th:href="@{/mail/findPw}">비밀번호 찾기</a>
             </div>
-            <div class="d-flex justify-content-center mt-5">
-                <div><a class="btn btn-primary" href="/oauth2/authorization/google">구글로그인</a></div>
-                <div>
-                    <a class="btn btn-primary" href="/oauth2/authorization/naver">네이버 로그인</a>
-                </div>
-                <div>
-                    <a class="btn btn-primary" href="/oauth2/authorization/kakao">카카오 로그인</a>
+            <div class="d-flex justify-content-center mt-2">
+                <div class="box__login-other">
+                    <div class="box__social type-icon">
+                        <a class="" href="/oauth2/authorization/google">
+                            <img class="imgages" src="/images/googleicon.svg"/></a>
+                        <a class="ms-1" href="/oauth2/authorization/naver">
+                            <img class="imgages" src="/images/navericon.png"/></a>
+                        <a class="ms-1" href="/oauth2/authorization/kakao">
+                            <img src="/images/kakaoicon.svg"/></a>
+                    </div>
                 </div>
             </div>
-
             <div class="login_util">
                 <div>아직 회원이 아니신가요?</div>
                 <div>지금 회원가입을 하시면<br>다양하고 특별한 혜택이 준비되어 있습니다.</div>
-                <div ><a href="/member/insert" th:href="@{/member/insert}">회원가입</a></div>
+                <div ><a class="btn btn-primary" href="/member/insert" th:href="@{/member/insert}">회원가입</a></div>
             </div>
 
             <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>

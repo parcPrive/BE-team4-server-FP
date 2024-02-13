@@ -47,6 +47,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Mobile mobile;
     private String phone;
+    @Column(length = 500)
     private String profileImageUrl;
     @Enumerated(EnumType.STRING)
     private Role role;

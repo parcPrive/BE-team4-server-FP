@@ -263,3 +263,34 @@ li {
 .depth4{
     padding-left:4rem !important;
 }
+/*-------------------login페이지--------------------*/
+.imgages{
+    height : 50px;
+    width : 50px;
+}
+.login_util{
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px 0 0 0;
+    width: 100%;
+    max-width: 400px;
+    height: 232px;
+    border: 1px solid #e3e3e3;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    text-align: center;
+}
+.login_util div:nth-child(1) {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+.login_util div:nth-child(2) {
+    margin: 8px 0 23px 0;
+    font-size: 14px;
+    color: #8a8a8a;
+}
+

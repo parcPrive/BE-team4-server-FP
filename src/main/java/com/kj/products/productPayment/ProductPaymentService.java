@@ -2,6 +2,7 @@ package com.kj.products.productPayment;
 
 import com.kj.member.entity.Member;
 import com.kj.member.service.MemberService;
+import com.kj.memberList.MemberListService;
 import com.kj.products.product.entity.ProductSize;
 import com.kj.products.product.repository.ProductSizeRepository;
 import com.kj.products.productCart.entity.ProductCart;
@@ -38,6 +39,7 @@ public class ProductPaymentService {
     private final ProductSizeRepository productSizeRepository;
     private final ProductCartRepository productCartRepository;
     private final ProductOrderProductDetailRepository productOrderProductDetailRepository;
+    private final MemberListService memberListService;
     @Value("${import.restkey}")
     private String imp_key;
     @Value("${import.secretkey}")
@@ -72,6 +74,8 @@ public class ProductPaymentService {
             productSizeAndProduct.get(i).setProductCount(productSizeAndProduct.get(i).getProductCount() - productCartList.get(i).getProductCount());
             productCartRepository.deleteById(productCartList.get(i).getId());
         }
+        //결제시 등급 변경한다!!
+        memberListService.pay(productInsertOrderDto.getUserName());
         List<ProductOrderProductDetail> insertDatas = productOrderProductDetailRepository.saveAll(productOrderProductDetails);
         List<Long> productOrdersIds = new ArrayList<>();
         for(ProductOrderProductDetail productOrdersId : insertDatas){

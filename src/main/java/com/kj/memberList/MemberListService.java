@@ -43,9 +43,26 @@ public class MemberListService {
     }
 
     @Transactional
-    public void pay() {
+    public void pay(String nickname) {
         List<Member> memberList = memberRepository.findByAllSize();
-        for (Member member : memberList) {
+        Member findMember = memberRepository.findByNickName(nickname).orElseThrow();
+        if (findMember.getPaymentList().size() > 0) {
+            int sum = productPaymentRepository.sumProductPaidPriceByUserNickName(findMember.getNickName()) -
+                    productPaymentRepository.sumProductRefundPriceByUserNickName(findMember.getNickName());
+            log.info("합계=={}", sum);
+            if (sum > 0 && sum <= 1000) {
+                findMember.updateLevel("1");
+            } else if (sum > 1000 && sum <= 2000) {
+                findMember.updateLevel("2");
+            } else if (sum > 2000 && sum <= 3000) {
+                findMember.updateLevel("3");
+            } else if (sum > 3000 && sum <= 4000) {
+                findMember.updateLevel("4");
+            }
+        } else {
+            findMember.updateLevel("0");
+        }
+       /* for (Member member : memberList) {
             if (member.getPaymentList().size() > 0) {
                 int sum = productPaymentRepository.sumProductPaidPriceByUserNickName(member.getNickName()) -
                 productPaymentRepository.sumProductRefundPriceByUserNickName(member.getNickName());
@@ -62,7 +79,7 @@ public class MemberListService {
             } else {
                 member.updateLevel("0");
             }
-        }
+        }*/
     }
 
     public List<Member> findAllPageMember() {

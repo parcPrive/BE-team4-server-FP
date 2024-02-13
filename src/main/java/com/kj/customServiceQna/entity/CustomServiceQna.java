@@ -29,6 +29,7 @@ public class CustomServiceQna {
     private Long id;
     private String qnaCategory;
     private String qnaTitle;
+    @Column(length = 500)
     private String qnaContent;
     private LocalDateTime qnaDate;
     private String qnaStatus;
