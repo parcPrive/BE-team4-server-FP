@@ -572,6 +572,8 @@
           					  		}
         						  }else{
         							  alert("공란입니다. 다시입력해주세여");
+        							  $("#invalid-feedbackNickName").show();
+            		                  $("#invalid-feedbackNickName").text("닉네임을 입력해주세요");
         							  $("#nickName").addClass("is-invalid")
         							  $("#nickName").focus();
         						  }
@@ -605,6 +607,8 @@
           					  		}
         						  }else{
         							  alert("공란입니다. 다시입력해주세여");
+        							  $("#invalid-feedbackID").show();
+            		                  $("#invalid-feedbackID").text("아이디를 입력해주세요");
         							  $("#userId").addClass("is-invalid")
         							  $("#userId").focus();
         						  }

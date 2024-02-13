@@ -24,6 +24,7 @@ public class Notice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String noticeTitle;
+    @Column(length = 500)
     private String noticeContent;
     private String noticeCategory;
     private LocalDateTime noticeDate;

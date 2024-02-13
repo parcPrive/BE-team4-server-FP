@@ -35,7 +35,7 @@ public class MemberListController {
     public String listMember(Model model, @RequestParam(value = "page", required = true, defaultValue = "0") int page) {
         Page<Member> pagination = memberListService.findAllPageMember(page);
         List<Member> memberSize = memberListService.findAllPageMember();
-        memberListService.pay();
+        /*memberListService.pay();*/
         List<Log> logList = logService.findByLog();
         List<Member> registerDateList = memberListService.findByRegisterDate();
         List<Member> memberList = pagination.getContent();
