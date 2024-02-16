@@ -43,14 +43,7 @@ public class ProductCartService {
     }
 
     public List<ProductCartListDto> findByUserId(String userId) {
-        log.info("얍얍얍-=================================================");
         List<ProductCartListDto> productCartList = productCartRepository.findByUserId(userId);
-//        for(ProductCartListDto cart : productCartList){
-//            log.info("cart ===>>> {}", cart.getProductCount());
-////            log.info("cart ===>>> {}", cart.getMember().getUserId());
-//            log.info("cart ===>>> {}", cart.getProductSize());
-//            log.info("cart ===>>> {}", cart.getProductSize().getProduct().getProductImages());
-//        }
         return productCartList;
 
 
@@ -58,9 +51,7 @@ public class ProductCartService {
 
     @Transactional
     public void deleteByProductCartId(Long productCartId) {
-        log.info("=================================delete=================================");
         productCartRepository.deleteById(productCartId);
-        log.info("=================================delete=================================");
     }
 
     public List<ProductOrderInfoDto> findByUserNickInProductCartId(ProductCartOrderDto productCartOrderDto) {

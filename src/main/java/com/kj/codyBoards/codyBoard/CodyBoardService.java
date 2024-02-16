@@ -105,33 +105,5 @@ public class CodyBoardService {
 
     public CodyBoard findByCodyBoard(Long codyBoardId) {
        return codyBoardRepository.findByCodyBoard(codyBoardId);
-
-//        return null;
     }
-
-//    public void redisSetTest(){
-//        ValueOperations<String, String> values = redisTemplate.opsForValue();
-//        values.set("mok","정현목");
-//    }
-//
-//    public void redisSetListTest(){
-//        CodyBoard codyBoards = codyBoardRepository.findByCodyBoard((long)1);
-//        ValueOperations<String, CodyBoard> values = redisTemplate.opsForValue();
-//        values.set("codyboard1",codyBoards);
-//    }
-//
-//    public void redisGetTest(){
-//        ValueOperations<String,String> values = redisTemplate.opsForValue();
-//        log.info("레디레디레디레디스스스");
-//        log.info("여기가 레디스 결과값 ===>>> {}",values.get("mok"));
-//        log.info("레디레디레디레디스스스");
-//    }
-//    public void redisGetListTest(){
-//        ValueOperations<String,CodyBoard> values = redisTemplate.opsForValue();
-//        log.info("레디레디레디레디스스스");
-//        log.info("여기가 레디스 결과값 ===>>> {}",values.get("codyboard1"));
-//        log.info("레디레디레디레디스스스");
-//    }
-
-
 }

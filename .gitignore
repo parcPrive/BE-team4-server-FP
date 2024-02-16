@@ -5,3 +5,4 @@ application.yml
 aaa
 elk
 .gradle/
+Dockerfile

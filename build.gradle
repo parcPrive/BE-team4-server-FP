@@ -74,6 +74,8 @@ dependencies {
 	// 엘라스틱 서치 추가
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 //	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+	//spring batch
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
 
 }
 
