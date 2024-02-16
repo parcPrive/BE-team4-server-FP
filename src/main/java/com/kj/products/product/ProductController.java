@@ -126,28 +126,50 @@ public class ProductController {
             @ModelAttribute ProductSearchCondotion productSearchCondotion,
             Model model
     ) throws IOException {
+
 //        StringUtils.isEmpty();
         log.info("page ==>>> {}", page);
         log.info("productSeach ==>> {}", productSearchCondotion);
-        if(hasText(productSearchCondotion.getCategory())) { // 검색 시도
+        // 카테고리별 검색
+        if(hasText(productSearchCondotion.getCategory())) {
             if (productSearchCondotion.getCategory().equals("all")) {
-                Map<String, Object> searchResult = productSearchService.elasticTest(productSearchCondotion.getSearchWord(), page);
+                Map<String, Object> searchResult = productSearchService.elasticSearchCategoryAll(productSearchCondotion.getSearchWord(), page);
                 log.info("엘라스틱 결과 ===>> {}", searchResult.get("productList"));
                 log.info("엘라스틱 결과 ===>> {}", searchResult.get("page"));
                 model.addAttribute("products", searchResult.get("productList"));
                 model.addAttribute("page", searchResult.get("page"));
                 return "/product/eslist";
-
+            }else if(productSearchCondotion.getCategory().equals("상의") || productSearchCondotion.getCategory().equals("하의") || productSearchCondotion.getCategory().equals("신발")){
+                Map<String, Object> searchResult = productSearchService.elasticSearchCategory(page, productSearchCondotion);
+                model.addAttribute("products", searchResult.get("productList"));
+                model.addAttribute("page", searchResult.get("page"));
+                return "/product/eslist";
             }
         }
 
+        int elasticSearchPage = 0;
+        //상품 페이지의 첫화면 레디스에 없다면 엘라스틱서치에서 찾는다 찾은값 레디스에 저장
+        if(page == 1 && productSearchCondotion.getCategory() == null) {
+            // map의 키값은 productList, page이다.
+            Map<String,Object> productMainMap = productSearchService.productListMain(page);
+            elasticSearchPage = (int) productMainMap.get("page");
+            if(elasticSearchPage != 0){
+                model.addAttribute("products", productMainMap.get("productList"));
+                model.addAttribute("page", productMainMap.get("page"));
+                log.info("여기 ??? -====>> {}", productMainMap.get("productList"));
+                return "/product/eslist";
+            }
 
+        }
+
+        // 레디스 엘라스틱서치 둘다 없다면 디비에서 조회
+        if(elasticSearchPage == 0){
             PageImpl<ProductListDto> productList =  productService.findListProductPage(page, productSearchCondotion);
             int productListPage = productList.getTotalPages();
 
             model.addAttribute("products", productList);
             model.addAttribute("productListPage", productListPage);
-
+        }
         return "/product/list";
     }
 
@@ -161,9 +183,6 @@ public class ProductController {
             HttpServletResponse res,
             Model model
     ){
-        log.info("prprprprprpr =====>>> {}", productId);
-        log.info("prprprprprpr =====>>> {}", reviewPage);
-        log.info("prprprprprpr =====>>> {}", qnaPage);
 
         ProductFindOneDto productFindOneDto = productService.findOneByProductId(productId, reviewPage, qnaPage, req, res);
         model.addAttribute("findOneProduct", productFindOneDto);
@@ -172,13 +191,13 @@ public class ProductController {
     }
 
 // ===========장바구니============
-    @GetMapping("/cart/{userName}")
+    @GetMapping("/cart/{userId}")
     public String productCart(
-            @PathVariable String userName,
+            @PathVariable String userId,
             Model model
     ){
-        log.info("userId ===>>> {}", userName);
-        List<ProductCartListDto> productCartList = productCartService.findByUserId(userName);
+        log.info("userId ===>>> {}", userId);
+        List<ProductCartListDto> productCartList = productCartService.findByUserId(userId);
         model.addAttribute("productCartList",productCartList);
         return "/product/cart";
     }
@@ -233,12 +252,12 @@ public class ProductController {
     }
 
     // 내주문내역에서 환불처리
-    @GetMapping("/myorderlist/{usernickname}")
+    @GetMapping("/myorderlist/{userNickName}")
     public String myOrderList(
-            @PathVariable String usernickname,
+            @PathVariable String userNickName,
             Model model
     ){
-        List<MyProductOrderDto> myProductOrders = productOderservice.findProductOrdersByUserNickName(usernickname);
+        List<MyProductOrderDto> myProductOrders = productOderservice.findProductOrdersByUserNickName(userNickName);
         model.addAttribute("myProductOrders", myProductOrders);
         return "/product/myorderlist";
     }

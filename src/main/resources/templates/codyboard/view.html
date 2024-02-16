@@ -74,6 +74,7 @@
     <body>
     <div class="container">
         <!-- 게시글 내용을 담는 부분 -->
+        <input type="hidden" id="userName" th:value="${#authentication.principal.loggedMember.userName}">
         <input type="hidden" id="codyBoardId" th:value="${codyBoard.getId()}">
         <input type="hidden" id="codyBoardUserName" th:value="${codyBoard.getMember().getUserName()}">
         <div class="post">
@@ -139,7 +140,7 @@
                 method:"POST",
                 data:{
                     "codyBoardId": $("#codyBoardId").val(),
-                    "userName": "mok119",
+                    "userName": $("#userName").val(),
                     "content": $("#commentInput").val()
                 },
                 success: function (data){
@@ -174,7 +175,7 @@
                 method: "POST",
                 data:{
                     "codyBoardId": $("#codyBoardId").val(),
-                    "userName": "mok119",
+                    "userName": $("#userName").val(),
                     "content": $("#replyTextArea" + num).val(),
                     "commentId": $("#commentId" + num).val()
                 },

@@ -25,8 +25,8 @@ public class ProductOderservice {
 
     }
 
-    public List<MyProductOrderDto> findProductOrdersByUserNickName(String usernickname) {
-        return productOrderDetailRepository.findProductOrdersByUserNickName(usernickname);
+    public List<MyProductOrderDto> findProductOrdersByUserNickName(String userNickName) {
+        return productOrderDetailRepository.findProductOrdersByUserNickName(userNickName);
 
     }
 }

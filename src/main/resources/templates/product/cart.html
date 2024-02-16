@@ -32,9 +32,9 @@
     <body>
 
     <h2>장바구니</h2>
-    <form th:action="@{/product/order}" method="post">
-        <input th:value="mok119" name="userId">
 
+    <form th:action="@{/product/order}" method="post">
+        <input type="hidden" th:value="${#authentication.principal.loggedMember.userId}" name="userId">
     <table>
         <thead>
         <tr>
@@ -99,7 +99,6 @@
 
         // 주문하기 함수 예시
         function checkout() {
-
             alert('주문이 완료되었습니다.');
         }
         const productCount = $("td[name=productPriceCount]").length;

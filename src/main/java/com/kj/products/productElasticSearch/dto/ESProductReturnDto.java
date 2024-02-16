@@ -2,8 +2,10 @@ package com.kj.products.productElasticSearch.dto;
 
 import com.kj.products.productElasticSearch.entity.ProductDocument;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ESProductReturnDto {
     private Long product_id;
     private String product_name;

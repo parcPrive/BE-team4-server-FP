@@ -155,12 +155,13 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #e3f2fd;">
         <div class="container px-4 px-lg-5">
+            <input type="hidden" id="userId" th:value="${#authentication.principal.loggedMember.userId}">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 </ul>
                 <form class="d-flex">
-                    <a class="btn btn-light btn-outline-secondary" id="productCart" th:href="@{/product/cart/{userName}(userName=mok119)}">
+                    <a class="btn btn-light btn-outline-secondary" id="productCart" th:href="@{/product/cart/{userId}(userId=${#authentication.principal.loggedMember.userId})}">
                         <i class="bi-cart-fill me-1"></i>
                         Cart
                         <span id="productCartCount" class="badge bg-dark text-white ms-1 rounded-pill">0</span>
@@ -269,7 +270,7 @@
                 </div>
                 <input type="hidden" id="starCount" name="star">
                 <input type="hidden" id="productId" name="productId" th:value="${findOneProduct.getId()}">
-                <input type="hidden"  name="userName" value="mok119">
+                <input type="hidden"  name="userName" th:value="${#authentication.principal.loggedMember.userName}">
                 <div>
                     <div>
                         <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview1">
@@ -326,7 +327,7 @@
             <h2>제품QnA</h2>
 
                 <input type="hidden" id="productIdQ" name="productId" th:value="${findOneProduct.getId()}">
-                <input type="hidden"  id="userName" name="userName" value="mok119">
+                <input type="hidden"  id="userName" name="userName" value="${#authentication.principal.loggedMember.userName}">
                 <p>제목</p>
                 <div>
                     <select name="productQACategoryId" id="productQnACategoryList">
@@ -381,7 +382,7 @@
                                 <h2>제품QnA</h2>
                                 <form action="" th:action="@{/admin/product/insertqna}" method="post" enctype="multipart/form-data">
                                     <input type="hidden" id="productIdA" name="productId" th:value="${findOneProduct.getId()}">
-                                    <input type="hidden"  name="adminId" value="mok119">
+                                    <input type="hidden"  name="adminId" value="${#authentication.principal.loggedMember.userId}">
                                     <input type="hidden" name="productQnAId" th:value="${productQnA.getId()}">
                                     <p>내용</p>
                                     <textarea class="star_box"  name="productAdminQnAContent" placeholder="문의 내용을 작성해주세요." ></textarea>
@@ -533,7 +534,7 @@
                     "productSizeId": productSizeId,
                     "productPrice": productPrice,
                     "productTotalCount": productTotalCount,
-                    "userId": "mok119"
+                    "userId": $("#userId").val()
                 },
                 success: function(e){
                     $("#productCartCount").text(e)
