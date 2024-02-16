@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,18 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig{
-    private final CustomUserDetailService customUserDetailService;
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final OAuth2DetailService oAuth2DetailService;
     private final JwtUtil jwtUtil;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
-        return configuration.getAuthenticationManager();
-    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.
@@ -45,13 +41,13 @@ public class SecurityConfig{
                         .authenticated()
 
                 )
-
                 //베이직 인증 방식 disable
                 .httpBasic((auth)->auth.disable())
                 //세션설정 NEVER가 아닌 STATELESS로 해주면 세션이 유지되지 않아 oAuth2User가 null이 된다.
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER))
-
+                /*JwtAuthFilter에 jwtUtil을 전달하여 UsernamePasswordAuthenticationFilter전에 필터로 등록한다.*/
+                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 //.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .formLogin((form)->form.disable()
                         /*.loginPage("/member/login")   // get
@@ -75,8 +71,6 @@ public class SecurityConfig{
                         .userInfoEndpoint(userInf ->userInf.userService(oAuth2DetailService)
                         )
                 )
-
-                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .csrf((csrf)->  csrf.disable());
 
 

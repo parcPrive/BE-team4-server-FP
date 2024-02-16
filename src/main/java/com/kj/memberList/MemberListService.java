@@ -50,7 +50,9 @@ public class MemberListService {
             int sum = productPaymentRepository.sumProductPaidPriceByUserNickName(findMember.getNickName()) -
                     productPaymentRepository.sumProductRefundPriceByUserNickName(findMember.getNickName());
             log.info("합계=={}", sum);
-            if (sum > 0 && sum <= 1000) {
+            if(sum==0){
+                findMember.updateLevel("0");
+            } else if (sum > 0 && sum <= 1000) {
                 findMember.updateLevel("1");
             } else if (sum > 1000 && sum <= 2000) {
                 findMember.updateLevel("2");

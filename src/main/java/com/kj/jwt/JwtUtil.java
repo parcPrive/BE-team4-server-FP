@@ -30,6 +30,7 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer=";
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
+
     private final CustomUserDetailService customUserDetailService;
 
 
@@ -47,14 +48,12 @@ public class JwtUtil {
     // header 토큰을 가져오기 -> 헤더검사 없으면 쿠키검사
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-
         /*헤더에 값이 없다면 토큰 확인*/
         if (bearerToken == null) {
             Cookie[] cookies = request.getCookies(); // 모든 쿠키 가져오기
             if (cookies != null) {
                 for (Cookie c : cookies) {
                     String name = c.getName(); // 쿠키 이름 가져오기
-
                     String value = c.getValue(); // 쿠키 값 가져오기
                     if (name.equals(AUTHORIZATION_HEADER)) {
                         bearerToken = value;
@@ -62,9 +61,7 @@ public class JwtUtil {
                 }
             }
         }
-
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            log.info("bearerToken=={}",bearerToken.substring(7));
             return bearerToken.substring(7);
         }
         return null;
@@ -73,7 +70,6 @@ public class JwtUtil {
     // 토큰 생성
     public String createToken(String username, Role role) {
         Date date = new Date();
-
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username)
@@ -88,7 +84,6 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");

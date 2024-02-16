@@ -83,7 +83,6 @@ public class Member {
         return this;
     }
     public Member updateLevel(String levels){
-
         this.levels = levels;
         return this;
     }

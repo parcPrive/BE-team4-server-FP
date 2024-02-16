@@ -33,13 +33,13 @@ public class CustomUserDetailService implements UserDetailsService {
         throw new UsernameNotFoundException("아이디 패스워드 확인해주세요");
     }
 
-    private UserDetails createUserDetails(Member member) {
+  /*  private UserDetails createUserDetails(Member member) {
         return User.builder()
                 .username(member.getUserName())
                 .password(bCryptPasswordEncoder.encode(member.getPassword()))
                 .roles(member.getRole().getValue())
                 .build();
-}
+}*/
 
 
 }
