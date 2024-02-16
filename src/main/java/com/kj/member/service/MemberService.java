@@ -46,7 +46,6 @@ public class MemberService {
     private final LogRepository logRepository;
     private final DeleteMemberRepository deleteMemberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtUtil jwtUtil;
 
     @Value("${file.path}")
