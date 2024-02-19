@@ -327,7 +327,7 @@
             <h2>제품QnA</h2>
 
                 <input type="hidden" id="productIdQ" name="productId" th:value="${findOneProduct.getId()}">
-                <input type="hidden"  id="userName" name="userName" value="${#authentication.principal.loggedMember.userName}">
+                <input type="hidden"  id="userName" name="userName" th:value="${#authentication.principal.loggedMember.userName}">
                 <p>제목</p>
                 <div>
                     <select name="productQACategoryId" id="productQnACategoryList">
@@ -382,7 +382,7 @@
                                 <h2>제품QnA</h2>
                                 <form action="" th:action="@{/admin/product/insertqna}" method="post" enctype="multipart/form-data">
                                     <input type="hidden" id="productIdA" name="productId" th:value="${findOneProduct.getId()}">
-                                    <input type="hidden"  name="adminId" value="${#authentication.principal.loggedMember.userId}">
+                                    <input type="hidden"  name="adminId" th:value="${#authentication.principal.loggedMember.userId}">
                                     <input type="hidden" name="productQnAId" th:value="${productQnA.getId()}">
                                     <p>내용</p>
                                     <textarea class="star_box"  name="productAdminQnAContent" placeholder="문의 내용을 작성해주세요." ></textarea>
@@ -399,6 +399,7 @@
                             <block th:if="${productQnA.getChildren() != null}">
                                 <input type="hidden" th:value="${productQnA.getChildren().getId()}">
 <!--                                <p th:text="${productQnA.getChildren().getMember().getUserName()}">트릴리온<br>담당자<br></p>-->
+                                <p>답변</p>
                                 <p class="feedback_comment" colspan="4" th:text="${productQnA.getChildren().getProductQAContent()}">
                                     <!-- 피드백 내용 -->
                                 </p>
@@ -654,6 +655,7 @@
                 },
                 success: function (data){
                     console.log(data)
+                    location.reload(true)
                 }
             })
         })

@@ -228,7 +228,7 @@
             $("#invalid-feedbackMobile").show();
             $("#invalid-feedbackMobile").text("통신사를 선택해주세요");
               return false;
-        }else if(!isPhoneCheck){
+        }else if(isPhoneCheck){
        	 alert("핸드폰 번호 확인해주세요");
     	 return false;
     	}else if(!isEmailCheck){
@@ -240,7 +240,7 @@
         }else if(!isPassWordCheck){
        	 alert("비밀번호 확인해주세요");
     	 return false;
-    }else if(!isNickNameCheck){
+    }else if(isNickNameCheck){
        	 	alert("닉네임 중복 체크해주세요");
     	 	return false;
     }else if(!isNickNameFormCheck){

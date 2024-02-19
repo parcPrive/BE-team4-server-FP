@@ -74,14 +74,16 @@
                 <p class="nickname" th:text="${codyBoardList.getCreatedAt()}">생성일</p>
             </div>
         </block>
-
-
+    </div>
+    <div>
+        <form th:action="@{/codyboard/insert}">
+            <button class="btn-primary btn">등록하기</button>
+        </form>
     </div>
     <div>
         <nav aria-label="Page navigation example" class="mt-5 d-flex justify-content-center">
             <ul class="pagination">
                 <li class="page-item"><a class="page-link" th:if="${codyBoardList.hasPrevious()}" href="#">이전</a></li>
-
                     <li class="page-item">
                         <block th:each="page : ${#numbers.sequence(1, codyBoardList.getTotalPages())}">
                             <block th:if="${param.searchCategory !=null}">

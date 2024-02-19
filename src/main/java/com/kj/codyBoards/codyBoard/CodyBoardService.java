@@ -45,17 +45,19 @@ public class CodyBoardService {
     @Transactional
     public void insert(CodyBoardInputDto codyBoardInputDto) throws IOException {
         // s3에 이미지 올리고 이미지 주소 반환받는다.
-        List<String> codyImageUrls =s3ImageUpload(codyBoardInputDto);
+        List<String> codyImageUrls = s3ImageUpload(codyBoardInputDto);
         // 반환받은 주소랑 같이 데이터베이스에 저장한다.
-        Optional<Member> findMember = memberRepository.findByNickName(codyBoardInputDto.getUserName());
+//        Optional<Member> findMember = memberRepository.findByNickName(codyBoardInputDto.getUserName());
+        Optional<Member> findMember = memberRepository.findByUserId(codyBoardInputDto.getUserName());
+        log.info("댓글생성시.. =-==>>> {}", findMember.get().getEmail());
         if(findMember.isPresent()){
-            CodyBoard insertCodyBoard = new CodyBoard(codyBoardInputDto,codyImageUrls, findMember.get());
+            CodyBoard insertCodyBoard = new CodyBoard(codyBoardInputDto, codyImageUrls, findMember.get());
             codyBoardRepository.save(insertCodyBoard);
-
         }
 
     }
 
+    @Transactional
     public List<String> s3ImageUpload(CodyBoardInputDto codyBoardInputDto) throws IOException {
         String localLocation = myLocalFolder + codyBoardInputDto.getCodyBoardBucket() + "/";
         File folder = new File(localLocation);
@@ -102,8 +104,10 @@ public class CodyBoardService {
         PageImpl<CodyBoardListReturnDto> codyBoardList = codyBoardRepository.findListCodyBoard(pageable,codyBoardSearchCondition);
         return codyBoardList;
     }
-
+    @Transactional
     public CodyBoard findByCodyBoard(Long codyBoardId) {
-       return codyBoardRepository.findByCodyBoard(codyBoardId);
+       CodyBoard aaa = codyBoardRepository.findByCodyBoard(codyBoardId);
+//       log.info("메법버ㅓ버버버버버 =====.>>>>> {} ",aaa.getCodyBoardComments().get(0).getMember().getUserName());
+        return  aaa;
     }
 }

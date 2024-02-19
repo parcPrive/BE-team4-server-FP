@@ -53,8 +53,8 @@ dependencies {
 	//혁기 jdbc, oracle
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
+//	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+//	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	//메일
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 

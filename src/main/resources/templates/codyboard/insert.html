@@ -33,7 +33,7 @@
                                   placeholder="내용" name="productDetailImage"  rows="10"></textarea>
                         <input type="text" th:value="${codyBoardBucket}" id="bucketName" name="codyBoardBucket">
                     </div>
-                    <input type="text" th:value="${#authentication.principal.loggedMember.userName}" name="userName">
+                    <input type="text" th:value="${#authentication.principal.loggedMember.userId}" name="userName">
                     <div class="d-flex justify-content-center mt-5">
                         <button class="btn btn-primary">등록</button>
                     </div>

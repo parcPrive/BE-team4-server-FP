@@ -27,13 +27,6 @@ public class RedisConfig {
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host,port));
     }
 
-//    @Bean
-//    public ObjectMapper objectMapper(){
-//        ObjectMapper mapper = new ObjectMapper();
-////        mapper.disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS);
-//        mapper.registerModule(new JavaT)
-//    }
-
     @Bean
     public RedisTemplate<String,Object> redisTemplate(){
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();

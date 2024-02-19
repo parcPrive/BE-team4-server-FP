@@ -21,12 +21,12 @@ public class ProductQnAController {
     private final ProductQnAService productQnAService;
 
     @PostMapping("/product/insertqna")
-    @ResponseBody
-    public ProductQnAInsertReturnDto insertProductQnA(
+    public String insertProductQnA(
             @ModelAttribute ProductQnAInputDto productQnAInputDto
             ){
         log.info("큐앤에이 디티오 ===>> {}", productQnAInputDto);
-        return productQnAService.insertProductQnAUser(productQnAInputDto);
+        ProductQnAInsertReturnDto insertProductQnADto = productQnAService.insertProductQnAUser(productQnAInputDto);
+        return "redirect:/product/view/" + productQnAInputDto.getProductId() + "?reviewPage=1&qnaPage=1";
     }
 
     @PostMapping("/admin/product/insertqna")

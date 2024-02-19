@@ -48,7 +48,6 @@ public class ProductSearchService {
     private final RedisTemplate redisTemplate;
 
 
-
     public PageImpl<ProductListDto> findProductByProductTag(int page, ProductCategorySearchCondition productCategorySearchCondition) {
         Pageable pageable = PageRequest.of(page - 1, 12);
         PageImpl<ProductListDto> findProducts =  productRepository.findProductByProductCategory(pageable,productCategorySearchCondition);
@@ -58,7 +57,7 @@ public class ProductSearchService {
 
     public Map<String, Object> elasticSearchCategoryAll(String searchWord, int page) throws IOException, java.io.IOException {
         SearchResponse<ProductDocument> search = client.client.search(s -> s
-                .index("myproduct09")
+                .index("myproduct12")
                         .sort(SortOptions.of(builder -> {
                             FieldSort fieldSort = new FieldSort.Builder().field("product_id").order(SortOrder.Desc).build();
                             return builder.field(fieldSort);
@@ -103,7 +102,7 @@ public class ProductSearchService {
         }
         // 레디스에 없다면 엘라스틱 서치 시작
         SearchResponse<ProductDocument> search = client.client.search(s -> s
-                        .index("myproduct09")
+                        .index("myproduct12")
                         .sort(SortOptions.of(builder -> {
                             FieldSort fieldSort = new FieldSort.Builder().field("product_id").order(SortOrder.Desc).build();
                             return builder.field(fieldSort);
@@ -150,7 +149,7 @@ public class ProductSearchService {
         querieList.add(match);
         querieList.add(search);
         SearchResponse<ProductDocument> matchSearch = client.client.search(s -> s
-                        .index("myproduct09")
+                        .index("myproduct12")
                         .sort(SortOptions.of(builder -> {
                             FieldSort fieldSort = new FieldSort.Builder().field("product_id").order(SortOrder.Desc).build();
                             return builder.field(fieldSort);
@@ -173,6 +172,7 @@ public class ProductSearchService {
             log.info("과연 ===>>> {}", hit1.source());
             productList.add(new ESProductReturnDto(hit1.source()));
         }
+        log.info("asdasd ====>>> {}", matchSearch.hits().hits());
         Map<String, Object> productMap = new HashMap<>();
         productMap.put("productList", productList);
         productMap.put("page", toTalPage);

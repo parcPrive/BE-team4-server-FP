@@ -127,7 +127,6 @@ public class ProductController {
             Model model
     ) throws IOException {
 
-//        StringUtils.isEmpty();
         log.info("page ==>>> {}", page);
         log.info("productSeach ==>> {}", productSearchCondotion);
         // 카테고리별 검색

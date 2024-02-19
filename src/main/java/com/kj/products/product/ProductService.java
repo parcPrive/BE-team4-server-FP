@@ -360,7 +360,7 @@ public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondo
     public void insertTest(ProductInputDto productInputDto) {
         Optional<ProductCategory> findProductCategory = productCategoryRepository.findById(productInputDto.getSubProductCategoryId());
         if(findProductCategory.isPresent()) {
-            for(int i = 0; i < 100; i++){
+            for(int i = 1; i < 120; i++){
                 if(i % 2 == 0){
                     productInputDto.setProductName("반팔" + i);
                     productInputDto.setProductPrice(123 + i);
@@ -371,8 +371,8 @@ public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondo
                     insertProductSize(productInputDto,result);
                     insertProductTag(productInputDto.getProductTag(),result);
                     List<ProductImage> insertProductImages = new ArrayList<>();
-                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 1, "asdasd", result));
-                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 0, "asdasd", result));
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productimage/8f5378b9-d352-4791-b1b1-4b2cbcb3889a/9afdaa18-3a38-4f07-8046-02d2ca430051.jpeg", 1, "asdasd", result));
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productimage/8f5378b9-d352-4791-b1b1-4b2cbcb3889a/9afdaa18-3a38-4f07-8046-02d2ca430051.jpeg", 0, "asdasd", result));
                     productImageRepository.saveAll(insertProductImages);
                 }else{
                     productInputDto.setProductName("바지" + i);
@@ -384,8 +384,8 @@ public PageImpl<ProductListDto> findListProductPage(int page, ProductSearchCondo
                     insertProductSize(productInputDto,result);
                     insertProductTag(productInputDto.getProductTag(),result);
                     List<ProductImage> insertProductImages = new ArrayList<>();
-                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 1, "asdasd", result));
-                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productdetailimage/9c34234b-dfda-446f-9e87-391cff3098df/1a19b245-4c65-4e0e-9a7a-b97d249ffe35.jpg", 0, "asdasd", result));
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productimage/2f681e5b-a42c-4efa-8ac5-83ea245f0296/f93c7320-131b-4db3-9eb0-47f4d2e8f29c.jpeg", 1, "asdasd", result));
+                    insertProductImages.add(new ProductImage("https://s3.ap-northeast-2.amazonaws.com/mok-s3/productimage/2f681e5b-a42c-4efa-8ac5-83ea245f0296/f93c7320-131b-4db3-9eb0-47f4d2e8f29c.jpeg", 0, "asdasd", result));
                     productImageRepository.saveAll(insertProductImages);
 
                 }

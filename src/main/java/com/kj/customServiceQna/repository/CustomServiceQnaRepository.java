@@ -10,20 +10,20 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomServiceQnaRepository extends JpaRepository<CustomServiceQna,Long> {
-    @Query(value = "with recursive CTE AS (" +
+    @Query(value = "with recursive cte AS (" +
             "select q.*, cast(q.id as char(500)) as path from custom_service_qna q " +
             "where q.parent_id IS null " +
             "union all " +
             "select nc2.*,  CONCAT(c.path, '', '') from custom_service_qna nc2 " +
-            "inner join CTE c on nc2.parent_id = c.id "+
+            "inner join cte c on nc2.parent_id = c.id "+
             ")" +
             "select c.* from cte c order by path desc ",
-            countQuery = "with recursive CTE AS (" +
+            countQuery = "with recursive cte AS (" +
                     "select q.*, cast(q.id as char(500)) as path from custom_service_qna q " +
                     "where q.parent_id IS null " +
                     "union all " +
                     "select nc2.*,  CONCAT(c.path, '', '') from custom_service_qna nc2 " +
-                    "inner join CTE c on nc2.parent_id = c.id "+
+                    "inner join cte c on nc2.parent_id = c.id "+
                     ")" +
                     "select count(*) from cte  order by path desc ",nativeQuery = true)
     Page<CustomServiceQna> findByAll(Pageable pageable);

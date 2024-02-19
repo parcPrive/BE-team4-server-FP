@@ -65,13 +65,17 @@ public class CodyBoardRepositoryImpl implements CodyBoardRepositoryCustom{
                 .join(codyBoard.member, member).fetchJoin()
                 .leftJoin(codyBoard.codyBoardComments,codyBoardComment).fetchJoin()
                 .leftJoin(codyBoardComment.parent).fetchJoin()
-                .where(codyBoard.id.eq(codyBoardId))
+//                .leftJoin(codyBoardComment.member, member).fetchJoin()
+                .where(codyBoard.id.eq(codyBoardId)
+//                        codyBoardComment.codyBoard.id.eq(codyBoardId)
+                        )
                 .orderBy(
                         codyBoardComment.sortNum.desc()
                         )
                 .fetchOne();
 //        CodyBoardCommentsViewDto aaa = new CodyBoardCommentsViewDto(codyBoard1);
 //        log.info("여기 한번볼까요?? ==>>> {}", aaa.getCodyBoardComment());
+        log.info("?? ===>> {}", codyBoard1.getMember().getUserName());
         return codyBoard1;
     }
 

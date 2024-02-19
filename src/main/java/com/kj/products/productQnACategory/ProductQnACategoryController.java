@@ -18,6 +18,7 @@ public class ProductQnACategoryController {
     private final ProductQnACategoryService productQnACategoryService;
     @GetMapping("/admin/product/insertqnacategory")
     public String insertproductqnacategory(){
+        log.info("제발........아 진짜");
         return "/product/insertQnACategory";
     }
 

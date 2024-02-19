@@ -28,6 +28,7 @@ public class CodyBoardCommentsService {
     // 댓글 추가
     @Transactional
     public CodyBoardCommentReturnDto insertCodyBaordComments(CodyBoardCommentInputDto codyboardCommentInputDto){
+        log.info("유저 네임안에는??? ====>>> {} ",codyboardCommentInputDto);
         Optional<CodyBoard> codyBoard = codyBoardRepository.findById(codyboardCommentInputDto.getCodyBoardId());
         Optional<Member> member = memberRepository.findByNickName(codyboardCommentInputDto.getUserName());
         int sortNum = Math.toIntExact(codyBoardCommentsRepository.commentMax());

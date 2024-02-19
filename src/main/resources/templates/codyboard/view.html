@@ -74,7 +74,7 @@
     <body>
     <div class="container">
         <!-- 게시글 내용을 담는 부분 -->
-        <input type="hidden" id="userName" th:value="${#authentication.principal.loggedMember.userName}">
+        <input type="hidden" id="userName" th:value="${#authentication.principal.loggedMember.id}">
         <input type="hidden" id="codyBoardId" th:value="${codyBoard.getId()}">
         <input type="hidden" id="codyBoardUserName" th:value="${codyBoard.getMember().getUserName()}">
         <div class="post">
@@ -100,7 +100,7 @@
                 <block th:if="${codyBoardComment.getParent()} == null">
             <div class="comment">
                 <input type="text" th:id="|commentId${stat.count}|" th:value="${codyBoardComment.getId()}">
-                <div class="author" th:text="${codyBoardComment.getMember().getUserName()}">작성자1</div>
+<!--                <div class="author" th:text="${codyBoardComment.getMember()}">작성자1</div>-->
                 <div class="comment-content" th:text="${codyBoardComment.getContent()}">
                     이 부분에 첫 번째 댓글의 내용이 들어갑니다.
                 </div>
