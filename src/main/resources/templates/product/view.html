@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="main">
+    <style>
+        .star_rating {
+            width: 100%;
+            box-sizing: border-box;
+            display: inline-flex;
+            float: left;
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+        .star_rating .star {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            display: inline-block;
+            background: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FE2bww%2FbtsviSSBz4Q%2F5UYnwSWgTlFt6CEFZ1L3Q0%2Fimg.png') no-repeat;
+            background-size: 100%;
+            box-sizing: border-box;
+        }
+        .star_rating .star.on {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            display: inline-block;
+            background: url('https://blog.kakaocdn.net/dn/b2d6gV/btsvbDoal87/XH5b17uLeEJcBP3RV3FyDk/img.png') no-repeat;
+            background-size: 100%;
+            box-sizing: border-box;
+        }
+
+        .star_box {
+            width: 400px;
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 15px 0;
+            background: #F3F4F8;
+            border: 0;
+            border-radius: 10px;
+            height: 100px;
+            resize: none;
+            padding: 15px;
+            font-size: 13px;
+            font-family: sans-serif;
+        }
+        .QA_box {
+            width: 400px;
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 15px 0;
+            background: #F3F4F8;
+            border: 0;
+            border-radius: 10px;
+            height: 20px;
+            resize: none;
+            padding: 15px;
+            font-size: 13px;
+            font-family: sans-serif;
+        }
+
+        .btn02 {
+            display:block;
+            width: 400px;
+            font-weight: bold;
+            border: 0;
+            border-radius: 10px;
+            max-height: 50px;
+            padding: 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+            background:bisque;
+        }
+        .btn03 {
+            display:block;
+            width: 400px;
+            font-weight: bold;
+            border: 0;
+            border-radius: 10px;
+            max-height: 50px;
+            padding: 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+            background:bisque;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        /* 닫기 버튼 스타일 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .review {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .user-info {
+            font-style: italic;
+            color: #666;
+        }
+
+        .rating {
+            unicode-bidi: bidi-override;
+            direction: rtl;
+            font-size: 30px;
+        }
+        .star {
+            display: inline-block;
+            margin-right: 5px;
+            color: gold;
+        }
+
+        .conect_detail_comment {
+            cursor: pointer;
+        }
+        .conect_feedback_comment {
+            display: none;
+        }
+        .reviewDetail{
+            display: none;
+        }
+
+    </style>
+    <body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #e3f2fd;">
+        <div class="container px-4 px-lg-5">
+            <input type="hidden" id="userId" th:value="${#authentication.principal.loggedMember.userId}">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                </ul>
+                <form class="d-flex">
+                    <a class="btn btn-light btn-outline-secondary" id="productCart" th:href="@{/product/cart/{userId}(userId=${#authentication.principal.loggedMember.userId})}">
+                        <i class="bi-cart-fill me-1"></i>
+                        Cart
+                        <span id="productCartCount" class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <!-- Product section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center" >
+                <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0"  th:src="@{${findOneProduct.productImages[0].imageName}}"  alt="..." /></div>
+                <div class="col-md-6">
+                    <h1 class="display-5 fw-bolder" th:text="${findOneProduct.productName}">Shop item template</h1>
+                    <div class="fs-5 mb-5">
+                        <input type="hidden"  id="price" name="price">
+                        <span class="text-decoration-none" th:text="${findOneProduct.productPrice}"></span>원
+                    </div>
+                    <hr class="my-4">
+                    <div class="input-group fs-5 mb-5">
+                        <div class="input-group-prepend">
+                            <div>
+                                <ul class="rdo_group">
+                                    <!--2018PO개편 모든 아이템 출고여부 및 출고예정일이 동일함여부 -->
+                                    <block th:each="productSize : ${findOneProduct.productSize}">
+<!--                                        <input th:text="${productSize}">-->
+                                    <li id="liIT202309055185654" class="disabled">
+                                        <th:block th:if="${productSize.productCount} == 0">
+                                            <input th:id="|size${productSize.productSize}|" disabled type="radio" th:value="${productSize.id}" name="productSizeId"><label id="la_IT202309055185654" for="ra_IT202309055185654" th:text="|[${productSize.productSize}]|">[S]</label>
+                                        </th:block>
+                                        <th:block th:unless="${productSize.productCount} == 0">
+                                            <input th:id="|size${productSize.productSize}|"  type="radio" th:value="${productSize.id}" name="productSizeId"><label id="la_IT202309055185654" for="ra_IT202309055185654" th:text="|[${productSize.productSize}]|">[S]</label>
+                                        </th:block>
+<!--                                        <input th:id="|size${productSize.productSize}|"  type="radio" value="IT202309055185654" name="singleItm_GM0023090572990"><label id="la_IT202309055185654" for="ra_IT202309055185654" th:text="|[${productSize.productSize}]|">[S]</label>-->
+
+                                        <span th:if="${productSize.productCount} == 0">픔절</span>
+                                        <span th:if="${productSize.productCount} < 6 and ${productSize.productCount} > 0" th:text="|${productSize.productCount}개 남음|"></span>
+                                    </li>
+                                    <input type="hidden" th:value="${productSize.productCount}" th:id="|size${productSize.productSize}Count|">
+                                    </block>
+                                </ul>
+                            </div>
+                            <div>
+
+                            </div>
+                            <span class="input-group-text">주문 수량</span>
+                            <div id="quantityBox" class="quantity-box" hidden>
+                                <a href="#"  style="cursor: pointer !important;" id="minusBtn"  class="minus btn btn-primary">-</a>
+                                 <input name="productCount" type="number" id="productCount" value="0" class="box">
+                                <input type="hidden" id="productCountCheck">
+                                <a href="#none;" style="cursor: pointer !important;" id="plusBtn" class="plus btn btn-primary">+</a>
+                            </div>
+                        </div>
+                        <!--                        <input class="form-control text-center me-3" id="count" name="count" type="number" value="1" style=" max-width: 5rem" />-->
+                    </div>
+                    <input type="hidden" th:value="${findOneProduct.id}">
+
+                    <div class="container bg-light">
+                        <h6>총 상품 금액</h6>
+                        <h4 name="totalPrice" id="totalPrice"  th:text="${findOneProduct.productPrice}" class="font-weight-bold" ></h4>
+                    </div>
+                    <br>
+
+                    <div class="d-flex">
+                            <a  class="btn btn-outline-dark"
+                                    type="submit">
+                                바로 구매하기
+                            </a>
+                        &nbsp
+                        <a disable id="productAddCart" class="btn btn-outline-dark flex-shrink-0" type="button">
+                            <i class="bi-cart-fill me-1"></i>
+                            장바구니 담기
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- Related items section-->
+    <section class="py-5 bg-light">
+        <hr class="my-4">
+        <div class="container px-4 px-lg-5 mt-5"  >
+            <div class="text-center">
+                여기에 상품디테일 사진들 ck에디터꺼 들어간다.
+            </div>
+        </div>
+    </section>
+
+
+    <button onclick="openModal()">상품 후기 작성</button>
+    <!-- 모달 창 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <!-- 여기에 후기 작성 폼 등을 추가하세요 -->
+                <h2>리뷰 작성하기</h2>
+            <form action="" th:action="@{/product/insertreview}" method="post" enctype="multipart/form-data">
+                <div class ="star_rating">
+                    <span class="star on" value="1"> </span>
+                    <span class="star" value="2"> </span>
+                    <span class="star" value="3"> </span>
+                    <span class="star" value="4"> </span>
+                    <span class="star" value="5"> </span>
+                </div>
+                <input type="hidden" id="starCount" name="star">
+                <input type="hidden" id="productId" name="productId" th:value="${findOneProduct.getId()}">
+                <input type="hidden"  name="userName" th:value="${#authentication.principal.loggedMember.userName}">
+                <div>
+                    <div>
+                        <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview1">
+                        <input class="img-thumbnail" type="file" id="file1" name="productReviewImages" value="">
+                    </div>
+                    <div>
+                        <img src="https://mok-s3.s3.ap-northeast-2.amazonaws.com/productDefaultImage/ab580bff-f3fd-499b-93e4-d8edd9968d6b.jpg" class="img-thumbnail" alt="..." type="file" id="preview2">
+                        <input class="img-thumbnail" type="file" id="file2" name="productReviewImages" value="">
+                    </div>
+                </div>
+
+                <textarea class="star_box" id="review" name="productReview" placeholder="리뷰 내용을 작성해주세요." ></textarea>
+                <input type="submit" class="btn02" value="리뷰작성" >
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <block th:each="review : ${findOneProduct.getProductReviews().getContent()}">
+            <div class="review">
+                <h6 th:text="${review.getUserName()}"></h6>
+                    <block th:each="star : ${#numbers.sequence(1, review.getStar())}">
+                        <span class="star">&#9733;</span>
+                    </block>
+                <p th:text="${review.getProductReview()}">상품리뷰내용</p>
+                <img class="card-img-top mb-5 mb-md-0"  th:src="@{${review.getProductImage().get(0)}}" style="max-width: 10%; height: auto;" />
+                <img class="card-img-top mb-5 mb-md-0"  th:src="@{${review.getProductImage().get(1)}}" style="max-width: 10%; height: auto;" />
+                <p class="user-info" th:text="${review.getCreatedAt()}">구매일</p>
+            </div>
+        </block>
+
+    </div>
+    <div>
+        <nav aria-label="Page navigation example" class="mt-5 d-flex justify-content-center">
+            <ul class="pagination">
+                <li th:if="${findOneProduct.getProductReviews().hasPrevious()}" class="page-item"><a class="page-link" href="#">이전</a></li>
+                <th:block th:each="page : ${#numbers.sequence(1, findOneProduct.getProductReviews().getTotalPages())}">
+                    <li class="page-item">
+                        <a th:if="${page} > 0" class="page-link" th:text="${page}" th:href="@{/product/view/{productId} (productId=${findOneProduct.getId()}
+                                                                                                              ,reviewPage=${page},
+                                                                                                              qnaPage=1)}">1</a>
+                    </li>
+                </th:block>
+                <li th:if="${findOneProduct.getProductReviews().hasNext()}" class="page-item"><a class="page-link" href="#">다음</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <button onclick="openModalQ()">상품QnA</button>
+    <!-- 모달 창 -->
+    <div id="myModalQ" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModalQ()">&times;</span>
+            <h2>제품QnA</h2>
+
+                <input type="hidden" id="productIdQ" name="productId" th:value="${findOneProduct.getId()}">
+                <input type="hidden"  id="userName" name="userName" th:value="${#authentication.principal.loggedMember.userName}">
+                <p>제목</p>
+                <div>
+                    <select name="productQACategoryId" id="productQnACategoryList">
+                        <option>문의내용</option>
+                    </select>
+                </div>
+                <input class="QA_box" type="text" id="productQATitle" name="productQATitle">
+                <p>내용</p>
+                <textarea class="star_box"  id="ProductQAContent" name="ProductQAContent" placeholder="문의 내용을 작성해주세요." ></textarea>
+                <input type="submit" class="btn02 productQnA" value="QnA작성" >
+
+        </div>
+    </div>
+
+    <div>
+        <table class="table_basic table_detail_qa">
+            <!-- 이전 테이블 내용 생략 -->
+                <tbody>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">답변여부</th>
+                    <th scope="col">구분</th>
+                    <th scope="col">내용</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">등록일자</th>
+                    <th></th>
+                </tr>
+                <block id="productQnATh" th:each="productQnA, stat : ${findOneProduct.getProductQnAPage().getContent()}">
+                    <tr>
+                    <td th:text="${productQnA.getId()}">1</td>
+                    <td th:if="${productQnA.getChildren()} != null">
+                        <strong>답변완료</strong>
+                    </td>
+                    <td th:if="${productQnA.getChildren()} == null">
+                        <strong>답변예정</strong>
+                    </td>
+
+                    <td th:text="${productQnA.getProductQnACategory().getProductQnACategoryName()}">배송</td>
+                    <td class="qa_contents">
+                        <a href="javascript:void(0)" th:onclick="|toggleFeedback(${stat.count})|" th:text="${productQnA.getProductQATitle()}">
+                            상품 관련 문의 입니다.
+                        </a>
+                    </td>
+<!--                    <td th:text="${productQnA.getMember().getUserName()}">ej***</td>-->
+                    <td><strong th:text="${productQnA.getCreatedAt()}">2023-09-24</strong></td>
+                    <td>
+                        <button onclick="openModalA()">관리자 응답</button>
+                        <!-- 모달 창 -->
+                        <div id="myModalA" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeModalA()">&times;</span>
+                                <h2>제품QnA</h2>
+                                <form action="" th:action="@{/admin/product/insertqna}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" id="productIdA" name="productId" th:value="${findOneProduct.getId()}">
+                                    <input type="hidden"  name="adminId" th:value="${#authentication.principal.loggedMember.userId}">
+                                    <input type="hidden" name="productQnAId" th:value="${productQnA.getId()}">
+                                    <p>내용</p>
+                                    <textarea class="star_box"  name="productAdminQnAContent" placeholder="문의 내용을 작성해주세요." ></textarea>
+                                    <input type="submit" class="btn03" value="관리자 응답" >
+                                </form>
+
+                            </div>
+                    </td>
+
+                </tr>
+                    <tr class="reviewDetail" th:id="|reviewDetail${stat.count}|">
+                        <td colspan="5">
+                            <p th:text="${productQnA.getProductQAContent()}">사이즈안맞아 교환했는데 언제쯤받나요</p>
+                            <block th:if="${productQnA.getChildren() != null}">
+                                <input type="hidden" th:value="${productQnA.getChildren().getId()}">
+<!--                                <p th:text="${productQnA.getChildren().getMember().getUserName()}">트릴리온<br>담당자<br></p>-->
+                                <p>답변</p>
+                                <p class="feedback_comment" colspan="4" th:text="${productQnA.getChildren().getProductQAContent()}">
+                                    <!-- 피드백 내용 -->
+                                </p>
+                                <p class="feedback_writer" th:text="${productQnA.getChildren().getCreatedAt()}">
+                                    2024.01.23
+                                </p>
+                            </block>
+                        </td>
+
+                    </tr>
+                </block>
+                    <!-- 상품 Q&A END -->
+                </tbody>
+
+        </table>
+        <!-- 새로 추가한 행 -->
+    </div>
+    <div>
+        <nav aria-label="Page navigation example" class="mt-5 d-flex justify-content-center">
+            <ul class="pagination">
+                <li th:if="${findOneProduct.getProductQnAPage().hasPrevious()}" class="page-item"><a class="page-link" href="#">이전</a></li>
+                <th:block th:each="page : ${#numbers.sequence(1, findOneProduct.getProductQnAPage().getTotalPages())}">
+                    <li class="page-item">
+                        <a th:if="${page} > 0" class="page-link" th:text="${page}" th:href="@{/product/view/{productId} (productId=${findOneProduct.getId()}
+                                                                                                              ,reviewPage=1,
+                                                                                                              qnaPage=${page})}">1</a>
+                    </li>
+                </th:block>
+                <li th:if="${findOneProduct.getProductQnAPage().hasNext()}" class="page-item"><a class="page-link" href="#">다음</a></li>
+            </ul>
+        </nav>
+    </div>
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+        <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Roominis</p></div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+    </body>
+
+    <script th:inline="javascript">
+        $("#minusBtn").on("click",function(e){
+            let prevProductCount = $("#productCount").val();
+            e.preventDefault();
+            prevProductCount--;
+            console.log(prevProductCount)
+            if(prevProductCount > 0){
+            $("#productCount").val(prevProductCount)
+            let productPrice = prevProductCount * [[${findOneProduct.productPrice}]]
+            $("#totalPrice").text(productPrice)
+            }
+
+        })
+
+        let productCount123 = $("#productCountCheck").val()
+        let productCountCheck;
+
+
+        $("#plusBtn").on("click", function(e){
+           let prevProductCount = parseInt($("#productCount").val());
+            e.preventDefault();
+            if(prevProductCount < productCount){
+                console.log("여기는 안들어감?")
+                prevProductCount++;
+                $("#productCount").val(prevProductCount)
+                let productPrice = prevProductCount * [[${findOneProduct.productPrice}]]
+                $("#totalPrice").text(productPrice)
+             }
+            console.log("카운트값"+ prevProductCount)
+            console.log(" 상품총갯수"+ productCount)
+        })
+
+
+        $("#sizeS").on("click", function(){
+            console.log("여기입니다.~~~s사이즈");
+            productCount = $("#sizeSCount").val()
+            console.log(productCount);
+            productCountCheck = $("#productCountCheck").val(productCount)
+            $("#quantityBox").removeAttr('hidden');
+        })
+        $("#sizeM").on("click", function(){
+            console.log("여기입니다.~~~M사이즈");
+            productCount = $("#sizeMCount").val()
+            console.log(productCount);
+            productCountCheck = $("#productCountCheck").val(productCount)
+            $("#quantityBox").removeAttr('hidden');
+        })
+        $("#sizeL").on("click", function(){
+            console.log("여기입니다.~~~L사이즈");
+            productCount = $("#sizeLCount").val()
+            console.log(productCount);
+            productCountCheck= $("#productCountCheck").val(productCount)
+            $("#quantityBox").removeAttr('hidden');
+        })
+        $("#sizeXL").on("click", function(){
+            console.log("여기입니다.~~~XL사이즈");
+            productCount = $("#sizeXLCount").val()
+            console.log(productCount);
+            $("#productCountCheck").val(productCount)
+            $("#quantityBox").removeAttr('hidden');
+        })
+        $("#sizeXXL").on("click", function(){
+            console.log("여기입니다.~~~XXL사이즈");
+            productCount = $("#sizeXXLCount").val()
+            console.log(productCount);
+            $("#productCountCheck").val(productCount)
+            $("#quantityBox").removeAttr('hidden');
+        })
+        let productSizeId;
+        $('input[name="productSizeId"]').on("change",function(e){
+            productSizeId = $(this).val();
+            $("#productCount").val(1);
+            console.log("네임으로 가져온값==>>>",productSizeId)
+        })
+
+
+        $("#productAddCart").on("click", function(e){
+            const productTotalCount = $("#productCount").val();
+        if(productTotalCount == 0){
+            return false;
+        }
+
+            const productPrice = $("#totalPrice").text();
+            console.log("productTotalCount" + productTotalCount);
+            console.log("productSizeId" + productSizeId);
+            console.log("productPrice" + productPrice);
+            $.ajax({
+                url:"/product/cart",
+                method: "POST",
+                data:{
+                    "productSizeId": productSizeId,
+                    "productPrice": productPrice,
+                    "productTotalCount": productTotalCount,
+                    "userId": $("#userId").val()
+                },
+                success: function(e){
+                    $("#productCartCount").text(e)
+                    console.log("성공적인가? ===>>> " + e);
+                }
+
+            })
+        })
+
+
+        function openModal() {
+            document.getElementById('myModal').style.display = 'flex';
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            var modal = document.getElementById('myModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function openModalQ() {
+            document.getElementById('myModalQ').style.display = 'flex';
+            $.ajax({
+                url: "/product/findqnacategory",
+                method: "GET",
+                success: function (data){
+
+                    $.each(data , function (index, item){
+                        console.log(item.productQnACategoryName)
+                        $("#productQnACategoryList").append(`<option value="${item.productQnACategoryId}">${item.productQnACategoryName}</option>`)
+                    })
+
+                }
+            })
+        }
+
+        // 모달 닫기
+        function closeModalQ() {
+            document.getElementById('myModalQ').style.display = 'none';
+        }
+
+        function openModalA() {
+            document.getElementById('myModalA').style.display = 'flex';
+        }
+        // 모달 닫기
+        function closeModalA() {
+            document.getElementById('myModalA').style.display = 'none';
+        }
+
+
+
+
+
+
+        let star = 1;
+        $('.star_rating > .star').click(function() {
+            $(this).parent().children('span').removeClass('on');
+            $(this).addClass('on').prevAll('span').addClass('on');
+
+            star = $(".on").length;
+            console.log("===별별별======")
+            console.log(star)
+            $("#starCount").val(star);
+            console.log("===별별별======")
+
+        })
+
+        $("#file1").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview1").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+
+        });
+
+        $("#file2").on("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.match("image.*")) {
+                alert("이미지 파일만 가능합니다.");
+                return false;
+            }
+            let fileReader = new FileReader();
+            fileReader.onload=function(e) {
+                $("#preview2").attr("src",e.target.result);
+            }
+            fileReader.readAsDataURL(file);
+        });
+
+        $(".productQnA").on("click", function (e){
+            const userName = $("#userName").val();
+            const productQACategoryId = $("#productQnACategoryList").val();
+            const productQATitle = $("#productQATitle").val();
+            const ProductQAContent = $("#ProductQAContent").val();
+            const productId = $("#productIdQ").val();
+            $.ajax({
+                url:"/product/insertqna",
+                method: "POST",
+                data: {
+                    "userName":userName,
+                    "productQACategoryId":productQACategoryId,
+                    "productQATitle": productQATitle,
+                    "ProductQAContent": ProductQAContent,
+                    "productId": productId
+                },
+                success: function (data){
+                    console.log(data)
+                    location.reload(true)
+                }
+            })
+        })
+
+        function toggleFeedback(commentId) {
+            console.log("asdasd")
+            console.log(commentId)
+            var feedbackRow = document.getElementById("reviewDetail" + commentId);
+            console.log("asdasd")
+            feedbackRow.style.display = (feedbackRow.style.display === "table-row") ? "none" : "table-row";
+        }
+
+
+
+
+    </script>
+</div>
+</html>

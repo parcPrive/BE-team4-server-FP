@@ -1,0 +1,296 @@
+ul
+,ol {
+  margin: 0;
+  padding: 0;
+  padding-left: 0;
+  margin-left: 0;
+}
+li {
+  list-style: none;
+}
+
+.logo {
+  height:60px;
+}
+.profile {
+  width:150px;
+
+}
+.loginPw{
+    height:58px !important;
+}
+#memberProfileImage {
+  width:150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 300px;
+  border: 5px solid #ccc;
+}
+.subscribeList li {
+  display: flex;
+  align-items: center;
+  margin:10px 0;
+}
+.subscribeList li .thumb {
+  width:60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 100px;
+  overflow: hidden;
+  margin-right: 20px;
+}
+.subscribeList li .btn {
+  margin-left: auto;
+}
+
+
+.story-box {
+  border: 1px solid #ccc;
+}
+.story-box .mypage-header {
+  padding:15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+.story-box .mypage-header img {
+  width:60px;
+  height:60px;
+  object-fit: cover;
+  border-radius: 100px;
+  border: 2px solid #ccc;
+  margin-right: 10px;
+}
+.story-box .main-image img {
+  max-width:100%;
+}
+.comment-box {
+  padding:15px;
+  display: flex;
+  flex-direction: column;
+}
+.comment-box .btn {
+  margin-left: auto;
+}
+
+#preview {
+  width:100%;
+}
+.story-list ul {
+  display: flex;
+  margin: 0;
+  margin-left: 0;
+  flex-wrap: wrap;
+  /*justify-content: space-between;*/
+  padding-left: 0;
+
+}
+.story-list li {
+  flex-basis: calc(33.33% - 20px);
+  border:1px solid #ccc;
+  list-style: none;
+  margin: 10px;
+}
+.story-list li img {
+  width:100%;
+  height: 200px;
+  object-fit: cover;
+}
+.story-list li .caption {
+  padding:15px;
+}
+.story-list li .caption {
+  padding:15px;
+}
+
+.mypage-story-list li {
+  position: relative;
+}
+.mypage-story-list li .overlay {
+  position: absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+.mypage-story-list li:hover .overlay {
+  opacity: 1;
+}
+
+.comment-list .btn-close {
+  margin-left: auto;
+}
+.comment-list li {
+  align-items: center;
+}
+.comment-list li .profile-image img {
+  width:30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 100px;
+}
+
+.story-box .main-image {
+  display: flex;
+  justify-content: center;
+}
+
+/*  ======productList========== */
+.container1 {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-content: flex-start;
+}
+
+/* item에 hidden 처리하기. */
+.item {
+  width: calc(25% - 7px);
+  aspect-ratio: 6/5;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.item:after {
+  /* block & content */
+  display: block;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  opacity: 0;
+}
+
+.imgBox {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.imgBox img {
+  width: 100%;
+  height: 100%;
+  /* 사진이나 비디오의 규격 맞출 때 object-fit 이용하기. */
+  object-fit: cover;
+  z-index: 1;
+}
+
+.textBox {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 20px;
+  z-index: 3;
+}
+
+.textBox p {
+  color: white;
+  margin: 5px 0 0;
+}
+
+.textBox__name {
+  font-size: 22px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.textBox__price {
+  font-size: 16px;
+  font-weight: 400;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+/* 마우스 올렸을 때에 기능 추가하기. */
+.item:hover:after {
+  opacity: 1;
+}
+
+/* 기능 1 : 화면 살짝 불투명 + 화면 커지기. */
+.item:hover .imgBox img {
+  transform: scale(1.1);
+  /* 블러 처리하기. */
+  filter: blur(3px);
+}
+
+/* 기능 2 : 상품 정보 보이면서 위로 올라가기. */
+.item:hover .textBox .textBox__name {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+/* 기능 2 : 상품 정보 보이면서 위로 올라가기. */
+.item:hover .textBox .textBox__price {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+/* 자연스럽게 트랜지션 적용하기. */
+.item:after,
+.item .imgBox img,
+.item .textBox__name,
+.item .textBox__price {
+  transition: all 0.4s ease-in-out;
+}
+
+/*====================================================productCartList================================================================================ */
+
+.depth1{
+    padding-left:1rem !important;
+}
+.depth2{
+    padding-left:2rem !important;
+}
+.depth3{
+    padding-left:3rem !important;
+}
+.depth4{
+    padding-left:4rem !important;
+}
+/*-------------------login페이지--------------------*/
+.imgages{
+    height : 50px;
+    width : 50px;
+}
+.login_util{
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px 0 0 0;
+    width: 100%;
+    max-width: 400px;
+    height: 232px;
+    border: 1px solid #e3e3e3;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    text-align: center;
+}
+.login_util div:nth-child(1) {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+.login_util div:nth-child(2) {
+    margin: 8px 0 23px 0;
+    font-size: 14px;
+    color: #8a8a8a;
+}
+

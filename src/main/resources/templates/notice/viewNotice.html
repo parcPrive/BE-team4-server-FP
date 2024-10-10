@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container" id="textBox">
+        <h3 class="fontTitle">공지사항 글 보기</h3>
+        <div class="justify-content-center border-bottom mb-3">
+            <h3 class="text-center fontTitle" th:text="${noticeInfo.noticeTitle}">서울사랑 누리집이 새롭게 바뀌었습니다</h3>
+        </div>
+
+        <div class="nav justify-content-end mb-3" style="font-size: 20px;">
+    <span class="text-end ms-auto">
+        <a href="#none" class="fontSmall"
+           title="글자크기 작게">
+            <span class="minus"><i class="bi bi-dash-square"></i></span>
+        </a>
+        <a href="#none"  class="fontBig"
+           title="글자크기 크게">
+            <span class="plus"><i class="bi bi-plus-square"></i></span>
+        </a>
+    </span>
+        </div>
+
+        <div class="contents notice-view js_font_chg text-center">
+            <div class="view-box ">
+                <div class="view-header row border-top">
+                    <div class="col-md-6 mt-2">
+                        <dl>
+                            <dt>작성일</dt>
+                            <dd th:text="${#temporals.format(noticeInfo.noticeDate,'yyyy-MM-dd HH:mm')}"></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <dl>
+                            <dt>조회수</dt>
+                            <dd th:text="${noticeInfo.noticeView}"></dd>
+
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="view-content border-top" style="height: 500px;">
+                    <div class="content h-100 mt-3" th:utext="${noticeInfo.noticeContent}">
+                            <h2 th:text="${noticeInfo.comments.get(0).commentContent}"></h2>
+                    </div>
+                </div>
+
+
+                <div class="view-header row border-top d-flex align-items-center">
+                    <div class="col-md-6 mt-2" >
+                        <dl>
+                            <dt>이전글</dt>
+                            <dd th:if="${noticeInfo.prevNotice == null}">
+                                <span>이전글 없습니다.</span>
+                            </dd>
+                            <dd th:unless="${noticeInfo.prevNotice==null}">
+                                <th:block th:if="${search}">
+                                    <a th:href="@{/cs/notice/searchView/{id}/{category}/{keyword}/{search}(id=${noticeInfo.prevNotice.id},
+                                    category=${category},keyword=${keyword},search=${search})}">
+                                        <span th:text="${noticeInfo.prevNotice.noticeTitle}"></span>
+                                    </a>
+                                </th:block>
+                                <th:block th:if="${search == null}">
+                                <a th:href="@{/cs/notice/view/{id}(id=${noticeInfo.prevNotice.id})}">
+                                    <span th:text="${noticeInfo.prevNotice.noticeTitle}"></span>
+                                </a>
+                                </th:block>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 mt-2" >
+                    <dl>
+                        <dt>다음글</dt>
+                        <dd th:if="${noticeInfo.nextNotice == null}">
+                            <span>다음글 없습니다.</span>
+                        </dd>
+                        <dd th:unless="${noticeInfo.nextNotice == null}">
+                            <th:block th:if="${search}">
+                            <a th:href="@{/cs/notice/searchView/{id}/{category}/{keyword}/{search}(id=${noticeInfo.nextNotice.id},
+                            category=${category},keyword=${keyword},search=${search})}">
+                                <span th:text="${noticeInfo.nextNotice.noticeTitle}"></span>
+                            </a>
+                            </th:block>
+                            <th:block th:if="${search == null}">
+                                <a th:href="@{/cs/notice/view/{id}(id=${noticeInfo.nextNotice.id})}">
+                                    <span th:text="${noticeInfo.nextNotice.noticeTitle}"></span>
+                                </a>
+                            </th:block>
+                        </dd>
+                    </dl>
+                </div>
+                </div>
+
+
+                <div class="text-start">
+                    <h2>댓글 목록</h2>
+                    <th:block th:each="item,status:${commentList}">
+                        <th:block th:if="${item.depth}== '0'"><ul class="list-group depth-list"></th:block>
+                        <th:block th:if="${item.depth}== '1'"><ul class="list-group ms-2 depth-list depth1"></th:block>
+                        <th:block th:if="${item.depth}== '2'"><ul class="list-group ms-3 depth-list depth2"></th:block>
+                        <th:block th:if="${item.depth}== '3'"><ul class="list-group ms-4 depth-list depth3"></th:block>
+                        <th:block th:if="${item.depth}== '4'"><ul class="list-group ms-5 depth-list depth4"></th:block>
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1" th:text="${item.writer.userId}"></h5>
+                                <small th:text="${#temporals.format(item.commentDate,'yyyy-MM-dd HH:mm')}">2024-01-22</small>
+                            </div>
+                            <p class="content" th:text="${item.commentContent}"th:value="${item.commentContent}">작성자 아이디</p>
+                            <button class="btn btn-primary btnComment" th:data-no="${item.id}" th:value="${item.id}">대댓글 작성</button>
+                                <span th:if="${#authentication.principal.loggedMember.id} == ${item.writer.id}">
+                                    <button class="btn btn-secondary btnCommentUpdate" th:data-no="${item.id}">댓글 수정</button>
+                                    <button class="btn btn-danger btnCommentDelete" th:data-no="${item.id}">댓글 삭제</button>
+                                </span>
+                            <div class="feed-list" th:data-no="${item.id}" th:data-idx="${item.depth}">
+
+                            </div>
+                            <!-- 대댓글 리스트 -->
+                            <ul class="list-group mt-3 ml-5 son-list">
+                                <!-- 추가적인 대댓글 항목들을 필요에 따라 반복해서 추가할 수 있습니다. -->
+                            </ul>
+                        </li>
+                    </ul>
+                    </th:block>
+                </div>
+                <div class="text-start">
+                    <h2>댓글 달기</h2>
+                    <form class="commentInsert" th:action="@{/cs/comment/insert}" method="post">
+                        <input type="hidden" name="id" th:value="${noticeInfo.id}">
+                        <input type="hidden" name="no" th:value="${no}">
+                        <input type="hidden" name="memberId" th:value="${#authentication.principal.loggedMember.id}">
+                        <div class="form-group">
+                            <label for="commentContent">댓글:</label>
+                            <textarea class="form-control" id="commentContent" name="commentContent" rows="4" placeholder="댓글을 입력하세요" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btnInsertComment">댓글 작성</button>
+                    </form>
+                </div>
+                <div class="view-footer border-top mt-1 align-items-center">
+                        <li class="page-item">
+                            <a class="btn btn-secondary" href="#" th:href="@{/cs/notice/list(page=0)}" >목록</a>
+                        </li>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+                        <a th:href="@{/cs/notice/delete/{id}(id=${noticeInfo.id})}" class="btn btn-danger">글 삭제</a>
+                        <a th:href="@{/cs/notice/update/{id}(id=${noticeInfo.id})}" class="btn btn-primary mx-1">글 수정</a>
+                    </th:block>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        $(".btnInsertComment").on("click",function(){
+            $.ajax({
+                url:"/cs/comment/insert",
+                method:"POST",
+                data:{id : $('input[name=id]').val(),
+                      memberId :$('input[name=memberId]').val(),
+                      commentContent : $("#commentContent").val()},
+                      success:function(response){
+                      console.log(response);
+                      if(response.insert =='ok'){
+                        alert("댓글등록");
+                        location.reload();
+                      }else{
+                      alert("댓글등록실패");
+                      }
+
+                      }
+            });
+            return false;
+        });
+        //글자 크기
+        let titleFont = 28
+        let basicFont = 16
+        console.log(basicFont);
+        $(".fontBig").on("click",function(){
+         basicFont++; // basicFont는 1씩 계속 증가하고,
+         titleFont++
+         console.log(basicFont);
+         // 20 넘어가면 20에서 동작 멈춤
+            if( basicFont > 20  ) {basicFont = 20; return false;}
+            if( titleFont > 32 ) {titleFont = 32; return false;}
+                $("#textBox").css("font-size", basicFont);
+                $(".fontTitle").css("font-size", titleFont);
+
+        });
+
+        $(".fontSmall").on("click",function(){
+         basicFont--; // basicFont는 1씩 계속 감소하고,
+         titleFont--
+         console.log(basicFont);
+         // 20 넘어가면 20에서 동작 멈춤
+            if( basicFont < 10 ) {basicFont = 10; return false;}
+            if( titleFont < 22 ) {titleFont = 22; return false;}
+                $("#textBox").css("font-size", basicFont);
+                $(".fontTitle").css("font-size", titleFont);
+        });
+
+
+        let tempHtml = "";
+
+        $(".btnComment").on("click",function(){
+              let commentId = $(this).data("no");
+
+              tempHtml += `<div class="mb-3 comment-box p-3">
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" ></textarea>
+                                    <button class="btn btn-outline-primary btn-comment mt-2">comment</button>
+                                </div> `;
+          $(this).parent().find(".feed-list").html("");
+          $(this).parent().find(".feed-list").append(tempHtml);
+          tempHtml="";
+
+          return false;
+        });
+
+        $("body").on("click",".comment-box .btn-comment",function(){
+                console.log("코멘트 눌렀음...");
+                const comment =  $(this).prev().val();
+                console.log(comment);
+                const noticeId = [[${noticeInfo.id}]];
+                console.log(noticeId);
+                let commentId =  $(this).parent().parent().data("no");
+                let depth = $(this).parent().parent().data("idx");
+                console.log(commentId);
+                let sonHtml="";
+                const commentList = $(this).parent().parent().parent().find(".son-list")
+                console.log(commentList);
+                depth += 1;
+                $.ajax({
+                    url :"/cs/comment/insertReply",
+                    method :"POST",
+                    data: {
+                        commentId: commentId,
+                        noticeId : noticeId,
+                        commentContent:comment,
+                        depth : depth
+                       },
+                        success:function(response){
+                        console.log(response);
+                        let date = new Date
+                            if(response.insert == "ok"){
+                             alert("댓글등록");
+                             location.reload();
+                            function getFullYmdStr(){
+                                //년월일시분초 문자열 생성
+                                var d = new Date();
+                                return d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes();
+                            }
+                            sonHtml+=`<li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">${response.comments.writer.userId}</h6>
+                                        <small>${getFullYmdStr()}</small>
+                                    <p class="mb-1">${response.comments.commentContent}</p>
+                                    <div>
+                                    <button class="btn btn-primary btnComment" data-no="${response.comments.id}" value="${response.comments.id}">대댓글 작성</button>
+                                    <button class="btn btn-secondary">댓글 수정</button>
+                                    <button class="btn btn-danger">댓글 삭제</button>
+                            </div>
+                            </div>
+                            <div class="feed-list">
+
+                            </div>
+                                </li>
+                                `
+                                commentList.append(sonHtml);
+                            }
+                        },
+                       fail:function(data){
+                       }
+                });
+
+            });
+        $(".btnCommentDelete").on("click",function(){
+
+
+            $.ajax({
+                url:"/cs/comment/delete",
+                method:"POST",
+                data:{id : $(this).data("no")},
+                success:function(response){
+                if(response.isDelete){
+                alert("댓글 삭제");
+                location.reload();
+                }else{
+                alert("알수 없는 오류입니다.");
+                location.reload();
+                }
+
+                }
+
+            })
+        })
+
+        $(".btnCommentUpdate").on("click",function(){
+              console.log("업데이트눌렀음");
+
+              let content = $(this).parent().parent().parent().find("p").text();
+              console.log(content);
+              tempHtml += `<div class="mb-3 comment-box p-3">
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">${content}</textarea>
+                                    <button class="btn btn-outline-primary btn-comment-update mt-2">comment</button>
+                                </div> `;
+          $(this).parent().next(".feed-list").html("");
+          $(this).parent().next(".feed-list").append(tempHtml);
+          tempHtml="";
+
+          return false;
+        });
+
+        $("body").on("click",".comment-box .btn-comment-update",function(){
+            const comment =  $(this).prev().val();
+
+            $.ajax({
+                url:"/cs/comment/update",
+                method:"POST",
+                data:{id : $(this).parent().parent().data("no"),
+                    commentContent : comment
+                },
+                success:function(response){
+                console.log(response);
+                if(response.isUpdate =='ok'){
+                alert("댓글 업데이트");
+                location.reload();
+                }else{
+                alert("알수 없는 오류입니다.");
+                location.reload();
+                }
+
+                }
+
+            })
+         })
+
+
+    </script>
+</div>

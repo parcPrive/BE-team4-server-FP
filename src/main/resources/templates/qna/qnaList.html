@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row g-0 text-center">
+            <div class="col-sm-6 col-md-8">
+                <h2 class="text-start">QnA</h2>
+            </div>
+            <div class="col-6 col-md-4">
+                <nav class="text-end" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-chevron p-3 rounded-3 justify-content-end">
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis" href="/">
+                                <i class="bi bi-house" width="16" height="16"></i>
+                                <span class="visually-hidden">홈</span>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis fw-semibold text-decoration-none" href="#">고객센터</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            QnA
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="table_wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">카테고리</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성일</th>
+                    <th scope="col">처리상태</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">공개여부</th>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <th scope="col">삭제</th>
+                        <th scope="col"><input type="checkbox" id="checkAll" ></th>
+                    </th:block>
+                </tr>
+                </thead>
+                <tbody id="resultList">
+                <th:block th:each="item,status:${qnaList}">
+                    <tr>
+                        <td class="" th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
+                        <td th:text="${item.qnaCategory}" ></td>
+                        <td>
+                            <th:block th:if="${search}">
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <a href="" th:href="@{/cs/qna/searchView/{id}(id=${item.id})}"
+                                       th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                </th:block>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                    <th:block th:if="${item.qnaSecret} == 1">
+                                        <a class="check" th:data-no="${item.id}" href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+                                    <th:block th:if="${item.qnaSecret} != 1">
+                                        <a href="" th:href="@{/cs/qna/searchView/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+                                </th:block>
+
+                            </th:block>
+                            <th:block th:unless="${search}">
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <a href="" th:href="@{/cs/qna/view/{id}(id=${item.id})}"
+                                       th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                </th:block>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                    <th:block th:if="${item.qnaSecret} == 1">
+                                        <a class="check" th:data-no="${item.id}"  href="" th:href="@{/cs/qna/check/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+                                    <th:block th:if="${item.qnaSecret} != 1">
+                                        <a href="" th:href="@{/cs/qna/view/{id}(id=${item.id})}"
+                                           th:text="${item.qnaTitle}">제목이 들어가겠죠....</a>
+                                    </th:block>
+
+                                </th:block>
+                            </th:block>
+                        </td>
+                        <td th:text="${#temporals.format(item.qnaDate,'yyyy-MM-dd HH:mm')}"></td>
+                        <td  th:text="${item.qnaStatus}" ></td>
+                        <td  th:text="${item.writer.userName}" ></td>
+
+                        <td th:if="${item.qnaSecret} == 0" ><i class="bi bi-unlock ms-4"></i></td>
+                        <td th:if="${item.qnaSecret} == 1" ><i class="bi bi-lock ms-4"></i></td>
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.id}">삭제</button></td>
+                            <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
+                        </th:block>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between">
+                <div class="mt-1 me-3">
+                    <div class="modal fade" id="exampleModalScrollable" tabindex="-1" aria-labelledby="exampleModalScrollableTitle" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalScrollableTitle">QNA WRITE</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="" th:action="@{/cs/qna/insert}" method="post">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="mb-3">
+                                            <label for="qnaCategory" class="form-label">카테고리</label>
+                                            <select class="form-control qnaCategory" id="qnaCategory" name="qnaCategory">
+                                                <option value="회원정보" >회원정보</option>
+                                                <option value="상품확인" >상품확인</option>
+                                                <option value="주문/결제" >주문/결제</option>
+                                                <option value="배송" >배송</option>
+                                                <option value="교환/취소(반품)" >교환/취소(반품)</option>
+                                                <option value="서비스" >서비스</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="subject" class="form-label">제목</label>
+                                        <input type="text" class="form-control" id="subject" placeholder="제목" name="qnaTitle">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="content" class="form-label">CONTENT</label>
+                                        <textarea type="text" class="form-control" id="content"
+                                                  placeholder="내용" name="qnaContent"  rows="10"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="content" class="form-label">비공개 여부</label>
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" name="qnaSecret" value="0">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">비공개 여부</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="qnaPassword" class="form-label">비밀 번호</label>
+                                        <input type="password" class="form-control password" placeholder="password"
+                                               id="qnaPassword" aria-label="password" aria-describedby="button-addon2" name="qnaPassword" disabled>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                    <button class="btn btn-primary" id="btnJoinConfirm">저장</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<a th:href="@{/cs/qna/insert}">원래 글쓰기 </a>-->
+                    <!--th:href="@{/cs/qna/insert}"-->
+                    <button  data-bs-toggle="modal" data-bs-target="#exampleModalScrollable" class="btn btn-primary">글쓰기</button>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
+                    </th:block>
+                </div>
+                <div style="width: 50%">
+                    <form class="d-flex justify-content-between"  action="" th:action="@{/cs/qna/search}" method="get">
+                            <div class="col-4" th:with="category=${param.category}">
+                                <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                                    <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                                    <option value="qnaTitle"   th:selected="${#strings.equals(category,'qnaTitle')  ? true : false}">제목</option>
+                                    <option value="qnaCategory" th:selected="${#strings.equals(category,'qnaCategory')? true : false}">카테고리</option>
+                                    <option value="qnaStatus" th:selected="${#strings.equals(category,'qnaStatus')? true : false}">처리상태</option>
+                                </select>
+                            </div>
+                            <div class="col-6 ms-2">
+                    <span class="keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+                            </div>
+                            <input type="hidden" name="search" value="true">
+                            <div class="ms-2">
+                                <button class="btn btn-primary">검색</button>
+                            </div>
+                    </form>
+                </div>
+                </div>
+
+
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center mt-5">
+                    <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
+                        <th:block th:if="${search}">
+                            <a class="page-link" href="#"
+                               th:href="@{/cs/qna/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number-1})}">Previous</a>
+                        </th:block>
+                        <th:block th:unless="${search}">
+                            <a class="page-link" th:href="@{/cs/qna/list(page=${pagination.number - 1})}">Previous</a>
+                        </th:block>
+                    </li>
+                    <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+                        <li class="page-item"
+                            th:classappend="${item==pagination.number?'active':''}"
+                            th:if="${item >= start and
+                                 item < end }">
+                            <th:block th:if="${search}">
+                                <a class="page-link" href="#"
+                                   th:href="@{/cs/qna/search(category=${category},keyword=${keyword},search=${search},page=${item})}" th:text="${item + 1}">1</a>
+                            </th:block>
+                            <th:block th:unless="${search}">
+                                <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${item})}" th:text="${item + 1}">1</a>
+                            </th:block>
+
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
+                        <th:block th:if="${search}">
+                            <a class="page-link" href="#"
+                               th:href="@{/cs/qna/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number+1})}">Next</a>
+                        </th:block>
+                        <th:block th:unless="${search}">
+                            <a class="page-link" href="#" th:href="@{/cs/qna/list(page=${pagination.number+1})}">Next</a>
+                        </th:block>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!--모달-->
+    <div class="modal fade" id="qnaStaticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLiveLabel">게시글 비밀번호 확인</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="/cs/qna/check" >
+                    <div class="modal-body">
+                        <div class="mb-3 ">
+                            <h3  class="text-center">비밀번호를 입력해주세요</h3>
+                            <input type="hidden" class="form-control" placeholder="id" id="id"
+                                   name="qnaId"  readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">password</label>
+                            <input type="password" class="form-control" placeholder="password" id="password"
+                                   name="checkPassword">
+                        </div>
+                        <div class="invalid-feedback">
+                            <p class="alert alert-danger" >패스워드 확인해 주세요.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" id="btnCheck">확인</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+            $(".check").on("click",function(){
+                let qnaId = $(this).data("no");
+                console.log(qnaId);
+                $("#id").val(qnaId);
+                const qnaModal = new bootstrap.Modal("#qnaStaticBackdropLive");
+                qnaModal.show();
+                return false;
+            })
+            $("#btnCheck").on("click",function(e){
+                $.ajax({
+                    url:"/cs/qna/check",
+                    method:"post",
+                    data: {
+                        id:$("input[name='qnaId']").val(),
+                        qnaPassword:$("input[name='checkPassword']").val()
+                    },
+                    success:function(data){
+                    console.log(data.isCheck);
+                        if(data.isCheck) {
+                            location.href="/cs/qna/view/"+data.id;
+                        } else {
+                            $(".invalid-feedback").show();
+                        }
+                    }
+                });
+                return false;
+            })
+        // 검색 후 카테고리가 level이면 selcet를 유지
+           if($(".btnSearch").val()=="qnaStatus"){
+           $(".keyword").attr("type","hidden");
+           $(".keywordLevel").html(`<select class="form-select" name="keyword">
+                             <option value="답변대기">답변대기</option>
+                             <option value="답변완료">답변완료</option>
+                             </select> `)
+           }
+           //검색버튼 다양화
+           $(".btnSearch").on("change",function(){
+
+               if($(".btnSearch").val()=="qnaStatus"){
+                   $(".keyword").attr("type","hidden");
+                   $(".keywordLevel").html(`<select class="form-select " name="keyword">
+                             <option value="답변대기">답변대기</option>
+                             <option value="답변완료">답변완료</option>
+                             </select> `)
+               }else{
+                  $(".keywordLevel").html(`<input class="form-control keyword" type="text" name="keyword">`)
+               }
+           })
+       //삭제 기능
+      $(".btnDelete").on("click",function(){
+          const $parent = $(this).parent().parent();
+          console.log($parent);
+          const loggedId = $(this).data("no");
+          console.log(loggedId);
+          $.ajax({
+              url:"/cs/qna/delete",
+              data:{id:$(this).data("no")},
+              method:"POST",
+              success:function(data){
+                if(data.isDelete){
+                alert("삭제되었습니다.")
+                location.reload();
+                }else{
+                alert("오류입니다.")
+                }
+
+              },
+              fail:function(){
+              }
+          });
+          return false;
+      });
+      $("#btnDeleteAll").on("click",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/cs/qna/deleteAll",
+                        method:"POST",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck
+                                },
+                        success:function(data){
+                            if(data.isDelete){
+                                alert("삭제되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+
+                        }
+                    })
+                    return false;
+                })
+        //체크박스 전체 선택 및 해체 기능
+                $("#checkAll").on("change",function(){
+                    if($("#checkAll").is(":checked")){
+                     $(".check").prop("checked",true);
+                    }else{
+                     $(".check").prop("checked",false);
+                    }
+                })
+                    ClassicEditor
+                        .create( document.querySelector( "#content" ),{
+                            ckfinder:{
+                                uploadUrl:"/cs/upload"
+                            }
+                        } )
+                        .catch( error => {
+                            console.error( error );
+                        });
+    </script>
+</div>

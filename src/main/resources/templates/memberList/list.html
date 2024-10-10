@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <h2 th:text="${xx}"></h2>
+        <table class="table">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col">회원 현황</th>
+                <th scope="col">신규 회원</th>
+                <th scope="col">오늘 방문회원</th>
+                <th scope="col">총 회원</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td >#</td>
+                <td th:text="${registerDateList.size()}"></td>
+                <td th:text="${logList.size()}"></td>
+                <td th:text="${memberSize.size()}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <a class="btn btn-dark btnBlackList"  th:href="@{/memberList/blackList}">블랙리스트관리</a>
+        <a class="btn btn-danger btnDeleteList"  th:href="@{/memberList/deleteList}">탈퇴회원리스트</a>
+        <h2>회원리스트</h2>
+        <form action="../member/deleteAll">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">아이디</th>
+                    <th scope="col">이름</th>
+                    <th scope="col">닉네임</th>
+                    <th scope="col">가입날짜</th>
+                    <th scope="col">구매한 금액</th>
+                    <th scope="col">권한</th>
+                    <th scope="col">등급</th>
+                    <th scope="col">블랙</th>
+                    <th scope="col">삭제</th>
+                    <th scope="col"><input type="checkbox" id="checkAll" ></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="item,status:${memberList}">
+                <tr>
+                    <td th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
+                    <td><a href="" th:href="@{/admin/mypage/{id}(id=${item.id})}"  th:text="${item.userId}">제목이 들어가겠죠....</a></td>
+                    <td th:text="${item.userName}" ></td>
+                    <td th:text="${item.nickName}"></td>
+                    <td th:text="${#temporals.format(item.registerDate,'yyyy-MM-dd HH:mm')}"></td>
+                    <th:block th:if="${item.paymentList.size()} == 0">
+                        <td>0</td>
+                    </th:block>
+                    <th:block th:if="${item.paymentList.size()} != 0">
+                        <td th:text="${#aggregates.sum(item.paymentList.?[status=='paid'].![productTotalPrice])
+                         - #aggregates.sum(item.paymentList.?[status=='cancelled'].![productTotalPrice])}" >구매한 금액</td>
+                    <!--<td th:text="${item.paymentList.productTotalPrice}" >구매한 금액</td>--> <!--th:text="${item.paymentList.productTotalPrice}"-->
+                    </th:block>
+                    <td th:text="${item.role}">권한</td>
+                    <td >
+                        <input class="levelId" type="hidden" name=" id" th:value="${item.id}">
+                        <select class="btn btn-secondary level" name="level" >
+                            <option value="0" th:selected="${item.levels} == '0'" selected>일반</option>
+                            <option value="1" th:selected="${item.levels} == '1'" selected>실버</option>
+                            <option value="2" th:selected="${item.levels} == '2'" selected>골드</option>
+                            <option value="3" th:selected="${item.levels} == '3'" selected>플레티넘</option>
+                            <option value="4" th:selected="${item.levels} == '4'" selected>다이아</option>
+                        </select>
+                    </td>
+                    <!--<th:block th:if="${item.levels}==0"><td>일반</td></th:block>-->
+
+                    <td><button class="btn btn-dark btnBlack" th:data-no="${item.id}">블랙</button> </td>
+                    <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.userId}">삭제</button></td>
+                    <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
+                </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </form>
+        <div class="d-flex justify-content-between">
+            <div class="mt-1 me-3">
+            <button class="btn btn-dark btnBlackAll" id="btnBlackAll">블랙</button>
+            <select class="btn btn-secondary btnLevel" name="allLevel">
+                <option value="unlevel" selected>회원등급</option>
+                <option value="0">일반</option>
+                <option value="1">실버</option>
+                <option value="2">골드</option>
+                <option value="3">플레티넘</option>
+                <option value="4">다이아</option>
+            </select>
+            <button class="btn btn-danger" id="btnDeleteAll" >삭제</button>
+            </div>
+            <div style="width: 50%">
+                <form class="d-flex justify-content-between" action="" th:action="@{/memberList/search}" method="get">
+                        <div class="col-4" th:with="category=${param.category}">
+                            <select class="form-select btnSearch" aria-label="Default select example" name="category">
+                                <option value="all"     th:selected="${#strings.equals(category,'all')    ? true : false}">전체검색</option>
+                                <option value="userId"   th:selected="${#strings.equals(category,'userId')  ? true : false}">아이디</option>
+                                <option value="userName" th:selected="${#strings.equals(category,'userName')? true : false}">이름</option>
+                                <option value="nickName" th:selected="${#strings.equals(category,'nickName')? true : false}">닉네임</option>
+                                <option value="level"    th:selected="${#strings.equals(category,'level')   ? true : false}">등급</option>
+                            </select>
+                        </div>
+                        <div class="col-6 ms-2">
+                    <span class="keywordLevel">
+                    <input  type="text" class="form-control keyword" name="keyword" placeholder="검색어를 입력해주세요."
+                            th:value="${param.keyword}">
+                        </span>
+                        </div>
+                        <input type="hidden" name="search" value="true">
+                        <div class="col-2 ms-2"><button class="btn btn-primary">검색</button></div>
+                </form>
+            </div>
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-5">
+            <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
+                <th:block th:if="${search}">
+                    <a class="page-link" href="#"
+                       th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number-1})}">Previous</a>
+                </th:block>
+                <th:block th:unless="${search}">
+                    <a class="page-link" href="#" th:href="@{/memberList/list(page=${pagination.number-1})}">Previous</a>
+                </th:block>
+            </li>
+            <!-- 13 -->
+            <!--1,2,3,4,5 /> 6,7,8,9,10 / 11,12,131,14,15-->
+            <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+                <li class="page-item"
+                    th:classappend="${item==pagination.number?'active':''}"
+
+                    th:if="${item >= start and
+                                 item < end }">
+                    <th:block th:if="${search}">
+                        <a class="page-link" href="#"
+                           th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${item})}" th:text="${item + 1}">1</a>
+                    </th:block>
+                    <th:block th:unless="${search}">
+                        <a class="page-link" href="#"
+                           th:href="@{/memberList/list(page=${item})}" th:text="${item + 1}">1</a>
+                    </th:block>
+                </li>
+            </th:block>
+            <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
+                <th:block th:if="${search}">
+                    <a class="page-link" href="#"
+                       th:href="@{/memberList/search(category=${category},keyword=${keyword},search=${search},page=${pagination.number+1})}">Next</a>
+                </th:block>
+                <th:block th:unless="${search}">
+                    <a class="page-link" href="#" th:href="@{/memberList/list(page=${pagination.number+1})}">Next</a>
+                </th:block>
+            </li>
+        </ul>
+    </nav>
+
+
+        <script>
+            // 검색 후 카테고리가 level이면 selcet를 유지
+            if($(".btnSearch").val()=="level"){
+            $(".keyword").attr("type","hidden");
+            $(".keywordLevel").html(`<select class="form-select" name="keyword">
+                              <option value="0">일반</option>
+                              <option value="1">실버</option>
+                              <option value="2">골드</option>
+                              <option value="3">플레티넘</option>
+                              <option value="4">다이아</option>
+                              <option value="5">관리자</option>
+                              </select> `)
+            }
+            //검색버튼 다양화
+            $(".btnSearch").on("change",function(){
+
+                if($(".btnSearch").val()=="level"){
+                    $(".keyword").attr("type","hidden");
+                    $(".keywordLevel").html(`<select class="form-select " name="keyword">
+                              <option value="0">일반</option>
+                              <option value="1">실버</option>
+                              <option value="2">골드</option>
+                              <option value="3">플레티넘</option>
+                              <option value="4">다이아</option>
+                              <option value="5">관리자</option>
+                              </select> `)
+                }else{
+                   $(".keywordLevel").html(`<input class="form-control keyword" type="text" name="keyword">`)
+                }
+            })
+            //회원 등급 조정 기능
+            $(".level").on("change",function(){
+                $.ajax({
+                    url:"/memberList/level",
+                    data:{level:$(this).val(),
+                    id:$(this).prev().val()},
+                    success:function(data){
+                        console.log(data);
+                        if(data.isLevel){
+                            alert("변경되었습니다.")
+                            location.reload();
+                        }else{
+                            alert("오류입니다.")
+                        }
+                    },
+                    fail:function(){
+                    }
+                });
+                return false;
+            })
+            //회원등급 일괄 처리
+                $(".btnLevel").on("change",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/memberList/levelAll",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck,
+                              level:$(this).val()},
+                        success:function(data){
+                            if(data.isLevel){
+                                alert("변경되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+
+                        }
+                    })
+                    return false;
+                })
+                //블랙 기능 level이 5이면 블랙
+                $(".btnBlack").on("click",function(){
+                    const $parent = $(this).parent().parent();
+                    console.log($parent)
+                    $.ajax({
+                        url:"/memberList/level",
+                        data:{id:$(this).data("no"),
+                              level:"5"},
+                        success:function(data){
+                            console.log(data);
+                            if(data.isLevel){
+                                alert("블랙입니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+                        }
+                    });
+                    return false;
+                });
+                //블랙기능 일괄 처리
+                $(".btnBlackAll").on("click",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/memberList/levelAll",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck,
+                              level:"5"},
+                        success:function(data){
+                            if(data.isLevel){
+                                alert("변경되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+
+                        }
+                    })
+                    return false;
+                })
+                //탈퇴 기능 level이 6이면 탈퇴리스트
+                $(".btnDelete").on("click",function(){
+                    const $parent = $(this).parent().parent();
+                    console.log($parent)
+                    $.ajax({
+                        url:"/memberList/level",
+                        data:{id:$(this).data("no"),
+                              level:"6"},
+                        success:function(data){
+                            console.log(data);
+                            if(data.isLevel){
+                                alert("탈퇴회원으로 이동되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+                        }
+                    });
+                    return false;
+                });
+                //탈퇴기능 일괄 처리
+                $("#btnDeleteAll").on("click",function(){
+                    let arrayLevelCheck =[];
+                    $("input:checkbox[name=removeCheck]:checked").each(function(){
+                        arrayLevelCheck.push($(this).val());
+                    })
+                    console.log(arrayLevelCheck);
+                    $.ajax({
+                        url:"/memberList/levelAll",
+                        traditional: true,   //ajax 배열 넘기기 옵션
+                        data:{id:arrayLevelCheck,
+                              level:"6"},
+                        success:function(data){
+                            if(data.isLevel){
+                                alert("변경되었습니다.")
+                                location.reload();
+                            }else{
+                                alert("오류입니다.")
+                            }
+                        },
+                        fail:function(){
+
+                        }
+                    })
+                    return false;
+                })
+            //체크박스 전체 선택 및 해체 기능
+                $("#checkAll").on("change",function(){
+                    if($("#checkAll").is(":checked")){
+                     $(".check").prop("checked",true);
+                    }else{
+                     $(".check").prop("checked",false);
+                    }
+                })
+        </script>
+
+            </div>
+        </div>

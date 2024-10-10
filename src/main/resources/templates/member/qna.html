@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row g-0 text-center">
+            <div class="col-sm-6 col-md-8">
+                <h2 class="text-start">문의 현황</h2>
+            </div>
+            <div class="col-6 col-md-4">
+                <nav class="text-end" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-chevron p-3 rounded-3 justify-content-end">
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis" href="/">
+                                <i class="bi bi-house" width="16" height="16"></i>
+                                <span class="visually-hidden">홈</span>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis fw-semibold text-decoration-none" href="#">MY 서비스</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            나의 문의현황
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">번호</th>
+                <th scope="col">카테고리</th>
+                <th scope="col">제목</th>
+                <th scope="col">작성일</th>
+                <th scope="col">처리상태</th>
+                <th scope="col">작성자</th>
+                <th scope="col">삭제</th>
+                <th scope="col"><input type="checkbox" id="checkAll" ></th>
+            </tr>
+            </thead>
+            <tbody id="resultList">
+            <th:block th:each="item,status:${qnaMemberList}">
+                <tr>
+                    <td class="" th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
+                    <td th:text="${item.qnaCategory}" ></td>
+                    <td><a href="" th:href="@{/cs/qna/view/{id}(id=${item.id})}"
+                       th:text="${item.qnaTitle}">제목이 들어가겠죠....</a></td>
+                    <td th:text="${#temporals.format(item.qnaDate,'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:if="${item.qnaStatus} =='답변대기'">답변대기</td>
+                    <td th:if="${item.qnaStatus} =='답변완료'"><button  th:data-no="${item.id}" data-bs-toggle="modal" data-bs-target="#exampleModalScrollable" class="btn btn-primary btnAnswer">답변완료</button></td>
+
+                    <td  th:text="${item.writer.userName}" ></td>
+                    <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.id}">삭제</button></td>
+                    <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="modal fade" id="exampleModalScrollable" tabindex="-1" aria-labelledby="exampleModalScrollableTitle" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalScrollableTitle">답변내용</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                    <div class="modal-body" style="min-height: 500px">
+                        <div class="d-flex flex-column mh-100" style="min-height: 500px">
+                            <div class="p-2 modalContent">
+                            </div>
+                                <!--<div class="mt-auto p-2">
+                                    <th:block sec:authorize="hasRole('ROLE_ADMIN')"> &lt;!&ndash;어드민계정이면 ture&ndash;&gt;
+                                        <form class="answerInsert" th:action="@{/cs/qna/answer}" method="post">
+                                            <input type="hidden" name="qnaId" th:value="${answer.id}">
+                                            <input type="hidden" name="qnaTitle" th:value="답변">
+                                            <input type="hidden" name="qnaSecret" th:value="${answer.qnaSecret}">
+                                            <input type="hidden" name="qnaPassword" th:value="${answer.qnaPassword}">
+                                            <input type="hidden" name="memberId" th:value="${#authentication.principal.loggedMember.id}">
+                                            <div class="form-group">
+                                                <label for="commentContent" style="font-size: 20px">답변</label>
+                                                <textarea class="form-control" id="commentContent" name="qnaContent" rows="4" placeholder="답변을 입력하세요" required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btnInsertComment">답변 작성</button>
+                                        </form>
+                                    </th:block>
+                                </div>-->
+                            </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let sonHtml="";
+    $(".btnAnswer").on("click",function(){
+    console.log($(this).data('no'))
+        $.ajax({
+            url:"/cs/qna/api/member",
+            method:"post",
+            data:{id:$(this).data('no')},
+            success:function(data){
+                console.log(data.answer)
+                sonHtml =`<p>${data.answer.qnaContent}</p>`;
+                $(".modalContent").html(sonHtml);
+            },
+            fail:function(){
+            alert("오류입니다.")
+            }
+        })
+    })
+        //삭제 기능
+      $(".btnDelete").on("click",function(){
+          $.ajax({
+              url:"/cs/qna/delete",
+              data:{id:$(this).data("no")},
+              method:"POST",
+              success:function(data){
+                if(data.isDelete){
+                alert("삭제되었습니다.")
+                location.reload();
+                }else{
+                alert("오류입니다.")
+                }
+
+              },
+              fail:function(){
+              }
+          });
+          return false;
+      });
+    </script>
+</div>

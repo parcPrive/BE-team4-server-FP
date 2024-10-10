@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="main">
+    <style>
+        /* Flexbox를 사용하여 가로 정렬 */
+        .post-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        /* 각각의 포스트 요소 */
+        .post {
+            width: 23%; /* 4개씩 보이도록 23%로 설정 */
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        /* 이미지 스타일 */
+        .post img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        /* 제목 스타일 */
+        .post h2 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        /* 닉네임 스타일 */
+        .post .nickname {
+            font-size: 14px;
+            color: #666;
+        }
+        .post .clickCount {
+            font-size: 10px;
+            color: #666;
+        }
+        .post .nickname {
+            font-size: 8px;
+            color: #666;
+        }
+    </style>
+    <body>
+    <form action="" th:action="@{/codyboard/list/1}" method="get">
+        <div class="row">
+            <div class="col-4" th:with="searchCategory=${param.searchCategory}">
+                <select class="form-select" aria-label="Default select example" name="searchCategory">
+                    <option value="all"     th:selected="${#strings.equals(searchCategory,'all')    ? false : false}">전체검색</option>
+                    <option value="codyBoardTitle"   th:selected="${#strings.equals(searchCategory,'codyBoardTitle')  ? true : false}">제목</option>
+                    <option value="codyBoardcContent" th:selected="${#strings.equals(searchCategory,'codyBoardcContent')? true : false}">내용</option>
+                    <option value="codyBoardUserName"    th:selected="${#strings.equals(searchCategory,'codyBoardUserName')   ? true : false}">닉네임</option>
+                </select>
+            </div>
+            <div class="col-6">
+                <input  type="text" class="form-control" name="searchWord" placeholder="검색어를 입력해주세요."
+                        th:value="${param.searchText}">
+            </div>
+            <div class="col-2"><button class="btn btn-primary">검색</button></div>
+        </div>
+    </form>
+    <div class="post-container">
+        <block class="post" th:each="codyBoardList : ${codyBoardList.getContent()}">
+            <div>
+                <a th:href="@{/codyboard/view(codyBoardId=${codyBoardList.getId()})}"><img th:src="${codyBoardList.getThumbnail()}" alt="이미지 1"></a>
+                <a th:href="@{/codyboard/view(codyBoardId=${codyBoardList.getId()})}"><h2 th:text="${codyBoardList.getCodyBoardTitle()}">게시글 제목 1</h2></a>
+                <p class="nickname" th:text="${codyBoardList.getUserName()}">사용자 닉네임 1</p>
+                <p class="clickCount" th:text="|조회수 ${codyBoardList.getClickCount()}|">조회수</p>
+                <p class="nickname" th:text="${codyBoardList.getCreatedAt()}">생성일</p>
+            </div>
+        </block>
+    </div>
+    <div>
+        <form th:action="@{/codyboard/insert}">
+            <button class="btn-primary btn">등록하기</button>
+        </form>
+    </div>
+    <div>
+        <nav aria-label="Page navigation example" class="mt-5 d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" th:if="${codyBoardList.hasPrevious()}" href="#">이전</a></li>
+                    <li class="page-item">
+                        <block th:each="page : ${#numbers.sequence(1, codyBoardList.getTotalPages())}">
+                            <block th:if="${param.searchCategory !=null}">
+                                <a class="page-link" th:text="${page}" th:href="@{/codyboard/list/{page}(page=${page},
+                                                                                                           searchCategory=${param.searchCategory},
+                                                                                                           searchWord=${param.searchWord})}">1</a>
+                            </block>
+                            <block th:unless="${param.searchCategory !=null}">
+                                <a class="page-link" th:text="${page}" th:href="@{/codyboard/list/{page}(page=${page})}">1</a>
+                            </block>
+                        </block>
+                    </li>
+
+                <li class="page-item"><a class="page-link" th:if="${codyBoardList.hasNext()}" href="#">다음</a></li>
+            </ul>
+        </nav>
+    </div>
+    </body>
+
+
+</div>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<link rel="stylesheet" href="./goods__list.css" />
+<div layout:fragment="content" class="main">
+    <title>상품 결제 성공</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .success-icon {
+            color: #28a745;
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #28a745;
+        }
+
+        p {
+            color: #333333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+    </style>
+    <body>
+    <div class="success-container">
+        <div class="success-icon">&#10004;</div>
+        <h2>상품 결제가 성공적으로 완료되었습니다!</h2>
+        <p>주문자: <strong th:text="${productOrderSuccessList[0].getUserName()}">#123456</strong></p>
+        <p>배송지: <strong th:text="|(${productOrderSuccessList[0].getDeliveryPostCode()}) ${productOrderSuccessList[0].getDeliveryAddress()}|">$100.00</strong></p>
+        <p>주문 번호: <strong th:text="${productOrderSuccessList[0].getDeliveryNumber()}">#123456</strong></p>
+    </div>
+    <div>
+    <table>
+        <thead>
+        <tr>
+            <th>상품정보</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>합계</th>
+        </tr>
+        </thead>
+        <tbody>
+        <block th:each="productOrderSuccess,stat : ${productOrderSuccessList}">
+            <tr class="productCount">
+                <td>
+                    <img th:src="@{${productOrderSuccess.getProductImage()}}">
+                    <span th:text="${productOrderSuccess.getUserName()}"></span>
+                    <span th:text="|사이즈: ${productOrderSuccess.getProductSize()}|"></span>
+                </td>
+                <td th:id="|productPrice${stat.count}|" th:text="${productOrderSuccess.getProductPrice()}">$50.00</td>
+                <td th:text="${productOrderSuccess.getProductCount()}">2</td>
+                <td th:text="${productOrderSuccess.getProductPrice()} * ${productOrderSuccess.getProductCount()}">$100.00</td>
+            </tr>
+        </block>
+
+        </tbody>
+    </table>
+    </div>
+
+    <div class="total">
+        총금액: <span id="productTotalPrice"></span>원
+    </div>
+    <div>
+        <a class="btn btn-primary" href="http://localhost:8090/">홈으로</a>
+    </div>
+    <body>
+    <script>
+        const tagCount = $(".productCount").length;
+        let productTotalPrice = 0;
+        for(let i = 1; i <= tagCount; i++){
+            productTotalPrice += parseInt($("#productPrice" + i).text());
+        }
+        $("#productTotalPrice").text(productTotalPrice);
+
+    </script>
+</div>
+</html>
+
+
+
+

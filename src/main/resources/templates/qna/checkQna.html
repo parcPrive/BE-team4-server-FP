@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="container">
+            <h2>게시글 비밀글 확인</h2>
+            <form method="post" action="/cs/qna/check" >
+                <div class="mb-3" sec:authorize="isAuthenticated()">
+                    <label for="userId" class="form-label">userId</label>
+                    <input type="hidden" class="form-control" placeholder="id" id="id"
+                           name="id" th:value="${id}" readonly>
+                    <input type="text" class="form-control" placeholder="id" id="userId"
+                           name="userId" th:value="${#authentication.principal.loggedMember.userId}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">password</label>
+                    <input type="password" class="form-control" placeholder="password" id="password"
+                           name="qnaPassword">
+                </div>
+                <div th:if="${error}">
+                    <p class="alert alert-danger" th:text="${exception}">패스워드 확인해 주세요.</p>
+                </div>
+                <div class="mt-5">
+                    <button class="btn btn-primary" id="btnCheck">확인</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

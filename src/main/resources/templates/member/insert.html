@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mt-5 mb-5">JOIN</h2>
+                <form action="" th:action="@{/member/insert}" th:object="${joinDto}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">userId</label>
+                        <input type="text" class="form-control" id="userId" placeholder="title" name="userId"  th:field="*{userId}" required>
+                        <button class="btn btn-primary" id="btnIDCheck" >아이디 중복 확인</button>
+                        <div class="error" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">
+                            오류 메세지...</div>
+                        <div class="invalid-feedback" id="invalid-feedbackID">글자 써보기</div>
+                        </div>
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">password</label>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control password" placeholder="password" id="password" aria-label="password" aria-describedby="button-addon2" name="password" th:field="*{password}" required>
+                            <button class="btn btn-outline-secondary btnEyes" type="button" id="btnEyes"><i class="bi bi-eye-fill"></i></button>
+                            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                오류 메세지...</div>
+                            <div class="invalid-feedback" id="invalid-feedbackPW01">글자 써보기</div>
+                        </div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">password check</label>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control password02" placeholder="password" id="password02" aria-label="password" aria-describedby="button-addon2" name="password02" required>
+                            <button class="btn btn-outline-secondary btnEyes02" type="button" id="btnEyes02"><i class="bi bi-eye-fill"></i></button>
+                            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                오류 메세지...</div>
+                        <div class="invalid-feedback" id="invalid-feedbackPW02">글자 써보기</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">userName</label>
+                        <input type="text" class="form-control" id="userName" placeholder="name" name="userName" th:field="*{userName}" required>
+                        <div class="error" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">
+                            오류 메세지...</div>
+                        <div class="invalid-feedback" id="invalid-feedbackName">글자 써보기</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nickName" class="form-label">nickName</label>
+                        <input type="text" class="form-control" id="nickName" placeholder="nickName" name="nickName" th:field="*{nickName}" required>
+                        <button class="btn btn-primary" id="btnNickNameCheck">닉네임 중복확인</button>
+                        <div class="error" th:if="${#fields.hasErrors('nickName')}" th:errors="*{nickName}">
+                            오류 메세지...</div>
+                        <div class="invalid-feedback" id="invalid-feedbackNickName">글자 써보기</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">email</label>
+                        <input type="text" class="form-control" id="email" placeholder="email"
+                               name="email" th:field="*{email}" required>
+                        <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                            오류 메세지...</div>
+                        <div class="invalid-feedback" id="invalid-feedbackEmail">글자 써보기</div>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="btnSend">인증번호 받기</button>
+                    </div>
+                    <div class="mb-3" id="emailConfirm" style="display: none">
+                        <label for="email" class="form-label">email confirm</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="confirmNum">
+                            <button class="btn btn-primary" type="button" id="btnConfirm">이메일 인증</button>
+                            <div class="invalid-feedback" id="invalid-feedbackcheckNum">글자 써보기</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <div class="" >
+                            <label for="gender" class="form-label">남자</label>
+                            <input type="radio" name="gender" class="gender" id="gender" value="1" required/>
+                            <label for="gender" class="form-label">여자</label>
+                            <input type="radio" name="gender" class="gender" id="gender" value="2" required/>
+                            <div class="invalid-feedback" id="invalid-feedbackGender">글자 써보기</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postCode" class="form-label">우편번호</label>
+                        <input type="text" class="form-control" id="postCode" placeholder="post code" name="postCode" required/>
+                        <div>
+                            <button class="btn btn-primary mt-3" id="btnPostcode">우편번호 확인</button>
+                        </div>
+                        <div class="invalid-feedback" id="invalid-feedbackPost">글자 써보기</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">주소</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="address" required />
+                        <div class="invalid-feedback" id="invalid-feedbackAddress">글자 써보기</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addressDetail" class="form-label">상세 주소</label>
+                        <input type="text" class="form-control" id="addressDetail" placeholder="address Detail" name="addressDetail" required/>
+                        <div class="invalid-feedback" id="invalid-feedbackDetail">글자 써보기</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobile" class="form-label">통신사</label>
+                        <select id="mobile" class="form-control" name="mobile" >
+                            <option id="mobile" value="untitled" selected>통신사 선택</option>
+                            <option id="mobile" value="LG">LGU+</option>
+                            <option id="mobile" value="SKT">SKT</option>
+                            <option id="mobile" value="KT" >KT</option>
+                            <option id="mobile" value="ALTTEUL_LG" >알뜰폰 LG</option>
+                            <option id="mobile" value="ALTTEUL_SKT" >알뜰폰 SKT</option>
+                            <option id="mobile" value="ALTTEUL_KT" >알뜰폰 KT</option>
+                        </select>
+                        <div class="invalid-feedback" id="invalid-feedbackMobile">글자 써보기</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">전화 번호</label>
+                            <input type="text" maxlength="11" class="form-control tel01" id="phone" placeholder="phone" name="phone"
+                                  th:field="*{phone}" required/>
+                            <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">
+                                오류 메세지...</div>
+                        <div class="invalid-feedback" id="invalid-feedbackTel">글자 써보기</div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-5">
+                        <button class="btn btn-primary" id="btnJoinConfirm">confirm</button>
+                    </div>
+                </form>
+                    </div>
+            <script>
+                let isIDCheck=false;
+    	let isNickNameCheck=false;
+    	let isEmailCheck=false;
+    	let isPhoneCheck=false;
+    	let isPassWordCheck=false;
+    	let isNickNameFormCheck=false;
+                //회원가입 클릭시
+      $("#btnJoinConfirm").on("click", function (e) {   //document.querySelector
+        if ($("#userId").val().trim() === "") {    // val: value, trim : 공백
+          $("#userId").val("");
+          $("#userId").focus();
+          $("#userId").addClass("is-invalid")
+          $("#invalid-feedbackID").show();
+          $("#invalid-feedbackID").text("아이디를 입력해주세요");
+          return false;
+        }else if ($("#password").val().trim() === "") {
+          alert("password는 필수입력 사항입니다.");
+          $("#password").val("");
+          $("#password").focus();
+          $("#password").addClass("is-invalid")
+          $("#invalid-feedbackPW01").show();
+          $("#invalid-feedbackPW01").text("비밀번호를 입력해주세요");
+          return false;
+        }else if ($("#password02").val().trim() === "") {
+          alert("password 확인");
+          $("#password02").val("");
+          $("#password02").focus();
+          $("#password02").addClass("is-invalid")
+          $("#invalid-feedbackPW02").show();
+          $("#invalid-feedbackPW02").text("비밀번호를 입력해주세요");
+          return false;
+        }else if ($("#userName").val().trim() === "") {
+            $("#userName").val("");
+            $("#userName").focus();
+            $("#userName").addClass("is-invalid")
+            $("#invalid-feedbackName").show();
+            $("#invalid-feedbackName").text("이름을 입력해주세요");
+            return false;
+        }else if ($("#nickName").val().trim() === "") {
+            $("#nickName").val("");
+            $("#nickName").focus();
+            $("#nickName").addClass("is-invalid")
+            $("#invalid-feedbackNickName").show();
+            $("#invalid-feedbackNickName").text("닉네임을 입력해주세요");
+            return false;
+        }else if($("input[name='gender']:checked").val()!= 1 && $("input[name='gender']:checked").val()!= 2 ){
+        	$("#gender").focus();
+        	$("#gender").addClass("is-invalid")
+        	$("#invalid-feedbackGender").show();
+            $("#invalid-feedbackGender").text("성별을 선택해주세요");
+            return false;
+        }else if ($("#postCode").val().trim() === "") {
+            $("#postCode").val("");
+            $("#postCode").focus();
+            $("#postCode").addClass("is-invalid")
+            $("#invalid-feedbackPost").show();
+            $("#invalid-feedbackPost").text("우편번호 입력해주세요");
+            return false;
+        }else if ($("#address").val().trim() === "") {
+            $("#address").val("");
+            $("#address").focus();
+            $("#address").addClass("is-invalid")
+            $("#invalid-feedbackAddress").show();
+            $("#invalid-feedbackAddress").text("주소를 입력해주세요");
+            return false;
+        }else if ($("#addressDetail").val().trim() === "") {
+            $("#addressDetail").val("");
+            $("#addressDetail").focus();
+            $("#addressDetail").addClass("is-invalid")
+            $("#invalid-feedbackDetail").show();
+            $("#invalid-feedbackDetail").text("상세 주소를 입력해주세요");
+            return false;
+        }else if ($("#email").val().trim() === "") {
+            $("#email").val("");
+            $("#email").focus();
+            $("#email").addClass("is-invalid")
+            $("#invalid-feedbackEmail").show();
+            $("#invalid-feedbackEmail").text("이메일을 입력해주세요");
+            return false;
+        }else if (!emailCheck()) {
+            $("#email").focus();
+            $("#email").addClass("is-invalid")
+            $("#invalid-feedbackEmail").show();
+            $("#invalid-feedbackEmail").text("이메일을 입력해주세요");
+            return false;
+        }else if ($("#confirmNum").val().trim() === "") {
+            $("#confirmNum").val("");
+            $("#confirmNum").focus();
+            $("#confirmNum").addClass("is-invalid")
+            $("#invalid-feedbackcheckNum").show();
+            $("#invalid-feedbackcheckNum").text("인증번호를 입력해주세요");
+            return false;
+        }else if ($("#mobile").val().trim() == "untitled") {
+            $("#mobile").focus();
+            $("#mobile").addClass("is-invalid")
+            $("#invalid-feedbackMobile").show();
+            $("#invalid-feedbackMobile").text("통신사를 선택해주세요");
+              return false;
+        }else if(isPhoneCheck){
+       	 alert("핸드폰 번호 확인해주세요");
+    	 return false;
+    	}else if(!isEmailCheck){
+       	 alert("인증번호 확인을 해주세요");
+    	 return false;
+    	}else if(!isIDCheck){
+        	 alert("아이디 중복 체크해주세요");
+        	 return false;
+        }else if(!isPassWordCheck){
+       	 alert("비밀번호 확인해주세요");
+    	 return false;
+    }else if(isNickNameCheck){
+       	 	alert("닉네임 중복 체크해주세요");
+    	 	return false;
+    }else if(!isNickNameFormCheck){
+       	 alert("닉네임 형식이 맞지 않습니다.");
+    	 return false;
+    }
+      });
+      //  아이디 5자리 이상의 정규화
+   	  function IDcheck(){
+   		let IDRegex = /^[a-z][a-z0-9_.]{4,19}$/;
+   		let userid =$("#userId").val().trim();
+   		if(IDRegex.test(userid)){
+   			return true;
+   		}
+   	 		return false;
+   	  }
+      $("#userId").on("keyup" , function(){
+    	  if(IDcheck()){
+    		  $("#invalid-feedbackID").hide();
+    		  $("#userId").removeClass("is-invalid")
+    		  $("#userId").addClass("is-valid")
+    		  $("#btnIDCheck").attr("disabled",false);
+    	  }else{
+    		  $("#invalid-feedbackID").show();
+    		  $("#invalid-feedbackID").text("아이디 형식에 맞지 않습니다.");
+    		  $("#btnIDCheck").attr("disabled",true);
+
+    	  }
+
+      })
+      $("#userId").on("click" , function(){
+    	  if(IDcheck()){
+    		  $("#invalid-feedbackID").hide();
+    		  }
+    	  else{
+    	  $("#invalid-feedbackID").show();
+		  $("#invalid-feedbackID").text("최소 다섯자리이상의 아이디가 필요합니다.");
+    	  }
+    	  return false;
+      })
+      $("input[name='gender']").on("change",function(){
+    	  if($("input[name='gender']:checked").val()==1 || $("input[name='gender']:checked").val()==2)
+    	  $(".invalid-feedback").hide();
+      })
+      $("#detailAddress").on("keyup",function(){
+    	  $("#detailAddress").removeClass("is-invalid")
+          $("#detailAddress").addClass("is-valid")
+    	  $("#invalid-feedbackDetail").hide();
+      })
+      $("#email").on("keyup",function(){
+    	  if(emailCheck()){
+    		  $("#email").removeClass("is-invalid")
+              $("#email").addClass("is-valid")
+    		  $("#invalid-feedbackEmail").hide();
+    	  }
+      })
+
+      $("#mobile").on("change",function(){
+    	  if($("#mobile").val()!="untitled"){
+    		  $("#mobile").removeClass("is-invalid")
+              $("#mobile").addClass("is-valid")
+    		 $(".invalid-feedback").hide();
+    	  }
+      })
+      //  나쁜말 체크
+      function badWordCheck(){
+    	  reset_alert_count();
+    	  let compareText = $("#nickName").val();
+    	  for(let i =0; i<swear_words_arr.length; i++){
+    		  for(let j =0;j<compareText.length; j++){
+    			  if(swear_words_arr[i] == compareText.substring(j,(j+swear_words_arr[i].length)).toLowerCase()){
+    				  swear_alert_arr[swear_alert_count] = compareText.substring(j, (j + swear_words_arr[i].length));
+    		            swear_alert_count++;
+    		            return true;
+    			  }
+    		  }
+    	  }
+    	  var alert_text = "";
+    	   for (var k = 1; k <= swear_alert_count; k++) {
+    	      alert_text += "\\n" + "(" + k + ")  " + swear_alert_arr[k - 1];
+    	   }
+    	   return false;
+      }
+      //나쁜말 "*"로 대체한다.
+      function nickNameReplace(){
+    	  let text = $("#nickName").val().trim();
+    	  let replacesub = "*";
+    	  for(let i =0;i<text.length;i++){
+    		  let sub = replacesub.repeat(text.length)
+    		  text = text.replace(text,sub)
+    	  }
+    	  return text;
+      }
+      //나쁜말 대체된 *을 포함하면 리턴값으로 true를 가진다.
+      function badWord(){
+    	  let badWordRegex = /^(?=.*[*])[가-힣@#$!%^&*?]{1,18}$/;
+    	  let nickname01 =$("#nickName").val().trim();
+    	  if(badWordRegex.test(nickname01)  ){
+     			return true;
+     		}
+
+     	 		return false;
+      }
+       function nickNameCheck(){
+   		let nickNameRegex = /^[가-힣]{3,6}$/;
+   		//  소문자와 특수문자는 필요하고 8자리이상인 비밀번호
+
+   		let nickname =$("#nickName").val().trim();
+   		if(nickNameRegex.test(nickname)  ){
+   			return true;
+   		}
+
+   	 		return false;
+   	  }
+      function userNameCheck(){
+      		let userNameRegex = /^[가-힣]{2,6}$/;
+      		//  한글 2~6자리
+
+      		let username =$("#userName").val().trim();
+      		if(userNameRegex.test(username)  ){
+      			return true;
+      		}
+
+      	 		return false;
+      	  }
+      $("#userName").on("keyup",function(){
+    	  if(userNameCheck()){
+    		  $("#userName").removeClass("is-invalid")
+       		  $("#userName").addClass("is-valid")
+    	  $("#invalid-feedbackName").hide();
+    	  }else{
+    	        $("#userName").addClass("is-invalid")
+    		  $("#invalid-feedbackName").show();
+    		  $("#invalid-feedbackName").text("2~6자리 한글만 작성하세요");
+    	  }
+      })
+      $("#nickName").on("keyup",function(){
+    	 if(badWordCheck()){
+             $("#nickName").val(nickNameReplace())
+    	 }else{
+    		 if(badWord()){
+      			  $("#invalid-feedbackNickName").show();
+      	          $("#invalid-feedbackNickName").text("비속어는 안됩니다.");
+    		 }else{
+    	  			if(nickNameCheck()){
+    	  			$("#nickName").removeClass("is-invalid")
+		            $("#nickName").addClass("is-valid")
+    		  		$("#invalid-feedbackNickName").hide();
+    		  		isNickNameFormCheck=true;
+    	  			}else{
+    		  		$("#invalid-feedbackNickName").show();
+    		  		$("#nickName").addClass("is-invalid")
+              		$("#invalid-feedbackNickName").text("닉네임은 3~5 한글만 가능합니다.");
+    	  			}
+    		 	}
+    	 	}
+      })
+                //비밀번호 보기 or 감추기
+                $(".btnEyes").on("click",function(){
+                    $('#password').toggleClass('active');
+                    if( $('#password').hasClass('active') == true ){
+                        $('#password').attr("type","text")
+                        $(this).find('i').attr("class","bi bi-eye-slash")
+                    }
+                    else{
+                        $('#password').attr("type","password")
+                        $(this).find('i').attr("class","bi bi-eye-fill")
+                    }
+                });
+                //비밀번호 보기 or 감추기
+                $(".btnEyes02").on("click",function(){
+                    $('#password02').toggleClass('active');
+                    if( $('#password02').hasClass('active') == true ){
+                        $('#password02').attr("type","text")
+                        $(this).find('i').attr("class","bi bi-eye-slash")
+                    }
+                    else{
+                        $('#password02').attr("type","password")
+                        $(this).find('i').attr("class","bi bi-eye-fill")
+                    }
+                });
+          // 비밀번호 정규화
+       function PassWordcheck(){
+   		let PWRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[@#$!%^&*?])[A-Za-z\d@#$!%^&*?]{8,16}$/;
+   		//  소문자와 특수문자는 필요하고 8자리이상인 비밀번호
+   		let userpw =$("#password").val().trim();
+   		if(PWRegex.test(userpw)){
+   			return true;
+   		}
+   	 		return false;
+   	  }
+      $("#password").on("keyup" , function(){
+    	  if(PassWordcheck()){
+    		  $("#password").removeClass("is-invalid")
+    		  $("#password").addClass("is-valid")
+    		  $("#invalid-feedbackPW01").hide();
+    		  isPassWordCheck= true;
+    	  }else{
+    	  $("#password").addClass("is-invalid")
+    		  $("#invalid-feedbackPW01").show();
+    		  $("#invalid-feedbackPW01").text("8~16자리며 특수문자와 숫자가 적어도 하나 이상 포함되어야 합니다.");
+    	  }
+
+      })
+
+                //비밀번호 일치 불일치
+                $("#password02").on("keyup", function () {    //id는 # , class는 .
+                    if ($("#password").val() !== $("#password02").val()) {
+                    $("#invalid-feedbackPW02").show();
+                    $("#invalid-feedbackPW02").text("password가 맞지 않습니다.");
+                    } else if($("#password").val() == $("#password02").val()) {
+                     $("#password02").removeClass("is-invalid")
+   		             $("#password02").addClass("is-valid")
+                     $("#invalid-feedbackPW02").hide();
+                    }
+                });
+                //이메일 인증받기
+                let confirmNum = 0;
+                function emailCheck(){
+    	    	let emailPattern = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    	    	let email = $("#email").val().trim();
+    	    	if(emailPattern.test(email)){
+
+    	    		return true;
+    	    	}
+    	    	$("#email").focus();
+    	    	return false;
+    	    }
+                $("#btnSend").on("click",function() {
+                    $("#emailConfirm").show();
+                    if(!emailCheck()){
+    	    		$("#email").addClass("is-invalid")
+    	    		$("#invalid-feedbackEmail").show();
+            		$("#invalid-feedbackEmail").text("이메일을 입력해주세요");
+    	    		alert("이메일 형식에 맞지않습니다.")
+    	    		return false;
+    	    	}
+                    $.ajax({
+                        url:"/mail/confirm",
+                        method:"post",
+                        data:{mail:$("#email").val()},
+                        success:function(result) {
+                            alert("인증메일 발송되었습니다.");
+                            confirmNum = result.confirmNumber;
+                            console.log(result);
+                        }
+                    });
+                    return false;
+                });
+                $("#btnConfirm").on("click",function(){
+                if($("#confirmNum").val() != confirmNum){
+    			   alert("인증번호가 다릅니다. 다시 입력해주세요");
+    			   $("#confirmNum").addClass("is-invalid")
+    	           $("#invalid-feedbackcheckNum").show();
+    	           $("#invalid-feedbackcheckNum").text("인증번호를 입력해주세요");
+    			   $("#confirmNum").val("");
+    			   $("#confirmNum").focus();
+    		   }else{
+    			   if($("#confirmNum").val()==""){
+    				   alert("공란입니다. 이메일 인증을 받으세요");
+    				   $("#confirmNum").addClass("is-invalid")
+        	           $("#invalid-feedbackcheckNum").show();
+        	           $("#invalid-feedbackcheckNum").text("인증번호를 입력해주세요");
+    				   $("#confirmNum").focus();
+    			   }else{
+    				   alert("인증번호 확인 되었습니다.");
+    				   $("#confirmNum").removeClass("is-invalid")
+    				   $("#confirmNum").addClass("is-valid")
+        			   $("#confirmNum").attr("readonly",true);
+        			   isEmailCheck=true;
+    			   }
+    		   }
+    		   return false;
+                });
+                // 우편주소
+              function postcode() {
+                new daum.Postcode({
+                  oncomplete: function (data) {
+
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    const roadAddr = data.roadAddress; // 도로명 주소 변수
+                    const extraRoadAddr = ""; // 참고 항목 변수
+
+
+                    document.querySelector("#postCode").value = data.zonecode;
+                    document.querySelector("#address").value = roadAddr;
+
+                  },
+                }).open();
+              }
+
+              $("#btnPostcode").on("click", function () {
+                postcode();
+                return false;
+              });
+              $("#postCode").on("click",function(){
+                  $("#postCode").removeClass("is-invalid")
+                  $("#postCode").addClass("is-valid")
+                  $("#invalid-feedbackPost").hide();
+                  postcode();
+                  return false;
+              })
+               $("#address").on("click",function(){
+                  postcode();
+                  return false;
+              })
+            //닉네임 체크
+             $("#btnNickNameCheck").on("click", function(){
+                  $.ajax({
+                        url:"/member/nickNameCheck",
+                        method:"get",
+                        data:{nickName: $("#nickName").val()},
+                         success : function(data){
+                         console.log(data);
+                           if(data.nickNameCheck){
+                           console.log("중복되었습니다.");
+                            alert("쓸 수 없는 아이디입니다.");
+        						  $("#nickName").val("");
+        						  $("#nickName").focus();
+        						  $("#nickName").addClass("is-invalid")
+                           }else{
+                           console.log("사용가능")
+                           if($("#nickName").val()!=""){
+        						  const useID = confirm("쓸 수 있는 닉네임입니다. 사용하시겠습니까?");
+        						  if(useID){
+        							$("#nickName").removeClass("is-invalid")
+            		    	        $("#nickName").addClass("is-valid")
+          					  		$("#nickName").attr("readonly",false);
+          					  		}
+        						  }else{
+        							  alert("공란입니다. 다시입력해주세여");
+        							  $("#invalid-feedbackNickName").show();
+            		                  $("#invalid-feedbackNickName").text("닉네임을 입력해주세요");
+        							  $("#nickName").addClass("is-invalid")
+        							  $("#nickName").focus();
+        						  }
+                           }
+                         }
+                  });
+                  return false;
+              });
+              //아이디 중복확인
+         $("#btnIDCheck").on("click", function(){
+    	  $.ajax({
+    		  url:"/member/idCheck",
+    				  data:{userId:$("#userId").val()},
+    				  //method:"get",
+    				  success : function(data){
+    						  if(data.count>0){
+    						  console.log(data.count);
+        						  alert("쓸 수 없는 아이디입니다.");
+        						  $("#userId").val("");
+        						  $("#userId").focus();
+        						  $("#userId").addClass("is-invalid")
+        					  }else{
+        						  if($("#userId").val()!=""){
+        						  const useID = confirm("쓸 수 있는 아이디입니다. 사용하시겠습니까?");
+        						  if(useID){
+        							$("#userId").removeClass("is-invalid")
+            		    	        $("#userId").addClass("is-valid")
+          					  		$("#userId").attr("readonly",false);
+          					  		$("#btnIDCheck").attr("disabled",true);
+          					  		isIDCheck = true;
+          					  		}
+        						  }else{
+        							  alert("공란입니다. 다시입력해주세여");
+        							  $("#invalid-feedbackID").show();
+            		                  $("#invalid-feedbackID").text("아이디를 입력해주세요");
+        							  $("#userId").addClass("is-invalid")
+        							  $("#userId").focus();
+        						  }
+        					  }
+    				  },
+    				  complete : function(data){
+    				  }
+    	  });
+    	  return false;
+      });
+
+
+
+            </script>
+            </div>
+        </div>
+    </div>
+
+</html>

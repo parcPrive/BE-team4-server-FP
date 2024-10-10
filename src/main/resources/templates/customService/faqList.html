@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container">
+        <div class="row g-0 text-center">
+            <div class="col-sm-6 col-md-8">
+                <h2 class="text-start">자주 묻는 질문(FAQ)</h2>
+            </div>
+            <div class="col-6 col-md-4">
+                <nav class="text-end" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-chevron p-3 rounded-3 justify-content-end">
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis" href="/">
+                                <i class="bi bi-house" width="16" height="16"></i>
+                                <span class="visually-hidden">Home</span>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a class="link-body-emphasis fw-semibold text-decoration-none" href="#">고객센터</a>
+                        </li>
+                        <th:block th:if="${code} ==null">
+                            <li class="breadcrumb-item active" aria-current="page">
+                                FAQ
+                            </li>
+                        </th:block>
+                        <th:block th:if="${code} !=null">
+                            <li class="breadcrumb-item">
+                                <a class="link-body-emphasis fw-semibold text-decoration-none" th:href="@{/cs/faq}">FAQ</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" >
+                                <span th:if="${code}==001">회원정보</span>
+                                <span th:if="${code}==002">상품확인</span>
+                                <span th:if="${code}==003">주문/결제</span>
+                                <span th:if="${code}==004">배송</span>
+                                <span th:if="${code}==005">교환/취소(반품)</span>
+                                <span th:if="${code}==006">서비스</span>
+                            </li>
+                        </th:block>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <nav class="nav mb-3">
+            <a class="nav-link active" aria-current="page" th:href="@{/cs/faq/{code}(code='001')}">회원정보</a>
+            <a class="nav-link" href="#" th:href="@{/cs/faq/{code}(code='002')}">상품확인</a>
+            <a class="nav-link" href="#" th:href="@{/cs/faq/{code}(code='003')}">주문/결제</a>
+            <a class="nav-link " href="#" th:href="@{/cs/faq/{code}(code='004')}" >배송</a>
+            <a class="nav-link " href="#" th:href="@{/cs/faq/{code}(code='005')}" >교환/취소(반품)</a>
+            <a class="nav-link " href="#" th:href="@{/cs/faq/{code}(code='006')}" >서비스</a>
+        </nav>
+        <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+            <a th:href="@{/cs/insertFaqCategory}" class="btn btn-primary">카테고리 등록</a>
+        </th:block>
+
+
+        <table class="table">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col">번호</th>
+                <th scope="col">구분</th>
+                <th scope="col">제목</th>
+                <th scope="col">관리자</th>
+                <th scope="col">등록 날짜</th>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <th scope="col">삭제</th>
+                <th scope="col"><input type="checkbox" id="checkAll" ></th>
+                </th:block>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="item,status:${faqBoardList}">
+                <tr>
+                    <td th:text="${pagination.totalElements - pagination.number*pagination.size - status.index}"></td>
+                    <td th:text="|${item.faqCategory.bigFaqCategory.getValue()} / (${item.faqCategory.smallFaqCategory.getValue()})|" ></td>
+                    <td><a href="" th:href="@{/cs/view/{id}(id=${item.id})}"  th:text="${item.faqTitle}">제목이 들어가겠죠....</a></td>
+                    <td th:text="${item.writer.role}" ></td>
+                    <td th:text="${#temporals.format(item.faqDate,'yyyy-MM-dd HH:mm')}"></td>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                    <td><button class="btn btn-danger btnDelete" th:data-no="${item.id}" th:value="${item.id}">삭제</button></td>
+                    <td><input type="checkbox" name="removeCheck" class="check" th:value="${item.id}"></td>
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center mt-5">
+                <li class="page-item"  th:classappend="${!pagination.hasPrevious?'disabled':''}">
+                    <a class="page-link" th:href="@{/cs/faq(page=${pagination.number - 1})}">Previous</a>
+                </li>
+                <th:block th:each="item:${#numbers.sequence(0,pagination.totalPages - 1)}">
+                    <li class="page-item"
+                        th:classappend="${item==pagination.number?'active':''}"
+
+                        th:if="${item >= start and
+                                 item < end }">
+                        <a class="page-link" href="#" th:href="@{/cs/faq(page=${item})}" th:text="${item + 1}">1</a>
+                    </li>
+                </th:block>
+                <li class="page-item" th:classappend="${!pagination.hasNext()?'disabled':''}">
+                    <a class="page-link" href="#" th:href="@{/cs/faq(page=${pagination.number+1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="mt-5 d-flex justify-content-center">
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+                <a th:href="@{/cs/insertFaq}" class="btn btn-primary">글쓰기</a>
+            </th:block>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        //삭제 기능
+               $(".btnDelete").on("click",function(){
+                   const $parent = $(this).parent().parent();
+                   console.log($parent);
+                   const loggedId = $(this).data("no");
+                   console.log(loggedId);
+                   $.ajax({
+                       url:"/cs/deleteFaq/"+loggedId,
+                       data:{id:$(this).data("no")},
+                       success:function(data){
+                            location.reload();
+                       },
+                       fail:function(){
+                       }
+                   });
+                   return false;
+               });
+                //체크박스 전체 선택 및 해체 기능
+                $("#checkAll").on("change",function(){
+                    if($("#checkAll").is(":checked")){
+                     $(".check").prop("checked",true);
+                    }else{
+                     $(".check").prop("checked",false);
+                    }
+                })
+    </script>
+</div>

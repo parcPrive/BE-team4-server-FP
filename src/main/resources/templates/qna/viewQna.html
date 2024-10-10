@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+<div layout:fragment="content" class="main">
+    <div class="container" id="textBox">
+        <h3 class="fontTitle">공지사항 글 보기</h3>
+        <div class="justify-content-center border-bottom mb-3">
+            <h3 class="text-center fontTitle" th:text="${qnaInfo.qnaTitle}">서울사랑 누리집이 새롭게 바뀌었습니다</h3>
+        </div>
+
+        <div class="nav justify-content-end mb-3" style="font-size: 20px;">
+    <span class="text-end ms-auto">
+        <a href="#none" class="fontSmall"
+           title="글자크기 작게">
+            <span class="minus"><i class="bi bi-dash-square"></i></span>
+        </a>
+        <a href="#none"  class="fontBig"
+           title="글자크기 크게">
+            <span class="plus"><i class="bi bi-plus-square"></i></span>
+        </a>
+    </span>
+        </div>
+
+        <div class="contents notice-view js_font_chg text-center">
+            <div class="view-box ">
+                <div class="view-header row border-top">
+                    <div class="col-md-6 mt-2">
+                        <dl>
+                            <dt>작성일</dt>
+                            <dd th:text="${#temporals.format(qnaInfo.qnaDate,'yyyy-MM-dd HH:mm')}"></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <dl>
+                            <dt>공개여부</dt>
+                            <dd th:text="${qnaInfo.qnaSecret == 0} ? '공개' : '비공개' " ></dd>
+
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="view-content border-top" style="height: 500px;">
+                    <div class="content h-100 mt-3" th:utext="${qnaInfo.qnaContent}">
+                    </div>
+                </div>
+
+                <div class="view-footer border-top mt-1 align-items-center">
+                    <li class="page-item">
+                        <a class="btn btn-secondary" href="#" th:href="@{/cs/qna/list(page=0)}" >목록</a>
+                        <a class="btn btn-primary" href="#" th:href="@{/cs/qna/update/{id}(id=${qnaInfo.id})}" >글 수정</a>
+                    </li>
+                </div>
+                <div class="text-start">
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')"> <!--어드민계정이면 ture-->
+                        <form class="answerInsert" th:action="@{/cs/qna/answer}" method="post">
+                            <input type="hidden" name="qnaId" th:value="${qnaInfo.id}">
+                            <input type="hidden" name="qnaTitle" th:value="답변">
+                            <input type="hidden" name="qnaSecret" th:value="${qnaInfo.qnaSecret}">
+                            <input type="hidden" name="qnaPassword" th:value="${qnaInfo.qnaPassword}">
+                            <input type="hidden" name="memberId" th:value="${#authentication.principal.loggedMember.id}">
+                            <div class="form-group">
+                                <label for="commentContent" style="font-size: 20px">답변</label>
+                                <textarea class="form-control" id="commentContent" name="qnaContent" rows="4" placeholder="답변을 입력하세요" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btnInsertComment">답변 작성</button>
+                        </form>
+                    </th:block>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+
+        //글자 크기
+        let titleFont = 28
+        let basicFont = 16
+        console.log(basicFont);
+        $(".fontBig").on("click",function(){
+         basicFont++; // basicFont는 1씩 계속 증가하고,
+         titleFont++
+         console.log(basicFont);
+         // 20 넘어가면 20에서 동작 멈춤
+            if( basicFont > 20  ) {basicFont = 20; return false;}
+            if( titleFont > 32 ) {titleFont = 32; return false;}
+                $("#textBox").css("font-size", basicFont);
+                $(".fontTitle").css("font-size", titleFont);
+
+        });
+
+        $(".fontSmall").on("click",function(){
+         basicFont--; // basicFont는 1씩 계속 감소하고,
+         titleFont--
+         console.log(basicFont);
+         // 20 넘어가면 20에서 동작 멈춤
+            if( basicFont < 10 ) {basicFont = 10; return false;}
+            if( titleFont < 22 ) {titleFont = 22; return false;}
+                $("#textBox").css("font-size", basicFont);
+                $(".fontTitle").css("font-size", titleFont);
+        });
+
+    </script>
+</div>
